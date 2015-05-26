@@ -1,0 +1,150 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#root {
+  margin: 20px;
+}
+.ldColorPicker {
+  position: relative;
+  display: block;
+  padding: 5px;
+  background: #fff;
+  width: 160px;
+  height: 100px;
+}
+.ldColorPicker.border {
+  border: 1px solid #ccc;
+}
+.ldColorPicker.shadow {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ldColorPicker.round {
+  border-radius: 3px;
+}
+.ldColorPicker.bubble:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+.ldColorPicker.top:after {
+  border-color: #ccc transparent transparent transparent;
+  bottom: -20px;
+  left: 10px;
+}
+.ldColorPicker.right:after {
+  border-color: transparent #ccc transparent transparent;
+  top: 10px;
+  left: -20px;
+}
+.ldColorPicker.left:after {
+  border-color: transparent transparent transparent #ccc;
+  top: 10px;
+  right: -20px;
+}
+.ldColorPicker.bottom:after,
+.ldColorPicker.bubble:after {
+  border-color: transparent transparent #ccc transparent;
+  top: -20px;
+  left: 10px;
+}
+.ldColorPicker .ldcp-ptr,
+.ldColorPicker .ldcp-bar {
+  position: absolute;
+  background: none;
+}
+.ldColorPicker .ldcp-ptr {
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border: 2px solid #bbb;
+}
+.ldColorPicker .ldcp-bar {
+  border-radius: 3px;
+  height: 0;
+  width: 20%;
+  margin: -5px 0 0 -2.5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #bbb;
+  border-width: 5px 0 5px 5px;
+}
+.ldColorPicker .ldcp-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: move;
+}
+.ldColorPicker .ldcp-2d {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  background: #eee;
+  display: inline-block;
+  cursor: move;
+}
+.ldColorPicker .ldcp-1d {
+  position: relative;
+  width: 20%;
+  height: 80%;
+  display: inline-block;
+  padding-left: 5px;
+  cursor: row-resize;
+}
+.ldColorPicker .ldcp-1d > div:nth-of-type(1) {
+  height: 100%;
+  width: 100%;
+  background: #eee;
+}
+.ldColorPicker .ldcp-1d > .ldcp-mask {
+  left: 5px;
+}
+.ldColorPicker {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ldColorPicker .ldcp-colors {
+  height: 20%;
+  line-height: 20%;
+  padding-bottom: 5px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.ldColorPicker .ldcp-color {
+  height: 100%;
+  background: #eee;
+  margin-right: 5px;
+  display: inline-block;
+  flex: 1 1;
+  text-align: center;
+  line-height: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.ldColorPicker .ldcp-color:first-of-type {
+  margin-left: 0;
+}
+.ldColorPicker .ldcp-color:last-of-type {
+  margin-right: 0;
+}
+/*
+.ldColorPicker
+  position: relative
+  top: 100px
+  left: 200px
+  width: 200px
+  height: 100px
+  */

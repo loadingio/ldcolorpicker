@@ -12,11 +12,12 @@ ldColorPicker = ( (node, target = null) ->
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
   HTMLPALS = "<div class='ldcp-palettes'></div>"
   node.innerHTML = "<div class='ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>"
+  node.addEventListener(\click, (e) -> cancelAll e)
   node.querySelector(".ldcp-2d .ldcp-mask")
-    ..addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 2 )
+    ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 2 )
     ..addEventListener("click", (e) ~> @move e, 2, true )
   node.querySelector(".ldcp-1d .ldcp-mask")
-    ..addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 1 )
+    ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 1 )
     ..addEventListener("click", (e) ~> @move e, 1, true )
   setTimeout (~>
     @P2D = {ptr: node.querySelector(".ldcp-ptr")}
@@ -30,7 +31,7 @@ ldColorPicker = ( (node, target = null) ->
     for idx from 0 til @color.nodes.length =>
       c = @color.nodes[idx]
       c.idx = idx
-      c.addEventListener \click, (e) ~> @set-idx e.target.idx
+      c.addEventListener \click, (e) ~> @set-idx(e.target.idx)
     c = @color.vals[@idx]
     @set-idx @idx # set ptr correctly
     @set-hsl c.hue, c.sat, c.lit

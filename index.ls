@@ -22,6 +22,10 @@ ldColorPicker = ( (node, target = null) ->
       nodes: node.querySelectorAll(".ldcp-color")
       vals: ldColorPicker.palette.getVal @
     #if standalone => @color.vals: [{hue: parseInt(Math.random!*360), sat: 50, lit: 50} for i from 0 til 7]
+    for idx from 0 til @color.nodes.length =>
+      c = @color.nodes[idx]
+      c.idx = idx
+      c.addEventListener \click, (e) ~> @set-idx e.target.idx
     c = @color.vals[@idx]
     @set-hsl c.hue, c.sat, c.lit
   ), 0
@@ -94,6 +98,10 @@ ldColorPicker = ( (node, target = null) ->
     toHexString: (c) -> 
       [r,g,b] = @toRgb c
       "\##{@hex r}#{@hex g}#{@hex b}"
+    set-idx: (idx) ->
+      @idx = idx
+      c = @color.vals[idx]
+      @set-hsl c.hue, c.sat, c.lit
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
       if @target => @target.value = @toHexString @color.vals[@idx]
@@ -103,7 +111,7 @@ ldColorPicker = ( (node, target = null) ->
         y2 = ( @P1D.h * (100 - lit) / 100 + @P1D.h * 0.02 ) / 1.04
         @set-pos 2, x, y1, true
         @set-pos 1, x, y2, true
-        @update-color 0
+        @update-color @idx
       
     set-pos: (type, x, y, no-recurse = false) ->
       ctx = if type == 2 => @P2D else @P1D
@@ -120,7 +128,7 @@ ldColorPicker = ( (node, target = null) ->
         sat = if type == 2 => 100 - ly else c.sat
         lit = if type == 1 => 100 - ly else c.lit
         @set-hsl hue, sat, lit, true
-        @update-color 0
+        @update-color @idx
 
     move: (e, type) ->
       if !e.buttons => return

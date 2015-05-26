@@ -73,7 +73,6 @@ ldColorPicker = ( (node, target = null) ->
     
     clickToggle: (e) -> 
       @clickToggler = ~>
-        console.log @
         document.removeEventListener \click, @clickToggler
         @toggle!
 

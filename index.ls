@@ -11,7 +11,7 @@ ldColorPicker = ( (node, target = null) ->
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><div class='ldcp-mask'></div></div>"
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
   HTMLPALS = "<div class='ldcp-palettes'></div>"
-  node.innerHTML = HTML2D + HTML1D + HTMLCOLOR + HTMLPALS
+  node.innerHTML = "<div class='ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>"
   node.querySelector(".ldcp-2d .ldcp-mask")
     ..addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 2 )
     ..addEventListener("click", (e) ~> @move e, 2, true )
@@ -52,8 +52,12 @@ ldColorPicker = ( (node, target = null) ->
       list =
         [\selectstart, ((e) -> cancelAll e)]
         [\mousemove, ((e) -> target.move e, type)]
-        [\mouseup, ((e) -> list.map -> document.removeEventListener it.0, it.1)]
+        [\mouseup, ((e) -> 
+          list.map -> document.removeEventListener it.0, it.1
+          setTimeout (->if target.clickToggler => document.addEventListener \click, target.clickToggler), 0
+        )]
       list.map -> document.addEventListener it.0, it.1
+      if target.clickToggler => document.removeEventListener \click, target.clickToggler
 
   init: (node, target = null) ->
     if node =>
@@ -66,12 +70,20 @@ ldColorPicker = ( (node, target = null) ->
       [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-2d")]
       @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}
       @P1D <<< {w: n1.offsetWidth, h: n1.offsetHeight}
+    
+    clickToggle: (e) -> 
+      @clickToggler = ~>
+        console.log @
+        document.removeEventListener \click, @clickToggler
+        @toggle!
 
     toggle: ->
+
       if @node.style.display == \block =>
         @node.style.display = \none
       else
         @node.style.display = \block
+        document.addEventListener \click, @clickToggle!
         @update-dimension!
         ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
         if ret => @idx = ret.0
@@ -189,7 +201,9 @@ for item in list
   top = (item.offsetTop + item.offsetHeight + 10) + "px"
   left = (item.offsetLeft + ( item.offsetWidth - node.offsetWidth ) / 2) + "px"
   node.style <<< {position: "absolute", display: "none", top, left}
-  item.addEventListener \click, -> @_ldcpnode._ldcp.toggle!
+  item.addEventListener \click, (e) -> 
+    @_ldcpnode._ldcp.toggle!
+    cancelAll e
 
 /*
 color 

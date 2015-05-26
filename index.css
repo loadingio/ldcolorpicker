@@ -9,6 +9,9 @@ body {
   margin: 20px;
 }
 .ldColorPicker {
+  display: inline-block;
+}
+.ldcp-picker {
   position: relative;
   display: block;
   padding: 5px;
@@ -16,58 +19,19 @@ body {
   width: 160px;
   height: 100px;
 }
-.ldColorPicker.border {
-  border: 1px solid #ccc;
-}
-.ldColorPicker.shadow {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.ldColorPicker.round {
-  border-radius: 3px;
-}
-.ldColorPicker.bubble:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 10px;
-  border-style: solid;
-}
-.ldColorPicker.top:after {
-  border-color: #ccc transparent transparent transparent;
-  bottom: -20px;
-  left: 10px;
-}
-.ldColorPicker.right:after {
-  border-color: transparent #ccc transparent transparent;
-  top: 10px;
-  left: -20px;
-}
-.ldColorPicker.left:after {
-  border-color: transparent transparent transparent #ccc;
-  top: 10px;
-  right: -20px;
-}
-.ldColorPicker.bottom:after,
-.ldColorPicker.bubble:after {
-  border-color: transparent transparent #ccc transparent;
-  top: -20px;
-  left: 10px;
-}
-.ldColorPicker .ldcp-ptr,
-.ldColorPicker .ldcp-bar {
+.ldcp-picker .ldcp-ptr,
+.ldcp-picker .ldcp-bar {
   position: absolute;
   background: none;
 }
-.ldColorPicker .ldcp-ptr {
+.ldcp-picker .ldcp-ptr {
   border-radius: 50%;
   width: 10px;
   height: 10px;
   margin: -5px 0 0 -5px;
   border: 2px solid #bbb;
 }
-.ldColorPicker .ldcp-bar {
+.ldcp-picker .ldcp-bar {
   border-radius: 3px;
   height: 0;
   width: 20%;
@@ -76,7 +40,7 @@ body {
   border-color: transparent transparent transparent #bbb;
   border-width: 5px 0 5px 5px;
 }
-.ldColorPicker .ldcp-mask {
+.ldcp-picker .ldcp-mask {
   position: absolute;
   top: 0;
   left: 0;
@@ -84,7 +48,7 @@ body {
   height: 100%;
   cursor: move;
 }
-.ldColorPicker .ldcp-2d {
+.ldcp-picker .ldcp-2d {
   position: relative;
   width: 80%;
   height: 70%;
@@ -92,7 +56,7 @@ body {
   display: inline-block;
   cursor: move;
 }
-.ldColorPicker .ldcp-1d {
+.ldcp-picker .ldcp-1d {
   position: relative;
   width: 20%;
   height: 70%;
@@ -100,15 +64,54 @@ body {
   padding-left: 5px;
   cursor: row-resize;
 }
-.ldColorPicker .ldcp-1d > div:nth-of-type(1) {
+.ldcp-picker .ldcp-1d > div:nth-of-type(1) {
   height: 100%;
   width: 100%;
   background: #eee;
 }
-.ldColorPicker .ldcp-1d > .ldcp-mask {
+.ldcp-picker .ldcp-1d > .ldcp-mask {
   left: 5px;
 }
-.ldColorPicker {
+.ldColorPicker.border .ldcp-picker {
+  border: 1px solid #ccc;
+}
+.ldColorPicker.shadow .ldcp-picker {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ldColorPicker.round .ldcp-picker {
+  border-radius: 3px;
+}
+.ldColorPicker.bubble .ldcp-picker:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+.ldColorPicker.top .ldcp-picker:after {
+  border-color: #ccc transparent transparent transparent;
+  bottom: -20px;
+  left: 10px;
+}
+.ldColorPicker.right .ldcp-picker:after {
+  border-color: transparent #ccc transparent transparent;
+  top: 10px;
+  left: -20px;
+}
+.ldColorPicker.left .ldcp-picker:after {
+  border-color: transparent transparent transparent #ccc;
+  top: 10px;
+  right: -20px;
+}
+.ldColorPicker.bottom .ldcp-picker:after,
+.ldColorPicker.bubble .ldcp-picker:after {
+  border-color: transparent transparent #ccc transparent;
+  top: -20px;
+  left: 10px;
+}
+.ldcp-picker {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -116,7 +119,7 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
-.ldColorPicker .ldcp-colors {
+.ldcp-picker .ldcp-colors {
   position: relative;
   height: 16%;
   line-height: 20%;
@@ -124,7 +127,7 @@ body {
   display: flex;
   flex-wrap: wrap;
 }
-.ldColorPicker .ldcp-color {
+.ldcp-picker .ldcp-color {
   height: 100%;
   background: #eee;
   margin-right: 2px;
@@ -135,20 +138,20 @@ body {
   vertical-align: middle;
   cursor: pointer;
 }
-.ldColorPicker .ldcp-color:first-of-type {
+.ldcp-picker .ldcp-color:first-of-type {
   margin-left: 0;
 }
-.ldColorPicker .ldcp-color:last-of-type {
+.ldcp-picker .ldcp-color:last-of-type {
   margin-right: 0;
 }
-.ldColorPicker .ldcp-palettes {
+.ldcp-picker .ldcp-palettes {
   height: 11%;
   background: #eee;
   width: 100%;
   font-size: 12px;
   font-family: calibri;
 }
-.ldColorPicker .ldcp-colorptr {
+.ldcp-picker .ldcp-colorptr {
   content: " ";
   display: block;
   position: absolute;

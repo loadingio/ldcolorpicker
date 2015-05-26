@@ -9,25 +9,32 @@ ldColorPicker = ( (node, target = null) ->
   @ <<< {node, target, idx: 0}
   HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><div class='ldcp-mask'></div></div>"
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><div class='ldcp-mask'></div></div>"
-  HTMLCOLOR = "<div class='ldcp-colors'>" + ("<div class='ldcp-color'></div>" * 7) + "</div>"
-  node.innerHTML = HTML2D + HTML1D + HTMLCOLOR
-  node.querySelector(".ldcp-2d .ldcp-mask").addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 2 )
-  node.querySelector(".ldcp-1d .ldcp-mask").addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 1 )
+  HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
+  HTMLPALS = "<div class='ldcp-palettes'></div>"
+  node.innerHTML = HTML2D + HTML1D + HTMLCOLOR + HTMLPALS
+  node.querySelector(".ldcp-2d .ldcp-mask")
+    ..addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 2 )
+    ..addEventListener("click", (e) ~> @move e, 2, true )
+  node.querySelector(".ldcp-1d .ldcp-mask")
+    ..addEventListener("mousedown", (e) ~> ldColorPicker.mouse.start @, 1 )
+    ..addEventListener("click", (e) ~> @move e, 1, true )
   setTimeout (~>
     @P2D = {ptr: node.querySelector(".ldcp-ptr")}
     @P1D = {ptr: node.querySelector(".ldcp-bar")}
+    @colorptr = node.querySelector(".ldcp-colorptr")
     @update-dimension!
     @ <<< {width: node.offsetWidth, height: node.offsetHeight}
     @color = do
       nodes: node.querySelectorAll(".ldcp-color")
       vals: ldColorPicker.palette.getVal @
-    #if standalone => @color.vals: [{hue: parseInt(Math.random!*360), sat: 50, lit: 50} for i from 0 til 7]
     for idx from 0 til @color.nodes.length =>
       c = @color.nodes[idx]
       c.idx = idx
       c.addEventListener \click, (e) ~> @set-idx e.target.idx
     c = @color.vals[@idx]
+    @set-idx @idx # set ptr correctly
     @set-hsl c.hue, c.sat, c.lit
+    @update-palette!
   ), 0
   @
 ) <<< do
@@ -39,7 +46,7 @@ ldColorPicker = ( (node, target = null) ->
       @val
     update: ->
       for item in @members => item.update-palette!
-    val: [{hue: parseInt(Math.random!*360), sat: 50, lit: 50} for i from 0 til 7]
+    val: [{hue: parseInt(Math.random!*360), sat: 50, lit: 50} for i from 0 til 9]
   mouse: do
     start: (target, type) ->
       list =
@@ -66,11 +73,11 @@ ldColorPicker = ( (node, target = null) ->
       else
         @node.style.display = \block
         @update-dimension!
-        @palette.splice 7
-        @color.vals.splice 0, 0, @random! #[@random!] ++ @color.vals
+        ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
+        if ret => @idx = ret.0
+        else @color.vals.splice 0, 0, @convert.color @target.value
         c = @color.vals[@idx]
         @set-hsl c.hue, c.sat, c.lit  
-        # if standalone => @update-palette!
         ldColorPicker.palette.update!
 
     random: -> {hue: Math.random!*360, sat: 50, lit: 50}
@@ -78,6 +85,31 @@ ldColorPicker = ( (node, target = null) ->
     update-color: (idx) ->
       c = @color.vals[idx]
       @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{c.sat or 0}%,#{c.lit or 0}%)"
+    convert: do
+      color: ->
+        if /#[a-fA-F0-9]{6}/.exec(it) => 
+          r = parseInt(it.substring(1,3), 16) / 255
+          g = parseInt(it.substring(3,5), 16) / 255
+          b = parseInt(it.substring(5,7), 16) / 255
+          ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
+          ret
+        {hue:0,sat:0,lit:0}
+
+      rgb-hsl: ({r,g,b}) ->
+        Cmax = Math.max(r,g,b)
+        Cmin = Math.min(r,g,b)
+        delta = Cmax - Cmin
+        lit = ( Cmax + Cmin ) / 2
+        if delta == 0 => [hue,sat] = [0,0]
+        else 
+          hue = switch
+            | Cmax == r => 60 * ((( g - b ) / delta ) % 6)
+            | Cmax == g => 60 * ((( b - r ) / delta ) + 2)
+            | Cmax == b => 60 * ((( r - g ) / delta ) + 4)
+          sat = 100 * delta / ( 1 - Math.abs( 2 * lit - 1) )
+        lit *= 100
+        return {hue, sat, lit}
+
     toRgb: (c) -> 
       C = ( 1 - Math.abs(2 * c.lit/100 - 1)) * c.sat / 100
       X = C * ( 1 - Math.abs( ( (c.hue / 60) % 2 ) - 1 ) )
@@ -92,7 +124,7 @@ ldColorPicker = ( (node, target = null) ->
         | 6 => [C,X,0]
       [r,g,b] = [r + m, g + m, b + m]
     hex: -> 
-      it = parseInt(it * 255) >? 0 <? 255
+      it = Math.round(it * 255) >? 0 <? 255
       it = it.toString 16
       if it.length < 2 => "0#it" else it
     toHexString: (c) -> 
@@ -102,6 +134,7 @@ ldColorPicker = ( (node, target = null) ->
       @idx = idx
       c = @color.vals[idx]
       @set-hsl c.hue, c.sat, c.lit
+      @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
       if @target => @target.value = @toHexString @color.vals[@idx]
@@ -130,8 +163,8 @@ ldColorPicker = ( (node, target = null) ->
         @set-hsl hue, sat, lit, true
         @update-color @idx
 
-    move: (e, type) ->
-      if !e.buttons => return
+    move: (e, type, isClick = false) ->
+      if !e.buttons and !isClick => return
       rect = @node.getBoundingClientRect!
       [y, x] = [e.clientY - rect.top, e.clientX - rect.left]
       @set-pos type, x, y
@@ -143,16 +176,6 @@ ldColorPicker = ( (node, target = null) ->
       false
 
     palette: []
-    add: (node, event) ->
-      root = node.parentNode.parentNode
-      @palette.push root{hue,sat,lit}
-      if @palette.length > 7 => @palette.splice(7)
-      nodes = node.parentNode.querySelectorAll(".ldcp-color")
-      for i from 0 til nodes.length =>
-        n = nodes[i]
-        p = @palette[i]
-        if !p => break
-        n.style.background = "hsl(#{p.hue or 0},#{p.sat or 0}%,#{p.lit or 0}%)"
 
 <- $(document).ready
 ldColorPicker.init!
@@ -168,3 +191,13 @@ for item in list
   node.style <<< {position: "absolute", display: "none", top, left}
   item.addEventListener \click, -> @_ldcpnode._ldcp.toggle!
 
+/*
+color 
+  hex
+  h,s,l
+  r,g,b
+  to-hsl
+  to-rgb
+  to-hex-string
+
+*/

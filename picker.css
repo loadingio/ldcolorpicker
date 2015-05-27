@@ -1,57 +1,66 @@
 .ldColorPicker {
   display: inline-block;
   position: relative;
-  top: 100px;
-  left: 200px;
-  padding: 5px;
-  border: 1px solid #ccc;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  border-radius: 3px;
-  width: 200px;
-  height: 160px;
+  width: 160px;
+  height: 100px;
 }
-.ldColorPicker.bubble:after {
-  content: " ";
+.ldcp-panel {
+  position: relative;
   display: block;
+  padding: 5px;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+}
+.ldcp-chooser {
   position: absolute;
-  width: 0;
+  top: 0;
+  left: 0;
   height: 0;
-  border-width: 10px;
-  border-style: solid;
+  padding: 0;
+  z-index: 4;
+  -ms-transition: height 0.5s ease-in-out;
+  -moz-transition: height 0.5s ease-in-out;
+  -webkit-transition: height 0.5s ease-in-out;
+  -o-transition: height 0.5s ease-in-out;
+  transition: height 0.5s ease-in-out;
+  width: 98%;
+  margin: 0.5% 1%;
+  overflow: hidden;
+  font-size: 12px;
 }
-.ldColorPicker.top:after {
-  border-color: #ccc transparent transparent transparent;
-  bottom: -20px;
-  left: 10px;
+.ldcp-chooser span {
+  display: block;
+  text-align: center;
+  padding: 3px;
+  margin-top: 5px;
+  font-family: calibri, Arial, sans-serif;
 }
-.ldColorPicker.right:after {
-  border-color: transparent #ccc transparent transparent;
-  top: 10px;
-  left: -20px;
+.ldcp-chooser input {
+  width: 90%;
+  margin: 0 5% 5px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
-.ldColorPicker.left:after {
-  border-color: transparent transparent transparent #ccc;
-  top: 10px;
-  right: -20px;
+.ldcp-chooser .ldcp-chooser-btnset {
+  text-align: center;
+  font-family: calibri, Arial, sans-serif;
 }
-.ldColorPicker.bottom:after {
-  border-color: transparent transparent #ccc transparent;
-  top: -20px;
-  left: 10px;
-}
-.ldColorPicker .ldcp-ptr,
-.ldColorPicker .ldcp-bar {
+.ldcp-picker .ldcp-ptr,
+.ldcp-picker .ldcp-bar {
   position: absolute;
   background: none;
+  z-index: 3;
 }
-.ldColorPicker .ldcp-ptr {
+.ldcp-picker .ldcp-ptr {
   border-radius: 50%;
   width: 10px;
   height: 10px;
   margin: -5px 0 0 -5px;
   border: 2px solid #bbb;
 }
-.ldColorPicker .ldcp-bar {
+.ldcp-picker .ldcp-bar {
   border-radius: 3px;
   height: 0;
   width: 20%;
@@ -60,7 +69,7 @@
   border-color: transparent transparent transparent #bbb;
   border-width: 5px 0 5px 5px;
 }
-.ldColorPicker .ldcp-mask {
+.ldcp-picker .ldcp-mask {
   position: absolute;
   top: 0;
   left: 0;
@@ -68,27 +77,172 @@
   height: 100%;
   cursor: move;
 }
-.ldColorPicker > div:nth-of-type(1) {
+.ldcp-picker .ldcp-2d {
   position: relative;
   width: 80%;
-  height: 100%;
+  height: 70%;
   background: #eee;
   display: inline-block;
   cursor: move;
 }
-.ldColorPicker > div:nth-of-type(2) {
+.ldcp-picker .ldcp-2d .ldcp-mask {
+  z-index: 2;
+}
+.ldcp-picker .ldcp-2d img {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.ldcp-picker .ldcp-1d {
   position: relative;
   width: 20%;
-  height: 100%;
+  height: 70%;
   display: inline-block;
   padding-left: 5px;
   cursor: row-resize;
+  overflow: hidden;
 }
-.ldColorPicker > div:nth-of-type(2) > div:nth-of-type(1) {
+.ldcp-picker .ldcp-1d .ldcp-mask {
+  z-index: 2;
+}
+.ldcp-picker .ldcp-1d img {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 5px;
+  width: 100%;
+  height: 100%;
+}
+.ldcp-picker .ldcp-1d > div:nth-of-type(1) {
   height: 100%;
   width: 100%;
   background: #eee;
 }
-.ldColorPicker > div:nth-of-type(2) > .ldcp-mask {
+.ldcp-picker .ldcp-1d > .ldcp-mask {
   left: 5px;
+}
+.ldColorPicker.border .ldcp-picker {
+  border: 1px solid #ccc;
+}
+.ldColorPicker.shadow .ldcp-picker {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ldColorPicker.round .ldcp-picker {
+  border-radius: 3px;
+}
+.ldColorPicker.bubble .ldcp-picker:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+.ldColorPicker.top .ldcp-picker:after {
+  border-color: #ccc transparent transparent transparent;
+  bottom: -20px;
+  left: 10px;
+}
+.ldColorPicker.right .ldcp-picker:after {
+  border-color: transparent #ccc transparent transparent;
+  top: 10px;
+  left: -20px;
+}
+.ldColorPicker.left .ldcp-picker:after {
+  border-color: transparent transparent transparent #ccc;
+  top: 10px;
+  right: -20px;
+}
+.ldColorPicker.bottom .ldcp-picker:after,
+.ldColorPicker.bubble .ldcp-picker:after {
+  border-color: transparent transparent #ccc transparent;
+  top: -20px;
+  left: 10px;
+}
+.ldcp-picker {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ldcp-picker .ldcp-colors {
+  position: relative;
+  height: 16%;
+  line-height: 20%;
+  padding-bottom: 3px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.ldcp-picker .ldcp-color {
+  height: 100%;
+  background: #eee;
+  margin-right: 2px;
+  display: inline-block;
+  -webkit-flex: 1 1;
+  flex: 1 1;
+  text-align: center;
+  line-height: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.ldcp-picker .ldcp-color:first-of-type {
+  margin-left: 0;
+}
+.ldcp-picker .ldcp-color:last-of-type {
+  margin-right: 0;
+}
+.ldcp-picker .ldcp-functions {
+  height: 11%;
+  background: #fff;
+  width: 100%;
+  font-size: 12px;
+  font-family: calibri;
+  text-align: right;
+  background: #eee;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: -2px 5px 0;
+  cursor: pointer;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:after {
+  display: inline-block;
+  content: " ";
+  width: 14px;
+  height: 14px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAAOCAYAAAB6pd+uAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAetJREFUeNrclj1LA0EQht1DbUT8KPyoFAMWfhSBBIOktBJJY+Ff0E4tRBtjLEQUUQtFrf0FARELSzslWIgItooKKSREgiR3vnvM6mS93CWSEJOBh8zu5nZ3bt6dW2FZVkM9W2Mtbdbv9/PmAtgF3eCeWAcX6g+JROInwGg0yh/W0yqUE4vFyrJZrGevEY/H8/qxKYPGTVpPaI8OgTPQDwbBJ+gA4+AVtFLQj64ZVAtHIpGKZaRAcC3IVMpl7QfQTP6sNrYMQqAN9IKMUS25sRcoEJjQg6Ps6fsLUaauqP0OtsEWSIIZ0AfawZKeQbdqYznJlUvNyxykxiVvjwUDwRTPppxbOxKnwEf+CwiAJ2rvgFvQAw4p6HyJ6pLR+wrJ1ek5bh4yt4MLh8NmNpflUrUwr6W9GB/zj1hw0t7AHtikczkMbox/Uh3NdDqdV2TQ56SMSXBCvukwnqPfeXD9K4P8TZdSZMpViFRwLsflHEyQPweOKXPSOikwZUk9QFHMZ6LYs/XHwLxqwQpYJF9WyTs6b6qidsncsL7qfehl1qVKpDxLUMY+VccMVdJpsKorHlwC+0AbbpNX8hvoJe0CYx9gDIyCDdZ/QHKV1gRGvqVXS3dR7ao2BdbAAAX0TPLdV8VGXtVEvV+2vwQYAPxCrAsxVgb/AAAAAElFTkSuQmCC);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(2):after {
+  background-position: -14px 0;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(3):after {
+  background-position: -28px 0;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(4):after {
+  background-position: -42px 0;
+}
+.ldcp-picker .ldcp-colorptr {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 2px;
+  left: 16%;
+  margin-left: -4px;
+  border-width: 5px 4px;
+  border-style: solid;
+  border-color: transparent transparent #000 transparent;
 }

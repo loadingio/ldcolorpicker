@@ -136,6 +136,10 @@ ldColorPicker = ( (node, target = null) ->
         @node.style.display = \none
       else
         @node.style.display = \block
+        bcr = @target.getBoundingClientRect!
+        top = (bcr.top + @target.offsetHeight + 10 + document.body.scrollTop) + "px"
+        left = (bcr.left + ( @target.offsetWidth - @node.offsetWidth ) / 2 + document.body.scrollLeft) + "px"
+        @node.style <<< {top, left}
         document.addEventListener \click, @clickToggle!
         @update-dimension!
         ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0

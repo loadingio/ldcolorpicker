@@ -7,8 +7,8 @@ cancelAll = (e) ->
 
 ldColorPicker = ( (node, target = null) ->
   @ <<< {node, target, idx: 0}
-  HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><div class='ldcp-mask'></div></div>"
-  HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><div class='ldcp-mask'></div></div>"
+  HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='gradient.png'><div class='ldcp-mask'></div></div>"
+  HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><img src='hue.png'><div class='ldcp-mask'></div></div>"
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
   HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
   HTMLCONFIG = "<span>Link to You Palette</span><input/><div class='ldcp-chooser-btnset'><button>Load</button><button>Cancel</button></div>"
@@ -36,7 +36,7 @@ ldColorPicker = ( (node, target = null) ->
     @chooser = do
       panel: node.querySelector(".ldcp-chooser")
       input: node.querySelector(".ldcp-chooser input")
-    @P2D = {ptr: node.querySelector(".ldcp-ptr")}
+    @P2D = {ptr: node.querySelector(".ldcp-ptr"), panel: node.querySelector(".ldcp-2d img")}
     @P1D = {ptr: node.querySelector(".ldcp-bar")}
     @colorptr = node.querySelector(".ldcp-colorptr")
     @update-dimension!
@@ -209,17 +209,19 @@ ldColorPicker = ( (node, target = null) ->
       c = @color.vals[idx]
       @set-hsl c.hue, c.sat, c.lit
       @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
+
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
+      @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 100, lit: 50})
       if @target => @target.value = @toHexString @color.vals[@idx]
       if !no-recurse =>
-        x = ( @P2D.w * hue / 360 + @P2D.w * 0.02 ) / 1.04
-        y1 = ( @P2D.h * (100 - sat) / 100 + @P2D.h * 0.02 ) / 1.04
-        y2 = ( @P1D.h * (100 - lit) / 100 + @P1D.h * 0.02 ) / 1.04
+        x = ( @P2D.w * (100 - sat) / 100+ @P2D.w * 0.02 ) / 1.04
+        y1 = ( @P2D.h * (100 - lit) / 100 + @P2D.h * 0.02 ) / 1.04
+        y2 = ( @P1D.h * (hue / 360 + @P1D.h * 0.02 ) ) / 1.04
         @set-pos 2, x, y1, true
         @set-pos 1, x, y2, true
         @update-color @idx
-      
+
     set-pos: (type, x, y, no-recurse = false) ->
       ctx = if type == 2 => @P2D else @P1D
       x = x >? 0 <? ctx.w
@@ -231,9 +233,9 @@ ldColorPicker = ( (node, target = null) ->
         lx = (100 * lx / ctx.w) >? 0 <? 100
         ly = (100 * ly / ctx.h) >? 0 <? 100
         c = @color.vals[@idx]
-        hue = if type == 2 => lx * 3.60 else c.hue
-        sat = if type == 2 => 100 - ly else c.sat
-        lit = if type == 1 => 100 - ly else c.lit
+        sat = if type == 2 => lx else c.sat
+        lit = if type == 2 => 100 - ly else c.lit
+        hue = if type == 1 => ly * 3.60 else c.hue
         @set-hsl hue, sat, lit, true
         @update-color @idx
 
@@ -268,3 +270,11 @@ for item in list
     cancelAll e
 
 ldColorPicker.set-palette <[#ac5d53 #e2b955 #f6fcc5 #32b343 #376aa9 #170326]>
+
+/*blah = document.getElementById("blah")
+for i from 0 til 360
+  hex = ldColorPicker.prototype.toHexString {hue: i, sat: 100, lit: 50}
+  div = document.createElement("div")
+  div.style.background = hex
+  blah.appendChild(div)
+*/

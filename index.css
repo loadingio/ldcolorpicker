@@ -260,14 +260,10 @@ body {
   border-style: solid;
   border-color: transparent transparent #000 transparent;
 }
-/*
-.ldColorPicker
-  position: relative
-  top: 100px
-  left: 200px
-  width: 200px
-  height: 100px
-  */
+.ldColorPicker {
+  width: 160px;
+  height: 100px;
+}
 #blah {
   width: 64px;
   height: 640px;

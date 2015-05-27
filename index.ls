@@ -72,7 +72,7 @@ ldColorPicker = ( (node, target = null) ->
       @val
     update: ->
       for item in @members => item.update-palette!
-    val: [{hue: parseInt(Math.random!*360), sat: 50, lit: 50} for i from 0 til 9]
+    val: [{hue: parseInt(Math.random!*360), sat: 0.5, lit: 0.5} for i from 0 til 9]
   mouse: do
     start: (target, type) ->
       list =
@@ -133,7 +133,7 @@ ldColorPicker = ( (node, target = null) ->
         @set-hsl c.hue, c.sat, c.lit  
       ldColorPicker.palette.update!
 
-    random: -> {hue: Math.random!*360, sat: 50, lit: 50}
+    random: -> {hue: Math.random!*360, sat: 0.5, lit: 0.5}
     set-palette: (pal) ->
       result = [@convert.color(it.hex) for it in pal.colors]
       @color.vals.splice 0
@@ -158,7 +158,7 @@ ldColorPicker = ( (node, target = null) ->
       @set-idx @idx
     update-color: (idx) ->
       c = @color.vals[idx]
-      @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{c.sat or 0}%,#{c.lit or 0}%)"
+      @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{100 * c.sat or 0}%,#{100 * c.lit or 0}%)"
     convert: do
       color: ->
         if /#[a-fA-F0-9]{6}/.exec(it) => 
@@ -167,7 +167,7 @@ ldColorPicker = ( (node, target = null) ->
           b = parseInt(it.substring(5,7), 16) / 255
           ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
           return ret
-        {hue:0,sat:0,lit:0}
+        {hue:0,sat:0,lit:0,sat-v:0,val:0}
 
       rgb-hsl: ({r,g,b}) ->
         Cmax = Math.max(r,g,b)
@@ -180,14 +180,15 @@ ldColorPicker = ( (node, target = null) ->
             | Cmax == r => 60 * ((( g - b ) / delta ) % 6)
             | Cmax == g => 60 * ((( b - r ) / delta ) + 2)
             | Cmax == b => 60 * ((( r - g ) / delta ) + 4)
-          sat = 100 * delta / ( 1 - Math.abs( 2 * lit - 1) )
-        lit *= 100
-        return {hue, sat, lit}
+          sat = delta / ( 1 - Math.abs( 2 * lit - 1) )
+          val = Cmax
+          sat-v = Cmax - Cmin / val
+        return {hue, sat, lit, sat-v, val}
 
     toRgb: (c) -> 
-      C = ( 1 - Math.abs(2 * c.lit/100 - 1)) * c.sat / 100
+      C = ( 1 - Math.abs(2 * c.lit - 1)) * c.sat
       X = C * ( 1 - Math.abs( ( (c.hue / 60) % 2 ) - 1 ) )
-      m = c.lit/100 - C / 2
+      m = c.lit - C / 2
       [r,g,b] = switch parseInt(c.hue / 60)
         | 0 => [C,X,0]
         | 1 => [X,C,0]
@@ -210,13 +211,17 @@ ldColorPicker = ( (node, target = null) ->
       @set-hsl c.hue, c.sat, c.lit
       @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
 
+    
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
-      @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 100, lit: 50})
+      @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})
       if @target => @target.value = @toHexString @color.vals[@idx]
       if !no-recurse =>
-        x = ( @P2D.w * (100 - sat) / 100+ @P2D.w * 0.02 ) / 1.04
-        y1 = ( @P2D.h * (100 - lit) / 100 + @P2D.h * 0.02 ) / 1.04
+        lit-v = ( 2 * lit + sat * ( 1 - Math.abs( 2 * lit - 1 ) ) ) / 2
+        sat-v = 2 * ( lit-v - lit ) / lit-v
+
+        x = ( @P2D.w * (1 - sat-v) + @P2D.w * 0.02 ) / 1.04
+        y1 = ( @P2D.h * (1 - lit-v) + @P2D.h * 0.02 ) / 1.04
         y2 = ( @P1D.h * (hue / 360 + @P1D.h * 0.02 ) ) / 1.04
         @set-pos 2, x, y1, true
         @set-pos 1, x, y2, true
@@ -230,12 +235,17 @@ ldColorPicker = ( (node, target = null) ->
       if type == 2 => ctx.ptr.style.left = "#{x}px"
       if !no-recurse =>
         [lx, ly] = [x * 1.04 - ctx.w * 0.02, y * 1.04 - ctx.h * 0.02]
-        lx = (100 * lx / ctx.w) >? 0 <? 100
-        ly = (100 * ly / ctx.h) >? 0 <? 100
+        lx = (lx / ctx.w) >? 0 <? 1
+        ly = (ly / ctx.h) >? 0 <? 1
         c = @color.vals[@idx]
-        sat = if type == 2 => lx else c.sat
-        lit = if type == 2 => 100 - ly else c.lit
-        hue = if type == 1 => ly * 3.60 else c.hue
+
+        lit-v = if type == 2 => 1 - ly else ( 2 * c.lit + c.sat * ( 1 - Math.abs( 2 * c.lit - 1 ) ) ) / 2
+        sat-v = if type == 2 => lx else 2 * ( lit-v - c.lit ) / lit-v
+        hue = if type == 1 => ly * 360 else c.hue
+
+        lit = lit-v * ( 2 - sat-v ) / 2
+        sat = lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) )
+
         @set-hsl hue, sat, lit, true
         @update-color @idx
 
@@ -273,7 +283,7 @@ ldColorPicker.set-palette <[#ac5d53 #e2b955 #f6fcc5 #32b343 #376aa9 #170326]>
 
 /*blah = document.getElementById("blah")
 for i from 0 til 360
-  hex = ldColorPicker.prototype.toHexString {hue: i, sat: 100, lit: 50}
+  hex = ldColorPicker.prototype.toHexString {hue: i, sat: 1, lit: 0.5}
   div = document.createElement("div")
   div.style.background = hex
   blah.appendChild(div)

@@ -10,8 +10,10 @@ ldColorPicker = ( (node, target = null) ->
   HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><div class='ldcp-mask'></div></div>"
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><div class='ldcp-mask'></div></div>"
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
-  HTMLPALS = "<div class='ldcp-palettes'></div>"
-  node.innerHTML = "<div class='ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>"
+  HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
+  HTMLCONFIG = "<span>Link to You Palette</span><input/><button>Load</button>"
+  node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
+    "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
   node.addEventListener(\click, (e) -> cancelAll e)
   node.querySelector(".ldcp-2d .ldcp-mask")
     ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 2 )
@@ -19,7 +21,21 @@ ldColorPicker = ( (node, target = null) ->
   node.querySelector(".ldcp-1d .ldcp-mask")
     ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 1 )
     ..addEventListener("click", (e) ~> @move e, 1, true )
+  console.log node.querySelectorAll(".ldcp-btn")
+  node.querySelector(".ldcp-btn").addEventListener("click", ~> 
+    @edit!
+  )
+  node.querySelector(".ldcp-btn:nth-of-type(2)").addEventListener("click", ~> @add-color! )
+  node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @remove-color! )
+  node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
+  node.querySelector(".ldcp-chooser button").addEventListener("click", ~> 
+    @load-palette @chooser.input.value
+    @toggle-config!
+  )
   setTimeout (~>
+    @chooser = do
+      panel: node.querySelector(".ldcp-chooser")
+      input: node.querySelector(".ldcp-chooser input")
     @P2D = {ptr: node.querySelector(".ldcp-ptr")}
     @P1D = {ptr: node.querySelector(".ldcp-bar")}
     @colorptr = node.querySelector(".ldcp-colorptr")
@@ -27,7 +43,10 @@ ldColorPicker = ( (node, target = null) ->
     @ <<< {width: node.offsetWidth, height: node.offsetHeight}
     @color = do
       nodes: node.querySelectorAll(".ldcp-color")
+      palette: node.querySelector(".ldcp-colors")
       vals: ldColorPicker.palette.getVal @
+    # arrayize
+    @color.nodes = [@color.nodes[i] for i from 0 til @color.nodes.length]
     for idx from 0 til @color.nodes.length =>
       c = @color.nodes[idx]
       c.idx = idx
@@ -67,6 +86,20 @@ ldColorPicker = ( (node, target = null) ->
       all = document.querySelectorAll(".ldColorPicker")
       for node in all => node._ldcp = new ldColorPicker node
   prototype: do
+    load-palette: (url) ->
+      xhr = new XMLHttpRequest!
+        ..onload = ~> @set-palette JSON.parse(xhr.responseText) 
+        ..open \GET, url.replace(/palette/, "d/palette"), true
+        ..send!
+    add-color: -> if @color.vals.length < 12 =>
+      @color.vals.splice 0, 0, @random!
+      @update-palette!
+    remove-color: -> if @color.vals.length > 1 =>
+      @color.vals.splice @idx, 1
+      @update-palette!
+    edit: -> 
+      hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
+      window.location.href = "http://localhost/color/?colors=#hex"
     update-dimension: ->
       [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-2d")]
       @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}
@@ -76,9 +109,11 @@ ldColorPicker = ( (node, target = null) ->
       @clickToggler = ~>
         document.removeEventListener \click, @clickToggler
         @toggle!
+    toggle-config: ->
+      if @chooser.panel.style.height == \98% => @chooser.panel.style <<< {height: 0}
+      else @chooser.panel.style <<< {height: \98%}
 
     toggle: ->
-
       if @node.style.display == \block =>
         @node.style.display = \none
       else
@@ -90,21 +125,46 @@ ldColorPicker = ( (node, target = null) ->
         else @color.vals.splice 0, 0, @convert.color @target.value
         c = @color.vals[@idx]
         @set-hsl c.hue, c.sat, c.lit  
-        ldColorPicker.palette.update!
+      ldColorPicker.palette.update!
 
     random: -> {hue: Math.random!*360, sat: 50, lit: 50}
-    update-palette: -> for idx from 0 til @color.nodes.length  => @update-color idx
+    set-palette: (pal) ->
+      console.log pal.colors
+      result = [@convert.color(it.hex) for it in pal.colors]
+      @color.vals.splice 0
+      for it in result => @color.vals.push it
+      console.log result
+      ldColorPicker.palette.update!
+    update-palette: -> 
+      [nlen, vlen] = [@color.nodes.length, @color.vals.length]
+      if vlen > nlen =>
+        for i from nlen til vlen =>
+          node = document.createElement("div")
+            ..setAttribute \class, \ldcp-color
+            ..addEventListener \click, (e) ~> @set-idx e.target.idx
+            ..idx = i
+          @color.palette.appendChild(node)
+          @color.nodes.push node
+      else if vlen < nlen =>
+        for i from vlen til nlen
+          @color.palette.removeChild @color.nodes[i]
+        @color.nodes.splice vlen
+      for idx from 0 til vlen => @update-color idx
+      if @idx >= vlen => @idx = vlen - 1
+      @set-idx @idx
     update-color: (idx) ->
       c = @color.vals[idx]
       @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{c.sat or 0}%,#{c.lit or 0}%)"
     convert: do
       color: ->
+        console.log ">>", it, /#[a-fA-F0-9]{6}/.exec(it) 
         if /#[a-fA-F0-9]{6}/.exec(it) => 
           r = parseInt(it.substring(1,3), 16) / 255
           g = parseInt(it.substring(3,5), 16) / 255
           b = parseInt(it.substring(5,7), 16) / 255
+          console.log "rgb:", r,g,b
           ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
-          ret
+          return ret
         {hue:0,sat:0,lit:0}
 
       rgb-hsl: ({r,g,b}) ->
@@ -120,6 +180,7 @@ ldColorPicker = ( (node, target = null) ->
             | Cmax == b => 60 * ((( r - g ) / delta ) + 4)
           sat = 100 * delta / ( 1 - Math.abs( 2 * lit - 1) )
         lit *= 100
+        console.log "hsl: ", hue, sat, lit
         return {hue, sat, lit}
 
     toRgb: (c) -> 

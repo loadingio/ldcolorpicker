@@ -3,13 +3,29 @@
 
 .ldColorPicker
   display: inline-block
-.ldcp-picker
+  position: relative
+
+.ldcp-panel
   position: relative
   display: block
   padding: 5px
   background: #fff
   width: 160px
   height: 100px
+
+.ldcp-chooser
+  position: absolute
+  top: 0
+  left: 0
+  height: 0
+  padding: 0
+  transition(height 0.5s ease-in-out)
+  width: 98%
+  margin: 0.5% 1%
+  overflow: hidden
+  font-size: 12px
+
+.ldcp-picker
   .ldcp-ptr, .ldcp-bar
     position: absolute
     background: none
@@ -110,12 +126,22 @@
     margin-left: 0
   .ldcp-color:last-of-type
     margin-right: 0
-  .ldcp-palettes
+  .ldcp-functions
     height: 11%
-    background: #eee
+    background: #fff
     width: 100%
     font-size: 12px
     font-family: calibri
+    display: flex
+    flex-wrap: wrap
+    .ldcp-btn
+      height: 100%
+      width: 20%
+      flex: 1 1
+      margin-right: 3px
+      background: #ddd
+      &:last-of-type
+        margin-right: 0
   .ldcp-colorptr
     content: " "
     display: block

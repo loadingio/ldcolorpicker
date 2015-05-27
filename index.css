@@ -10,14 +10,31 @@ body {
 }
 .ldColorPicker {
   display: inline-block;
+  position: relative;
 }
-.ldcp-picker {
+.ldcp-panel {
   position: relative;
   display: block;
   padding: 5px;
   background: #fff;
   width: 160px;
   height: 100px;
+}
+.ldcp-chooser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  padding: 0;
+  -ms-transition: height 0.5s ease-in-out;
+  -moz-transition: height 0.5s ease-in-out;
+  -webkit-transition: height 0.5s ease-in-out;
+  -o-transition: height 0.5s ease-in-out;
+  transition: height 0.5s ease-in-out;
+  width: 98%;
+  margin: 0.5% 1%;
+  overflow: hidden;
+  font-size: 12px;
 }
 .ldcp-picker .ldcp-ptr,
 .ldcp-picker .ldcp-bar {
@@ -144,12 +161,24 @@ body {
 .ldcp-picker .ldcp-color:last-of-type {
   margin-right: 0;
 }
-.ldcp-picker .ldcp-palettes {
+.ldcp-picker .ldcp-functions {
   height: 11%;
-  background: #eee;
+  background: #fff;
   width: 100%;
   font-size: 12px;
   font-family: calibri;
+  display: flex;
+  flex-wrap: wrap;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn {
+  height: 100%;
+  width: 20%;
+  flex: 1 1;
+  margin-right: 3px;
+  background: #ddd;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:last-of-type {
+  margin-right: 0;
 }
 .ldcp-picker .ldcp-colorptr {
   content: " ";

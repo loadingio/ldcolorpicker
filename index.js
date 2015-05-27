@@ -1,1 +1,1 @@
-$(document).ready(function(){});
+$(document).ready(function(){var e,t,o,r,d,l=[];for(ldColorPicker.init(),ldColorPicker.setPalette(["#ac5d53","#e2b955","#f6fcc5","#32b343","#376aa9","#170326"]),e=document.getElementById("blah"),t=0;360>t;++t)o=t,r=ldColorPicker.prototype.toHexString({hue:o,sat:1,lit:.5}),d=document.createElement("div"),d.style.background=r,l.push(e.appendChild(d));return l});

@@ -89,6 +89,20 @@ ldColorPicker = ( (node, target = null) ->
     else
       all = document.querySelectorAll(".ldColorPicker")
       for node in all => node._ldcp = new ldColorPicker node
+
+      list = document.querySelectorAll("*[data-toggle='colorpicker']")
+      for item in list
+        item._ldcpnode = node = document.createElement("div")
+        node.setAttribute("class", "ldColorPicker #{item.getAttribute('data-cpclass')} bottom bubble")
+        ldColorPicker.init(node, item)
+        document.body.appendChild(node)
+        top = (item.offsetTop + item.offsetHeight + 10) + "px"
+        left = (item.offsetLeft + ( item.offsetWidth - node.offsetWidth ) / 2) + "px"
+        node.style <<< {position: "absolute", display: "none", top, left}
+        item.addEventListener \click, (e) -> 
+          @_ldcpnode._ldcp.toggle!
+          cancelAll e
+
   prototype: do
     load-palette: (url) ->
       xhr = new XMLHttpRequest!
@@ -103,7 +117,6 @@ ldColorPicker = ( (node, target = null) ->
       @update-palette!
     edit: -> 
       hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
-      #window.location.href = "http://localhost/color/?colors=#hex"
       window.open "http://localhost/color/?colors=#hex"
     update-dimension: ->
       [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-2d")]
@@ -269,20 +282,6 @@ ldColorPicker.base64 = do
 
 <- $(document).ready
 ldColorPicker.init!
-
-list = document.querySelectorAll("*[data-toggle='colorpicker']")
-for item in list
-  item._ldcpnode = node = document.createElement("div")
-  node.setAttribute("class", "ldColorPicker #{item.getAttribute('data-cpclass')} bottom bubble")
-  ldColorPicker.init(node, item)
-  document.body.appendChild(node)
-  top = (item.offsetTop + item.offsetHeight + 10) + "px"
-  left = (item.offsetLeft + ( item.offsetWidth - node.offsetWidth ) / 2) + "px"
-  node.style <<< {position: "absolute", display: "none", top, left}
-  item.addEventListener \click, (e) -> 
-    @_ldcpnode._ldcp.toggle!
-    cancelAll e
-
 ldColorPicker.set-palette <[#ac5d53 #e2b955 #f6fcc5 #32b343 #376aa9 #170326]>
 
 /*blah = document.getElementById("blah")
@@ -290,5 +289,4 @@ for i from 0 til 360
   hex = ldColorPicker.prototype.toHexString {hue: i, sat: 1, lit: 0.5}
   div = document.createElement("div")
   div.style.background = hex
-  blah.appendChild(div)
-*/
+  blah.appendChild(div) */

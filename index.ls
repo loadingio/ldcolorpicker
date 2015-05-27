@@ -11,7 +11,7 @@ ldColorPicker = ( (node, target = null) ->
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><div class='ldcp-mask'></div></div>"
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
   HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
-  HTMLCONFIG = "<span>Link to You Palette</span><input/><button>Load</button>"
+  HTMLCONFIG = "<span>Link to You Palette</span><input/><div class='ldcp-chooser-btnset'><button>Load</button><button>Cancel</button></div>"
   node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
     "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
   node.addEventListener(\click, (e) -> cancelAll e)
@@ -21,17 +21,17 @@ ldColorPicker = ( (node, target = null) ->
   node.querySelector(".ldcp-1d .ldcp-mask")
     ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 1 )
     ..addEventListener("click", (e) ~> @move e, 1, true )
-  console.log node.querySelectorAll(".ldcp-btn")
   node.querySelector(".ldcp-btn").addEventListener("click", ~> 
     @edit!
   )
   node.querySelector(".ldcp-btn:nth-of-type(2)").addEventListener("click", ~> @add-color! )
   node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @remove-color! )
   node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
-  node.querySelector(".ldcp-chooser button").addEventListener("click", ~> 
+  node.querySelector(".ldcp-chooser button:nth-of-type(1)").addEventListener("click", ~> 
     @load-palette @chooser.input.value
     @toggle-config!
   )
+  node.querySelector(".ldcp-chooser button:nth-of-type(2)").addEventListener("click", ~> @toggle-config!)
   setTimeout (~>
     @chooser = do
       panel: node.querySelector(".ldcp-chooser")
@@ -59,6 +59,12 @@ ldColorPicker = ( (node, target = null) ->
   @
 ) <<< do
   dom: null
+  set-palette: (pal) ->
+    if pal.length =>
+      convert = ldColorPicker.prototype.convert
+      ldColorPicker.palette.val.splice 0
+      for hex in pal => ldColorPicker.palette.val.push convert.color hex
+      ldColorPicker.palette.update!
   palette: do
     members: []
     getVal: (node) -> 
@@ -129,11 +135,9 @@ ldColorPicker = ( (node, target = null) ->
 
     random: -> {hue: Math.random!*360, sat: 50, lit: 50}
     set-palette: (pal) ->
-      console.log pal.colors
       result = [@convert.color(it.hex) for it in pal.colors]
       @color.vals.splice 0
       for it in result => @color.vals.push it
-      console.log result
       ldColorPicker.palette.update!
     update-palette: -> 
       [nlen, vlen] = [@color.nodes.length, @color.vals.length]
@@ -157,12 +161,10 @@ ldColorPicker = ( (node, target = null) ->
       @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{c.sat or 0}%,#{c.lit or 0}%)"
     convert: do
       color: ->
-        console.log ">>", it, /#[a-fA-F0-9]{6}/.exec(it) 
         if /#[a-fA-F0-9]{6}/.exec(it) => 
           r = parseInt(it.substring(1,3), 16) / 255
           g = parseInt(it.substring(3,5), 16) / 255
           b = parseInt(it.substring(5,7), 16) / 255
-          console.log "rgb:", r,g,b
           ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
           return ret
         {hue:0,sat:0,lit:0}
@@ -180,7 +182,6 @@ ldColorPicker = ( (node, target = null) ->
             | Cmax == b => 60 * ((( r - g ) / delta ) + 4)
           sat = 100 * delta / ( 1 - Math.abs( 2 * lit - 1) )
         lit *= 100
-        console.log "hsl: ", hue, sat, lit
         return {hue, sat, lit}
 
     toRgb: (c) -> 
@@ -266,13 +267,4 @@ for item in list
     @_ldcpnode._ldcp.toggle!
     cancelAll e
 
-/*
-color 
-  hex
-  h,s,l
-  r,g,b
-  to-hsl
-  to-rgb
-  to-hex-string
-
-*/
+ldColorPicker.set-palette <[#ac5d53 #e2b955 #f6fcc5 #32b343 #376aa9 #170326]>

@@ -11,7 +11,7 @@ ldColorPicker = ( (node, target = null) ->
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div>"
   HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
   HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
-  HTMLCONFIG = "<span>Link to You Palette</span><input/><div class='ldcp-chooser-btnset'><button>Load</button><button>Cancel</button></div>"
+  HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
   node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
     "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
   node.addEventListener(\click, (e) -> cancelAll e)
@@ -26,10 +26,13 @@ ldColorPicker = ( (node, target = null) ->
   node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @edit!)
   node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
   node.querySelector(".ldcp-chooser button:nth-of-type(1)").addEventListener("click", ~> 
+    @chooser.input.value = ldColorPicker.default-palette-path or 'http://loading.io/palette/12345'
+  )
+  node.querySelector(".ldcp-chooser button:nth-of-type(2)").addEventListener("click", ~> 
     @load-palette @chooser.input.value
     @toggle-config!
   )
-  node.querySelector(".ldcp-chooser button:nth-of-type(2)").addEventListener("click", ~> @toggle-config!)
+  node.querySelector(".ldcp-chooser button:nth-of-type(3)").addEventListener("click", ~> @toggle-config!)
   setTimeout (~>
     @chooser = do
       panel: node.querySelector(".ldcp-chooser")
@@ -58,11 +61,12 @@ ldColorPicker = ( (node, target = null) ->
 ) <<< do
   dom: null
   set-palette: (pal) ->
-    if pal.length =>
+    if pal.length and typeof(pal.0) == typeof("") and pal.0.length > 3 =>
       convert = ldColorPicker.prototype.convert
       ldColorPicker.palette.val.splice 0
       for hex in pal => ldColorPicker.palette.val.push convert.color hex
       ldColorPicker.palette.update!
+    else @default-palette-path = pal
   palette: do
     members: []
     getVal: (node) -> 

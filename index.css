@@ -215,37 +215,33 @@ body {
   width: 100%;
   font-size: 12px;
   font-family: calibri;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-  flex-wrap: wrap;
+  text-align: right;
+  background: #eee;
 }
 .ldcp-picker .ldcp-functions .ldcp-btn {
-  height: 100%;
-  width: 20%;
-  -webkit-flex: 1 1;
-  flex: 1 1;
-  margin-right: 3px;
-  background: #ddd;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 0 5px;
   cursor: pointer;
-  background-size: contain;
+}
+.ldcp-picker .ldcp-functions .ldcp-btn:after {
+  display: inline-block;
+  content: " ";
+  width: 14px;
+  height: 14px;
+  background-image: url("function.png");
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: 0 0;
 }
-.ldcp-picker .ldcp-functions .ldcp-btn:last-of-type {
-  margin-right: 0;
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(2):after {
+  background-position: -14px 0;
 }
-.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(1) {
-  background-image: url("edit.svg");
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(3):after {
+  background-position: -28px 0;
 }
-.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(2) {
-  background-image: url("plus.svg");
-}
-.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(3) {
-  background-image: url("minus.svg");
-}
-.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(4) {
-  background-image: url("gear.svg");
+.ldcp-picker .ldcp-functions .ldcp-btn:nth-of-type(4):after {
+  background-position: -42px 0;
 }
 .ldcp-picker .ldcp-colorptr {
   content: " ";
@@ -261,8 +257,8 @@ body {
   border-color: transparent transparent #000 transparent;
 }
 .ldColorPicker {
-  width: 160px;
-  height: 100px;
+  width: 220px;
+  height: 140px;
 }
 #blah {
   width: 64px;

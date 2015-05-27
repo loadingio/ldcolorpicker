@@ -21,11 +21,9 @@ ldColorPicker = ( (node, target = null) ->
   node.querySelector(".ldcp-1d .ldcp-mask")
     ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 1 )
     ..addEventListener("click", (e) ~> @move e, 1, true )
-  node.querySelector(".ldcp-btn").addEventListener("click", ~> 
-    @edit!
-  )
-  node.querySelector(".ldcp-btn:nth-of-type(2)").addEventListener("click", ~> @add-color! )
-  node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @remove-color! )
+  node.querySelector(".ldcp-btn:nth-of-type(1)").addEventListener("click", ~> @add-color! )
+  node.querySelector(".ldcp-btn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
+  node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @edit!)
   node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
   node.querySelector(".ldcp-chooser button:nth-of-type(1)").addEventListener("click", ~> 
     @load-palette @chooser.input.value
@@ -105,7 +103,8 @@ ldColorPicker = ( (node, target = null) ->
       @update-palette!
     edit: -> 
       hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
-      window.location.href = "http://localhost/color/?colors=#hex"
+      #window.location.href = "http://localhost/color/?colors=#hex"
+      window.open "http://localhost/color/?colors=#hex"
     update-dimension: ->
       [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-2d")]
       @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}

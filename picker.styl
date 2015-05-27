@@ -171,28 +171,28 @@
     width: 100%
     font-size: 12px
     font-family: calibri
-    flexbox()
-    flex-wrap(wrap)
+    text-align: right
+    background: #eee
     .ldcp-btn
-      height: 100%
-      width: 20%
-      flex(1 1)
-      margin-right: 3px
-      background: #ddd
+      display: inline-block
+      width: 14px
+      height: 14px
+      margin: 0 5px
       cursor: pointer
-      background-size: contain
-      background-repeat: no-repeat
-      background-position: center center
-      &:last-of-type
-        margin-right: 0
-      &:nth-of-type(1)
-        background-image: url(edit.svg)
-      &:nth-of-type(2)
-        background-image: url(plus.svg)
-      &:nth-of-type(3)
-        background-image: url(minus.svg)
-      &:nth-of-type(4)
-        background-image: url(gear.svg)
+      &:after
+        display: inline-block
+        content: " "
+        width: 14px
+        height: 14px
+        background-image: url(function.png)
+        background-repeat: no-repeat
+        background-position: 0 0
+      &:nth-of-type(2):after
+        background-position: -14px 0
+      &:nth-of-type(3):after
+        background-position: -28px 0
+      &:nth-of-type(4):after
+        background-position: -42px 0
 
   .ldcp-colorptr
     content: " "

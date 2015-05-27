@@ -269,7 +269,6 @@ ldColorPicker = ( (node, target = null) ->
 
         lit = lit-v * ( 2 - sat-v ) / 2
         sat = if lit != 0 and lit != 1 => lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) ) else c.sat
-        console.log hue, sat, lit, sat-v, lit-v, lx, ly
 
         @set-hsl hue, sat, lit, true
         @update-color @idx

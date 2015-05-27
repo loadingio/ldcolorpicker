@@ -130,21 +130,26 @@ ldColorPicker = ( (node, target = null) ->
     toggle-config: ->
       if @chooser.panel.style.height == \98% => @chooser.panel.style <<< {height: 0}
       else @chooser.panel.style <<< {height: \98%}
-
-    toggle: ->
-      if @node.style.display == \block =>
+    event-handler: {}
+    handle: (name, value) -> if @event-handler[name] => for cb in that => cb value
+    on: (name, cb) -> @event-handler.[][name].push cb
+    toggle: (isOn=null) ->
+      if isOn == false or ( isOn == null and @node.style.display == \block ) =>
         @node.style.display = \none
       else
         @node.style.display = \block
-        bcr = @target.getBoundingClientRect!
-        top = (bcr.top + @target.offsetHeight + 10 + document.body.scrollTop) + "px"
-        left = (bcr.left + ( @target.offsetWidth - @node.offsetWidth ) / 2 + document.body.scrollLeft) + "px"
-        @node.style <<< {top, left}
+        if @target =>
+          bcr = @target.getBoundingClientRect!
+          top = (bcr.top + @target.offsetHeight + 10 + document.body.scrollTop) + "px"
+          left = (bcr.left + document.body.scrollLeft) + "px"
+          @node.style <<< {top, left}
+        document.removeEventListener \click, @clickToggler
         document.addEventListener \click, @clickToggle!
         @update-dimension!
-        ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
-        if ret => @idx = ret.0
-        else @color.vals.splice 0, 0, @convert.color @target.value
+        if @target =>
+          ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
+          if ret => @idx = ret.0
+          else @color.vals.splice 0, 0, @convert.color @target.value
         c = @color.vals[@idx]
         @set-hsl c.hue, c.sat, c.lit  
       ldColorPicker.palette.update!
@@ -231,7 +236,10 @@ ldColorPicker = ( (node, target = null) ->
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
       @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})
-      if @target => @target.value = @toHexString @color.vals[@idx]
+      hex = @toHexString @color.vals[@idx]
+      if @target => @target.value = hex
+      @handle \change, hex
+
       if !no-recurse =>
         lit-v = ( 2 * lit + sat * ( 1 - Math.abs( 2 * lit - 1 ) ) ) / 2
         sat-v = 2 * ( lit-v - lit ) / lit-v
@@ -260,7 +268,8 @@ ldColorPicker = ( (node, target = null) ->
         hue = if type == 1 => ly * 360 else c.hue
 
         lit = lit-v * ( 2 - sat-v ) / 2
-        sat = lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) )
+        sat = if lit != 0 and lit != 1 => lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) ) else c.sat
+        console.log hue, sat, lit, sat-v, lit-v, lx, ly
 
         @set-hsl hue, sat, lit, true
         @update-color @idx

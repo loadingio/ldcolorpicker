@@ -140,6 +140,13 @@ ldColorPicker = ( (node, target = null) ->
     toggle: (isOn=null) ->
       if isOn == false or ( isOn == null and @node.style.display == \block ) =>
         @node.style.display = \none
+        if @target =>
+          ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
+          if ret => @idx = ret.0
+          else @color.vals.splice 0, 0, @convert.color @target.value
+        c = @color.vals[@idx]
+        @set-hsl c.hue, c.sat, c.lit  
+
       else
         @node.style.display = \block
         if @target =>
@@ -150,12 +157,14 @@ ldColorPicker = ( (node, target = null) ->
         document.removeEventListener \click, @clickToggler
         document.addEventListener \click, @clickToggle!
         @update-dimension!
+
         if @target =>
           ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
           if ret => @idx = ret.0
           else @color.vals.splice 0, 0, @convert.color @target.value
         c = @color.vals[@idx]
         @set-hsl c.hue, c.sat, c.lit  
+
       ldColorPicker.palette.update!
 
     random: -> {hue: Math.random!*360, sat: 0.5, lit: 0.5}
@@ -208,6 +217,7 @@ ldColorPicker = ( (node, target = null) ->
           sat = delta / ( 1 - Math.abs( 2 * lit - 1) )
           val = Cmax
           sat-v = Cmax - Cmin / val
+        hue = ( hue + 360 ) % 360
         return {hue, sat, lit, sat-v, val}
 
     toRgb: (c) -> 
@@ -247,8 +257,9 @@ ldColorPicker = ( (node, target = null) ->
       if !no-recurse =>
         lit-v = ( 2 * lit + sat * ( 1 - Math.abs( 2 * lit - 1 ) ) ) / 2
         sat-v = 2 * ( lit-v - lit ) / lit-v
+        #sat-v = if lit => 2 * ( lit-v - lit ) / lit-v else c.sat
 
-        x = ( @P2D.w * (1 - sat-v) + @P2D.w * 0.02 ) / 1.04
+        x = ( @P2D.w * (sat-v) + @P2D.w * 0.02 ) / 1.04
         y1 = ( @P2D.h * (1 - lit-v) + @P2D.h * 0.02 ) / 1.04
         y2 = ( @P1D.h * (hue / 360 + @P1D.h * 0.02 ) ) / 1.04
         @set-pos 2, x, y1, true

@@ -9,6 +9,16 @@ body {
   margin: 20px;
 }
 .ldColorPicker {
+  line-height: 1.428571429;
+}
+.ldColorPicker *,
+.ldColorPicker *:before,
+.ldColorPicker *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ldColorPicker {
   display: inline-block;
   position: relative;
   width: 160px;

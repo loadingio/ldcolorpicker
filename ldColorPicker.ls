@@ -150,9 +150,12 @@ ldColorPicker = ( (node, target = null) ->
       else
         @node.style.display = \block
         if @target =>
+          [sx,sy] = if window.scrollX? => [window.scrollX, window.scrollY]
+          else if window.pageXOffset? => [window.pageXOffset, window.pageYOffset]
+          else [document.body.scrollLeft, document.body.scrollTop]
           bcr = @target.getBoundingClientRect!
-          top = (bcr.top + @target.offsetHeight + 10 + document.body.scrollTop) + "px"
-          left = (bcr.left + document.body.scrollLeft) + "px"
+          top = (bcr.top + @target.offsetHeight + 10 + sy) + "px"
+          left = (bcr.left + sx) + "px"
           @node.style <<< {top, left}
         document.removeEventListener \click, @clickToggler
         document.addEventListener \click, @clickToggle!
@@ -168,9 +171,11 @@ ldColorPicker = ( (node, target = null) ->
       ldColorPicker.palette.update!
 
     random: -> {hue: Math.random!*360, sat: 0.5, lit: 0.5}
-    set-palette: (pal) ->
+    get-palette: -> {colors: [{hex: @toHexString v} for v in @color.vals]}
+    set-palette: (pal, clean = false) ->
       result = [@convert.color(it.hex) for it in pal.colors]
       @color.vals.splice 0
+      if clean => @color.vals = []
       for it in result => @color.vals.push it
       ldColorPicker.palette.update!
     update-palette: -> 
@@ -237,16 +242,20 @@ ldColorPicker = ( (node, target = null) ->
       it = Math.round(it * 255) >? 0 <? 255
       it = it.toString 16
       if it.length < 2 => "0#it" else it
+
     toHexString: (c) -> 
       [r,g,b] = @toRgb c
       "\##{@hex r}#{@hex g}#{@hex b}"
+
+    getHexString: (addhash = true) -> 
+      ret = @toHexString @color.vals[@idx]
+      return if !addhash => ret.replace /#/g, '' else ret
+
     set-idx: (idx) ->
       @idx = idx
       c = @color.vals[idx]
       @set-hsl c.hue, c.sat, c.lit
       @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
-
-    
     set-hsl: (hue, sat, lit, no-recurse = false) ->
       @color.vals[@idx] <<< {hue, sat, lit}
       @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})

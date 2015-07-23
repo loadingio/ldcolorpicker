@@ -146,7 +146,7 @@ ldColorPicker = import$(function(node, target){
         results$.push({
           hue: parseInt(Math.random() * 30 + i * 90 - 15),
           sat: 0.3 + Math.random() * 0.4,
-          lit: 0.2 + Math.random() * 0.4
+          lit: 0.4 + Math.random() * 0.4
         });
       }
       return results$;

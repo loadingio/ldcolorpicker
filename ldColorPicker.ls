@@ -74,7 +74,7 @@ ldColorPicker = ( (node, target = null) ->
       @val
     update: ->
       for item in @members => item.update-palette!
-    val: [{hue: parseInt(Math.random!*30 + i * 90 - 15), sat: 0.3 + Math.random!*0.4, lit: 0.2 + Math.random!*0.4} for i from 0 til 5]
+    val: [{hue: parseInt(Math.random!*30 + i * 90 - 15), sat: 0.3 + Math.random!*0.4, lit: 0.4 + Math.random!*0.4} for i from 0 til 5]
   mouse: do
     start: (target, type) ->
       list =

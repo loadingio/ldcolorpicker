@@ -9,7 +9,7 @@ ldColorPicker = ( (node, target = null) ->
   @ <<< {node, target, idx: 0}
   HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div>"
   HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div>"
-  HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 9) + "</div>"
+  HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 5) + "</div>"
   HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
   HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
   node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
@@ -74,7 +74,7 @@ ldColorPicker = ( (node, target = null) ->
       @val
     update: ->
       for item in @members => item.update-palette!
-    val: [{hue: parseInt(Math.random!*360), sat: 0.5, lit: 0.5} for i from 0 til 9]
+    val: [{hue: parseInt(Math.random!*360), sat: 0.5, lit: 0.5} for i from 0 til 5]
   mouse: do
     start: (target, type) ->
       list =

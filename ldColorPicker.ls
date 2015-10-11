@@ -158,7 +158,7 @@ do ->
         hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
         window.open "http://loading.io/color/?colors=#hex"
       update-dimension: ->
-        [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-2d")]
+        [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-1d")]
         @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}
         @P1D <<< {w: n1.offsetWidth, h: n1.offsetHeight}
       
@@ -318,13 +318,15 @@ do ->
         if !no-recurse =>
           lit-v = ( 2 * lit + sat * ( 1 - Math.abs( 2 * lit - 1 ) ) ) / 2
           sat-v = 2 * ( lit-v - lit ) / lit-v
-          #sat-v = if lit => 2 * ( lit-v - lit ) / lit-v else c.sat
 
-          x = ( @P2D.w * (sat-v) + @P2D.w * 0.02 ) / 1.04
-          y1 = ( @P2D.h * (1 - lit-v) + @P2D.h * 0.02 ) / 1.04
-          y2 = ( @P1D.h * (hue / 360 + @P1D.h * 0.02 ) ) / 1.04
+          if !@P1D.h or !@P2D.h => @update-dimension!
+          x = ( @P2D.w * (sat-v) ) 
+          y1 = ( @P2D.h * (1 - lit-v) ) / 1.00
+          y2 = ( @P1D.h * (hue / 360 ) ) / 1.00
+
           @set-pos 2, x, y1, true
           @set-pos 1, x, y2, true
+
           @update-color @idx
 
       set-pos: (type, x, y, no-recurse = false) ->
@@ -335,6 +337,7 @@ do ->
         if type == 2 => ctx.ptr.style.left = "#{x}px"
         if !no-recurse =>
           [lx, ly] = [x * 1.04 - ctx.w * 0.02, y * 1.04 - ctx.h * 0.02]
+          [lx, ly] = [x, y]
           lx = (lx / ctx.w) >? 0 <? 1
           ly = (ly / ctx.h) >? 0 <? 1
           c = @color.vals[@idx]
@@ -346,7 +349,7 @@ do ->
           lit = lit-v * ( 2 - sat-v ) / 2
           sat = if lit != 0 and lit != 1 => lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) ) else c.sat
 
-          @set-hsl hue, sat, lit, true
+          @set-hsl hue, sat, lit, false
           @update-color @idx
 
       move: (e, type, isClick = false) ->

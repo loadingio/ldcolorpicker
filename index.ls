@@ -8,9 +8,7 @@ ldcp = new ldColorPicker(btn-color,{})
 ldcp.on \change, (color)-> 
   btn-color.style.color = color
 
-
 $(\#input).ldColorPicker()
-
 
 $('#landing .subtitle span[data-toggle=tooltip]').tooltip!
 $(\#affix).affix do

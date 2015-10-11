@@ -298,7 +298,9 @@ do ->
       get-idx: -> @idx
 
       set-idx: (idx) ->
-        if @idx != idx => @handle \change, @toHexString(@color.vals[idx])
+        if @idx != idx => 
+          @handle \change, @toHexString(@color.vals[idx])
+          @handle \change-idx, idx
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
@@ -376,4 +378,16 @@ do ->
       if @.0._ldcpnode => return @.0._ldcpnode._ldcp
       new ldColorPicker @.0, config
 
-  if window => window.ldColorPicker = ldColorPicker
+  if window? => window.ldColorPicker = ldColorPicker
+  if angular? =>
+    angular.module \ldColorPicker, <[]>
+      ..directive \ldcolorpicker, -> do
+        require: <[]>
+        restrict: \A
+        scope: ldcp: \=ngLdcp, color: \=ngModel, idx: \=ngIdx
+        link: (s,e,a,c) ->
+          s.ldcp = ldcp = new ldColorPicker e.0, {}, null
+          ldcp.on \change, (color) -> s.$apply ->
+            s.color = color
+          ldcp.on \change-idx, (idx)-> s.$apply ->
+            if a["ngIdx"] => s.idx = idx

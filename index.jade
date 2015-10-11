@@ -1,7 +1,7 @@
 doctype html
 //- basic libraries: jquery(1.10.2), d3js(3.3.11), angularjs(1.2.3), bootstrap(3.0)/semantic-ui(0.9.3/0.9.5)
 - var use = { cdn: true, og: true, favicon: true }
-- var lib = { jquery: true, d3js: false, angular: false, bootstrap: true, semantic: false }
+- var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false }
 - var assets = "assets"
 - var thumbnail = "http://zbryikt.github.io/ldcolorpicker/thumbnail.png"
 - var favicon = "http://zbryikt.github.io/ldcolorpicker/thumbnail.png"
@@ -16,7 +16,8 @@ html(lang="en")
     link(rel="stylesheet",type="text/css",href="index.css")
     script(type="text/javascript",src="ldColorPicker.js")
     script(type="text/javascript",src="index.js")
-  body(data-spy="scroll",data-target=".scrollspy")
+  body(data-spy="scroll",data-target=".scrollspy",ng-app="main",ng-controller="main")
+
     #landing
       .inner.text-center
         .row
@@ -365,6 +366,40 @@ html(lang="en")
             /* Retrieve Palette */
             $(#some-node").ldColorPicker().getPalette();
           p #[code $(...).ldColorPicker()] returns a ColorPicker object, so you can check last section for interface of ColorPicker object.
+          br
+          h3#angularjs AngularJS
+          p use #[code ldColorPicker] directive to initialize ldColorpicker with AngularJS:
+          pre.well.
+            &#60;input ldColorPicker ng-model="color" ng-ldcp="ldcp"&#62;
+          .panel.panel-default: .panel-body.row
+            .col-sm-4
+              label choose color
+              input.form-control(ldColorPicker,ng-model="color",ng-ldcp="ldcp",ng-idx="idx")
+            .col-sm-4
+              label your color
+              .btn.btn-default.btn-block(ng-attr-style="background:{{color}};height:34px")
+            .col-sm-4
+              label Color Index
+              br
+              input.form-control(type="text",disabled,ng-model="idx")
+          p you can bind color and ColorPicker object to angular scope by following attributes:
+          table.table.table-bordered
+            thead
+              tr
+                th attribute
+                th description
+            tbody
+              tr
+                td ng-model
+                td current color
+              tr
+                td ng-ldcp
+                td ColorPicker object
+              tr
+                td ng-idx
+                td index of active color in palette
+
+
           br
           hr
           br

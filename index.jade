@@ -17,10 +17,19 @@ html(lang="en")
     script(type="text/javascript",src="ldColorPicker.js")
     script(type="text/javascript",src="index.js")
   body
+    #landing
+      .inner.text-center
+        .row
+          .col-sm-6
+            .title ldColorPicker 
+            .brand by loading.io
+            .subtitle Palette-Aware #[span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color") Color] Picker 
+          .col-sm-6
+            .ldColorPicker.round.shadow
     #root
-      h1.text-center ldColorPicker #[small by loading.io]
-      hr
-      .panel.panel-default: .panel-body.text-center
+      //-h1.text-center ldColorPicker #[small by loading.io]
+      //-hr
+      //-.panel.panel-default: .panel-body.text-center
         p ldColorPicker is a color picker library that brings you ability to "share palette" across your web app.
         .ldColorPicker.round
         input.form-control(data-toggle="colorpicker",data-cpclass="round shadow top",

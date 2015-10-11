@@ -315,3 +315,33 @@ h2 {
 h3 {
   margin: 20px 0 20px;
 }
+#landing {
+  width: 100%;
+  height: 300px;
+  background: #eee;
+  box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
+}
+#landing .inner {
+  padding: 80px 20px 80px 20px;
+  max-width: 1024px;
+  margin: auto;
+}
+#landing .title {
+  font-size: 3.6em;
+  font-weight: bold;
+  display: inline;
+}
+#landing .brand {
+  white-space: nowrap;
+  font-family: "century gothic";
+  font-size: 1em;
+  font-weight: 200;
+  color: #808080;
+  display: inline;
+}
+#landing .subtitle {
+  font-size: 1.6em;
+}
+#landing .subtitle span {
+  text-shadow: 0 0 3px rgba(0,0,0,0.3);
+}

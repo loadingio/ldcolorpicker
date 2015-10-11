@@ -5,6 +5,9 @@ body {
   margin: 0;
   padding: 0;
 }
+body {
+  position: relative;
+}
 #root {
   margin: 20px auto;
   padding: 0 20px;
@@ -329,7 +332,13 @@ h3 {
 #landing .title {
   font-size: 3.6em;
   font-weight: bold;
-  display: inline;
+  display: inline-block;
+  margin: 16px 10px 0 0;
+}
+@media (max-width: 900px) {
+  #landing .title {
+    margin: 8px 0 -10px;
+  }
 }
 #landing .brand {
   white-space: nowrap;
@@ -337,11 +346,38 @@ h3 {
   font-size: 1em;
   font-weight: 200;
   color: #808080;
-  display: inline;
+  display: inline-block;
+}
+@media (max-width: 900px) {
+  #landing .brand {
+    margin-bottom: 8px;
+  }
 }
 #landing .subtitle {
   font-size: 1.6em;
 }
 #landing .subtitle span {
   text-shadow: 0 0 3px rgba(0,0,0,0.3);
+}
+.subnav {
+  display: none;
+}
+.subnav li > a {
+  padding: 4px 15px 4px 25px;
+}
+#affix li.active .subnav {
+  display: block;
+}
+#affix li a {
+  color: #666;
+}
+#affix {
+  top: 20px;
+}
+#affix li > a {
+  border-left: 4px solid transparent;
+}
+#affix li.active > a {
+  font-weight: bold;
+  border-left: 4px solid #777;
 }

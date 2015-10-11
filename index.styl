@@ -6,6 +6,8 @@ html,body
   height: 100%
   margin: 0
   padding: 0
+body
+  position: relative
 
 #root
   margin: 20px auto
@@ -45,15 +47,36 @@ h3
   .title
     font-size: 3.6em
     font-weight: bold
-    display: inline
+    display: inline-block
+    margin: 16px 10px 0 0
+    @media (max-width: 900px)
+      margin: 8px 0 -10px
   .brand
     white-space: nowrap
     font-family: "century gothic"
     font-size: 1em
     font-weight: 200
     color: gray
-    display: inline
+    display: inline-block
+    @media (max-width: 900px)
+      margin-bottom: 8px
   .subtitle
     font-size: 1.6em
     span
       text-shadow: 0 0 3px rgba(0,0,0,0.3)
+
+.subnav
+  display: none
+  li > a
+    padding: 4px 15px 4px 25px
+#affix li.active .subnav
+  display: block
+#affix li a
+  color: #666
+#affix
+  top: 20px
+  li > a
+    border-left: 4px solid transparent
+  li.active > a
+    font-weight: bold
+    border-left: 4px solid #777

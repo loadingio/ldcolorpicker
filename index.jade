@@ -16,14 +16,18 @@ html(lang="en")
     link(rel="stylesheet",type="text/css",href="index.css")
     script(type="text/javascript",src="ldColorPicker.js")
     script(type="text/javascript",src="index.js")
-  body
+  body(data-spy="scroll",data-target=".scrollspy")
     #landing
       .inner.text-center
         .row
           .col-sm-6
             .title ldColorPicker 
             .brand by loading.io
-            .subtitle Palette-Aware #[span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color") Color] Picker 
+            .subtitle 
+              | Palette-Aware 
+              span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color")
+                span(data-toggle="tooltip",data-placement="bottom",title="click me!") Color
+              |  Picker 
           .col-sm-6
             .ldColorPicker.round.shadow
     #root
@@ -36,7 +40,7 @@ html(lang="en")
         style="width:220px;margin:10px auto")
       .row
         .col-sm-8
-          h2 Usage
+          h2#usage Usage
           p Download and include #[code ldcp.js] and #[code ldcp.css] file of ldColorPicker:
           pre.well.
             &#60;link rel="stylesheet" type="text/css" href="ldcp.css"/&#62;
@@ -56,7 +60,7 @@ html(lang="en")
             input.form-control(data-toggle="colorpicker")
           br
 
-          h3 Different Types of Element
+          h3#element-type Different Types of Element
           p It's possible to trigger color picker with elements other than input box; for example, a button or link:
           pre.well.
             &#60;button data-toggle="colorpicker"&#62; Toggle &#60;/button&#62;
@@ -66,7 +70,10 @@ html(lang="en")
             .btn.btn-lg.btn-default(data-toggle="colorpicker",data-cpclass="round shadow") Toggle
             a.btn.btn-link(data-toggle="colorpicker",data-cpclass="round shadow") Toggle
           br
-          h3 Styling
+          h2#config Configuration
+          p It's possible to configure color picker widget with attributes of HTML tags. Let's take a look of what can be done.
+          br
+          h3#styling Styling
           p Use #[code data-cpclass] to config color picker style:
           .row
             .col-sm-4: form.form: .form-group
@@ -104,7 +111,7 @@ html(lang="en")
                 td top / right / bottom / left
                 td set the direction in which color pick widget will popup
           br
-          h3 Readonly Mode
+          h3#readonly-mode Readonly Mode
           p You can use #[code data-cpclass="palette-only"] to constrain user to only choose colors from your palette:
           pre.well.
             &#60;input type="text data-toggle="colorpicker" data-cpclass="palette-only"&#62;
@@ -118,7 +125,7 @@ html(lang="en")
           p In fact, what #[code palette-only] do is hiding some elements by CSS rules. It's possible to configure the color picker widget by overwriting its CSS rules. Check the DOM structure of the widget if you want to make your own configuration.
 
           br
-          h3 Share Palette
+          h3#share-palette Share Palette
           p By default, every color picker shares the same palette. Change to color of palette will affect every input box that uses this palette. Try changing color in one of the input box below:
           .row
             .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow")
@@ -132,7 +139,7 @@ html(lang="en")
             .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette1")
             .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette2")
 
-          h3 Index of Color
+          h3#index-of-color Index of Color
           p By default, every color picker use the first color in a palette. we can use zero-based #[code data-palette-idx] to change default index of color:
           pre.well.
             &#60;input type="text" data-toggle="colorpicker" data-palette-idx="2"&#62;
@@ -144,7 +151,7 @@ html(lang="en")
             .col-sm-6
               input.form-control(type="text",data-toggle="colorpicker",data-palette-idx="2")
           br
-          h3 Predefined Palette
+          h3#predefined-palette Predefined Palette
           p You can set a predefined palette by setting #[code data-palette] attribute. It can be a space-separated hex codes, an array of hex code, or an URL:
           pre.well.
             &#60;input data-toggle="colorpicker" data-palette="#ff0000 #00ff00 #0000f"&#62;
@@ -178,7 +185,7 @@ html(lang="en")
           p Note that if multiple predefined palettes are given for the same context, only one of them will be used.
           br
 
-          h3 Event Handling
+          h3#event-handling Event Handling
           p use #[code data-oncolorchange] to handle color change event. For example, following code:
           pre.well.
             &#60;input data-toggle="colorpicker" data-oncolorchange="this.style.color=color" data-cpclass="shadow round"&#62;
@@ -187,7 +194,9 @@ html(lang="en")
             input.form-control(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
             data-cpclass="round shadow")
 
-          h3 Vanilla JS
+          h2#apis APIs
+          p ldColorPicker provides APIs for vanilla JS and jQuery.
+          h3#vanilla-js Vanilla JS
           p You can also intialize specific node with ldColorPicker directly by JS:
           pre.well.
             new ldColorPicker(document.getElementById("#some-inputbox"),{});
@@ -207,6 +216,12 @@ html(lang="en")
               tr
                 td oncolorchange
                 td callback function that will be invoked when color is changed
+              tr
+                td index
+                td default index of color in palette
+              tr
+                td palette
+                td default palette. Can be string, array of hex strings, or a object described in #[b Predefined Palette] section.
           p an sample config object is like this:
           pre.well.
             {
@@ -219,7 +234,7 @@ html(lang="en")
             var node = document.getElementById("#some-node");
 
             /* Initialize Color Picke */
-            ldcp = new ldColorPicker(node, {});
+            var ldcp = new ldColorPicker(node, {});
 
             /* Retrieve color */
             var color = node.getAttribute("data-color");
@@ -230,9 +245,7 @@ html(lang="en")
             idx = ldcp.getIdx();
 
             /* Retrieve Palette */
-            var context = node.getAttribute("data-context");
-            var palette = ldColorPicker.palette.get(context);
-            palette = ldcp.getPalette();
+            var palette = ldcp.getPalette();
 
           p listen to #[code change] event for color changing:
           pre.well.
@@ -241,17 +254,114 @@ html(lang="en")
             });
           p Following example shows a button change its color according to the value of color picker:
           pre.well.
-            var node = document.getElementById("#btn-color");
+            &#60;button id="btn-color"&#62;■&#60;/div&#62;
+            &#60;script type="text/javascript"&#62;
+            var node = document.getElementById("btn-color");
             var ldcp = new ldColorPicker(node);
             ldcp.on("change",function(color) { node.style.color = color; });
+            &#60;/script&#62;
           p Result will be like this:
           .panel.panel-default: .panel-body
             #btn-color.btn.btn-default: i.glyphicon.glyphicon-stop
-          h3 jQuery
+          p For those elements initialized by #[code data-toggle="colorpicker"], you can retrieve their ldColorPicker objects via #[code element.getColorPicker()] function:
+          pre.well.
+            &#60;input id="inputbox" type="text" data-toggle="colorpicker"&#62;
+            &#60;script type="text/javascript"&#62;
+            var node = document.getElementById("inputbox");
+            var ldcp = node.getColorPicker();
+            &#60;/script&#62;
+
+          p A summary of programming interface is as follow.
+          br
+          h4 Host Element
+
+          table.table.table-bordered
+            thead
+              tr
+                th property
+                th description
+            tbody
+              tr
+                td data-toggle
+                td initialize a Color Picker for this element
+              tr
+                td data-cpclass
+                td define additional CSS class for color picker widget.
+              tr
+                td data-context
+                td define palette context for this element
+              tr
+                td data-palette
+                td set default value of palette
+              tr
+                td data-palette-idx
+                td set/get default index of color in palette for this element
+              tr
+                td data-oncolorchange
+                td callback function when color is changed. Access variable #[code color] for new value.
+              tr
+                td data-color
+                td get value of current color
+              tr: td(colspan="2")
+            thead
+              tr
+                th method
+                th description
+            tbody
+              tr
+                td getColorPicker()
+                td return ColorPicker object
+
+          h4 ColorPicker Object
+          table.table.table-bordered
+            thead
+              tr
+                th method
+                th description
+            tbody
+              tr
+                td loadPalette(URL)
+                td load palette from certain URL.
+              tr
+                td addColor()
+                td randomly add a color in palette
+              tr
+                td removeColor()
+                td remove a color from palette
+              tr
+                td edit()
+                td open current palette in loading.io
+              tr
+                td on(event, callback)
+                td 
+                  span listen to #[code event] with #[code callback] as handler function.
+                  span Currently only #[code "change"] event is used:
+                  pre.well(style="margin-top:10px").
+                    obj.on("change", function(color) { ... });
+              tr
+                td toggle(isOn)
+                td change color picker widget state. Calling without parameter will invert widget state. 
+              tr
+                td getPalette()
+                td get palette
+              tr
+                td setPalette(obj)
+                td set palette. Obj format is described in #[b Predefined Palette] section.
+              tr
+                td getIdx()
+                td get index of active color in palette
+              tr
+                td setIdx()
+                td set index of active color in palette
+              tr
+                td setHsl(hue, sat, lit)
+                td set HSL for active color of palette
+          br
+          h3#jquery jQuery
           p ldColorPicker also provides jQuery interface to initialize and access color picker:
           pre.well.
             /* Initialize Color Picke */
-            $("#some-node").ldColorPicker({});
+            $("#some-node").ldColorPicker({/* same config options with Vanilla JS */});
 
             /* Retrieve color */
             $("#some-node").ldColorPicker().getHexString();
@@ -261,12 +371,34 @@ html(lang="en")
 
             /* Retrieve Palette */
             $(#some-node").ldColorPicker().getPalette();
-          h3 AngularJS
-          p Coming Soon.
-          h3 ReactJS
-          p Coming Soon.
+          p #[code $(...).ldColorPicker()] returns a ColorPicker object, so you can check last section for interface of ColorPicker object.
+          //-
+            h3 AngularJS
+            p Coming Soon.
+            h3 ReactJS
+            p Coming Soon.
 
           br
           hr
           br
+        .col-sm-4.scrollspy
+          ul#affix.nav.hidden-xs.hidden-sm(data-spy="affix")
+            li
+              a(href="#usage") Usage
+              ul.nav.subnav
+                li: a(href="#element-type") Different Types of Element
+            li
+              a(href="#config") Configuration
+              ul.nav.subnav
+                li: a(href="#styling") Styling
+                li: a(href="#readonly-mode") Readonly Mode
+                li: a(href="#share-palette") Share Palette
+                li: a(href="#index-of-color") Index of Color
+                li: a(href="#predefined-palette") Predefined Palette
+                li: a(href="#event-handling") Event Handling
+            li
+              a(href="#apis") APIs
+              ul.nav.subnav
+                li: a(href="#vanilla-js") Vanilla JS
+                li: a(href="#jquery") jQuery
 

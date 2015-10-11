@@ -12,3 +12,7 @@ ldcp.on \change, (color)->
 $(\#input).ldColorPicker()
 
 
+$('#landing .subtitle span[data-toggle=tooltip]').tooltip!
+$(\#affix).affix do
+  offset: do
+    top: $(\#affix).offset!.top

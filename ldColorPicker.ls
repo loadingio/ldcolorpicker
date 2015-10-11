@@ -17,6 +17,8 @@ do ->
       if custom-palette.0 == \[ => @initpal = {colors:[{hex:it} for it in JSON.parse(custom-palette)]}
       else if /\//.exec(custom-palette) => @url = custom-palette
       else @initpal = {colors:[{hex:it} for it in custom-palette.split(/[ ,]/)]}
+    else if Array.isArray(custom-palette) => @initpal = {colors:[{hex:it} for it in custom-palette]}
+    else @initpal = custom-palette
     if isNaN(custom-idx) => custom-idx = 0
     if typeof(custom-callback) == typeof("") => custom-callback = new Function(<[color]>,custom-callback)
     if !node =>
@@ -26,6 +28,7 @@ do ->
       node.style <<< {position: "absolute", display: "none"}
       if target =>
         target._ldcpnode = node
+        target.getColorPicker = ~> return @
         target.addEventListener \click, (e) -> 
           @_ldcpnode._ldcp.toggle!
           cancelAll e

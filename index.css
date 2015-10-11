@@ -282,6 +282,19 @@ body {
   border-style: solid;
   border-color: transparent transparent #000 transparent;
 }
+.ldColorPicker.palette-only {
+  height: 31px;
+}
+.ldColorPicker.palette-only .ldcp-colors {
+  height: 22px;
+}
+.ldColorPicker.palette-only .ldcp-2d,
+.ldColorPicker.palette-only .ldcp-1d {
+  display: none;
+}
+.ldColorPicker.palette-only .ldcp-functions {
+  display: none;
+}
 .ldColorPicker {
   width: 220px;
   height: 140px;

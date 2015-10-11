@@ -95,6 +95,20 @@ html(lang="en")
                 td top / right / bottom / left
                 td set the direction in which color pick widget will popup
           br
+          h3 Readonly Mode
+          p You can use #[code data-cpclass="palette-only"] to constrain user to only choose colors from your palette:
+          pre.well.
+            &#60;input type="text data-toggle="colorpicker" data-cpclass="palette-only"&#62;
+          .panel.panel-default: .panel-body
+            .row
+              .col-sm-8
+                input.form-control(type="text",data-toggle="colorpicker",data-cpclass="palette-only",data-oncolorchange="document.getElementById('palette-only-btn').style.background=color")
+              .col-sm-4
+                .btn.btn-default.btn-block(style="padding:6px")
+                  #palette-only-btn(style="width:100%;height:100%;background:#f00") &nbsp;
+          p In fact, what #[code palette-only] do is hiding some elements by CSS rules. It's possible to configure the color picker widget by overwriting its CSS rules. Check the DOM structure of the widget if you want to make your own configuration.
+
+          br
           h3 Share Palette
           p By default, every color picker shares the same palette. Change to color of palette will affect every input box that uses this palette. Try changing color in one of the input box below:
           .row

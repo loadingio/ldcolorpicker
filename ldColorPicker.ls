@@ -295,6 +295,7 @@ do ->
       get-idx: -> @idx
 
       set-idx: (idx) ->
+        if @idx != idx => @handle \change, @toHexString(@color.vals[idx])
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]

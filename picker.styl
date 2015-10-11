@@ -55,6 +55,7 @@
 
 
 .ldcp-picker
+  z-index: 1
   .ldcp-ptr, .ldcp-bar
     position: absolute
     background: none
@@ -121,8 +122,10 @@
       left: 5px
 
 .ldColorPicker
-  &.border .ldcp-picker
+  .ldcp-picker
     border: 1px solid #ccc
+  &.noborder .ldcp-picker
+    border: 1px transparent
   &.shadow .ldcp-picker
     box-shadow: 0 1px 3px rgba(0,0,0,0.2)
   &.round .ldcp-picker
@@ -135,19 +138,25 @@
     height: 0
     border-width: 10px
     border-style: solid
-  &.top .ldcp-picker:after
+  &.top.bubble .ldcp-picker:after
     border-color: #ccc transparent transparent transparent
     bottom: -20px
     left: 10px
-  &.right .ldcp-picker:after
+    top: auto
+    right: auto
+  &.right.bubble .ldcp-picker:after
     border-color: transparent #ccc transparent transparent
     top: 10px
     left: -20px
-  &.left .ldcp-picker:after
+    right: auto
+    bottom: auto
+  &.left.bubble .ldcp-picker:after
     border-color: transparent transparent transparent #ccc 
     top: 10px
     right: -20px
-  &.bottom .ldcp-picker:after, &.bubble .ldcp-picker:after
+    bottom: auto
+    left: auto
+  &.bottom.bubble .ldcp-picker:after, &.bubble .ldcp-picker:after
     border-color: transparent transparent #ccc transparent 
     top: -20px
     left: 10px

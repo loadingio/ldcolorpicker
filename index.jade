@@ -1,7 +1,7 @@
 doctype html
 //- basic libraries: jquery(1.10.2), d3js(3.3.11), angularjs(1.2.3), bootstrap(3.0)/semantic-ui(0.9.3/0.9.5)
 - var use = { cdn: false, og: false, favicon: true }
-- var lib = { jquery: true, d3js: false, angular: false, bootstrap: false, semantic: false }
+- var lib = { jquery: true, d3js: false, angular: false, bootstrap: true, semantic: false }
 - var assets = "assets"
 - var thumbnail = "thumbnail.png"
 - var favicon = "thumbnail.png"
@@ -18,34 +18,232 @@ html(lang="en")
     script(type="text/javascript",src="index.js")
   body
     #root
-      form.form
-        .row
-          .col-sm-4
-            .form-group
-              label 選擇顏色
-              input.form-control(data-toggle="colorpicker",data-cpclass='round border shadow')
-            .form-group
-              label 選擇顏色
-              input.form-control(data-toggle="colorpicker",data-cpclass='round border shadow')
-          .col-sm-4
-            .form-group
-              label 範例
-              br
-              .ldColorPicker.round.border
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      br
-      #blah
-      input(data-toggle="colorpicker",data-cpclass="top")
+      h1.text-center ldColorPicker #[small by loading.io]
+      hr
+      .panel.panel-default: .panel-body.text-center
+        p ldColorPicker is a color picker library that brings you ability to "share palette" across your web app.
+        .ldColorPicker.round
+        input.form-control(data-toggle="colorpicker",data-cpclass="round shadow top",
+        style="width:220px;margin:10px auto")
+      .row
+        .col-sm-8
+          h2 Usage
+          p Download and include #[code ldcp.js] and #[code ldcp.css] file of ldColorPicker:
+          pre.well.
+            &#60;link rel="stylesheet" type="text/css" href="ldcp.css"/&#62;
+            &#60;script type="text/javascript" src="ldcp.js"&#62;&#60;/script&#62;
+
+          p Add #[code data-toggle="colorpicker"] in the input box you want to apply ldColorPicker, e.g.:
+          pre.well.
+            &#60;input type="input" data-toggle="colorpicker"&#62;
+          p and initialize with following script:
+          pre.well.
+            &#60;script type="text/javascript"&#62;
+              ldColorPicker.init();
+            &#60;/script&#62;
+          p then you will have a input box like this:
+          .panel.panel-default: .panel-body
+            label click the input box
+            input.form-control(data-toggle="colorpicker")
+          br
+
+          h3 Different Types of Element
+          p It's possible to trigger color picker with elements other than input box; for example, a button or link:
+          pre.well.
+            &#60;button data-toggle="colorpicker"&#62; Toggle &#60;/button&#62;
+            &#60;a href="#" data-toggle="colorpicker"&#62; Toggle &#60;/a&#62;
+          p Here is an example of button-triggered color picker:
+          .panel.panel-default: .panel-body
+            .btn.btn-lg.btn-default(data-toggle="colorpicker",data-cpclass="round shadow") Toggle
+            a.btn.btn-link(data-toggle="colorpicker",data-cpclass="round shadow") Toggle
+          br
+          h3 Styling
+          p Use #[code data-cpclass] to config color picker style:
+          .row
+            .col-sm-4: form.form: .form-group
+                label data-cpclass="noborder"
+                input.form-control(data-toggle="colorpicker",data-cpclass="noborder")
+            .col-sm-4: form.form: .form-group
+                label data-cpclass="shadow"
+                input.form-control(data-toggle="colorpicker",data-cpclass="shadow")
+            .col-sm-4: form.form: .form-group
+                label data-cpclass="round"
+                input.form-control(data-toggle="colorpicker",data-cpclass="round")
+          p #[code data-cpclass] will be applied to the class of ldColorPicker's root element, so you can use it add your own customization to ldColorPicker. For example:
+          pre.well.
+            &#60;style type="text/css"&#62;
+              .ldColorPicker.mystyle { background: #f00 }
+            &#60;/style&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-cpclass="mystyle"&#62;
+          p ldColorPicker provides several default decorating class:
+          table.table.table-bordered
+            thead
+              tr
+                th class
+                th description
+            tbody
+              tr
+                td shadow
+                td Render shadow around the widget
+              tr
+                td noborder
+                td hide the border around the widget
+              tr
+                td round
+                td make the border round
+              tr
+                td top / right / bottom / left
+                td set the direction in which color pick widget will popup
+          br
+          h3 Share Palette
+          p By default, every color picker shares the same palette. Change to color of palette will affect every input box that uses this palette. Try changing color in one of the input box below:
+          .row
+            .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow")
+            .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow")
+          p You can force input boxes to use different palettes by giving them a different context with #[code data-context]:
+          pre.well.
+            &#60;input type="text" data-toggle="colorpicker" data-context="palette1"&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-context="palette2"&#62;
+          p With above configuration, input box will have their own context. Try changing color in one of the input box below again, this time input box will not affect each other:
+          .row
+            .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette1")
+            .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette2")
+
+          h3 Index of Color
+          p By default, every color picker use the first color in a palette. we can use zero-based #[code data-palette-idx] to change default index of color:
+          pre.well.
+            &#60;input type="text" data-toggle="colorpicker" data-palette-idx="2"&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-palette-idx="3"&#62;
+          p the input boxes below use different slot of the palette, so changing one won't affect the other:
+          .row
+            .col-sm-6
+              input.form-control(type="text",data-toggle="colorpicker",data-palette-idx="1")
+            .col-sm-6
+              input.form-control(type="text",data-toggle="colorpicker",data-palette-idx="2")
+          br
+          h3 Predefined Palette
+          p You can set a predefined palette by setting #[code data-palette] attribute. It can be a space-separated hex codes, an array of hex code, or an URL:
+          pre.well.
+            &#60;input data-toggle="colorpicker" data-palette="#ff0000 #00ff00 #0000f"&#62;
+            &#60;input data-toggle="colorpicker" data-palette="['#f0f000','#00f0f0','#f000f0']"&#62;
+            &#60;input data-toggle="colorpicker" data-palette="http:&#47;&#47;loading.io/palette/559087d71deb8c3a54548932"&#62;
+          p will be like these:
+          .panel.panel-default: .panel-body
+            .row
+              .col-sm-4
+                input.form-control(type="text",data-toggle="colorpicker",
+                data-palette="#ff0000 #00ff00 #0000ff",data-context="predefined1",
+                data-cpclass="round shadow")
+              .col-sm-4
+                input.form-control(type="text",data-toggle="colorpicker",
+                data-palette='["#f0f000","#00f0f0","#f000f0"]',data-context="predefined2",
+                data-cpclass="round shadow")
+              .col-sm-4
+                input.form-control(type="text",data-toggle="colorpicker",
+                data-palette="http://loading.io/palette/559087d71deb8c3a54548932",data-context="predefined3",
+                data-cpclass="round shadow")
+          p when using URL as predefined palette source, it should point to a URL which respond with a JSON file in following format:
+          pre.well.
+            {
+              colors: [
+                {hex: "#000000"}, &#47;&#47; represented in 6 digits hex code 
+                {hex: "#000000"},
+                ...
+              ]
+            }
+
+          p Note that if multiple predefined palettes are given for the same context, only one of them will be used.
+          br
+
+          h3 Event Handling
+          p use #[code data-oncolorchange] to handle color change event. For example, following code:
+          pre.well.
+            &#60;input data-toggle="colorpicker" data-oncolorchange="this.style.color=color" data-cpclass="shadow round"&#62;
+          p will lead to this:
+          .panel.panel-default: .panel-body
+            input.form-control(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
+            data-cpclass="round shadow")
+
+          h3 Vanilla JS
+          p You can also intialize specific node with ldColorPicker directly by JS:
+          pre.well.
+            new ldColorPicker(document.getElementById("#some-inputbox"),{});
+          p the second parameter is a config object with following options:
+          table.table.table-bordered
+            thead
+              tr
+                th option
+                th description
+            tbody
+              tr
+                td context
+                td setup palette context
+              tr
+                td class
+                td setup custom css class for color picker widget
+              tr
+                td oncolorchange
+                td callback function that will be invoked when color is changed
+          p an sample config object is like this:
+          pre.well.
+            {
+              context: 'sample',
+              class: 'round shadow',
+              oncolorchange: function(color) { this.style.color = color; }
+            }
+          p you can access color information by the ldColorPicker object, or by getAttribute of the element:
+          pre.well.
+            var node = document.getElementById("#some-node");
+
+            /* Initialize Color Picke */
+            ldcp = new ldColorPicker(node, {});
+
+            /* Retrieve color */
+            var color = node.getAttribute("data-color");
+            color = ldcp.getHexString();
+
+            /* Retrieve index of this color in palette */
+            var idx = node.getAttribute("data-palette-idx");
+            idx = ldcp.getIdx();
+
+            /* Retrieve Palette */
+            var context = node.getAttribute("data-context");
+            var palette = ldColorPicker.palette.get(context);
+            palette = ldcp.getPalette();
+
+          p listen to #[code change] event for color changing:
+          pre.well.
+            ldcp.on("change", function(color) {
+              console.log(color);
+            });
+          p Following example shows a button change its color according to the value of color picker:
+          pre.well.
+            var node = document.getElementById("#btn-color");
+            var ldcp = new ldColorPicker(node);
+            ldcp.on("change",function(color) { node.style.color = color; });
+          p Result will be like this:
+          .panel.panel-default: .panel-body
+            #btn-color.btn.btn-default: i.glyphicon.glyphicon-stop
+          h3 jQuery
+          p ldColorPicker also provides jQuery interface to initialize and access color picker:
+          pre.well.
+            /* Initialize Color Picke */
+            $("#some-node").ldColorPicker({});
+
+            /* Retrieve color */
+            $("#some-node").ldColorPicker().getHexString();
+
+            /* Retrieve index of this color in palette */
+            $("#some-node").ldColorPicker().getIdx();
+
+            /* Retrieve Palette */
+            $(#some-node").ldColorPicker().getPalette();
+          h3 AngularJS
+          p Coming Soon.
+          h3 ReactJS
+          p Coming Soon.
+
+          br
+          hr
+          br
+

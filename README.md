@@ -27,7 +27,7 @@ and initialize with following script:
 Documentation
 ---------------
 
-check (this url)[http://zbryikt.github.io/ldcolorpicker/] for documentation and demos.
+check [this url](http://zbryikt.github.io/ldcolorpicker/) for documentation and demos.
 
 
 License

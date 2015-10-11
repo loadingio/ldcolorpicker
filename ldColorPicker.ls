@@ -137,7 +137,7 @@ do ->
         node._ldcp = new ldColorPicker target, {}, node
       else
         all = document.querySelectorAll(".ldColorPicker")
-        for node in all => node._ldcp = new ldColorPicker null, {}, node
+        for node in all => if !node._ldcp => node._ldcp = new ldColorPicker null, {}, node
 
         list = document.querySelectorAll("*[data-toggle='colorpicker']")
         for item in list => new ldColorPicker item, {}
@@ -390,4 +390,5 @@ do ->
           ldcp.on \change, (color) -> s.$apply ->
             s.color = color
           ldcp.on \change-idx, (idx)-> s.$apply ->
-            if a["ngIdx"] => s.idx = idx
+            if a.ngIdx => s.idx = idx
+          if a.ngIdx => s.idx = ldcp.getIdx!

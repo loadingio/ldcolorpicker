@@ -1,32 +1,36 @@
-template
+ldColorPicker
 ========
 
-a web template, for simple frontend. it contains a simple webserver, watch daemon, and a makefile for offline building. It uses jade, styl and livescript to build a web page.
-
+Palette-Aware Color Picker. Works with Vanilla JS and jQuery.
 
 Usage
-========
+--------
 
-Simply edit index.jade, index.styl and index.ls, and type 'make' to build these into index.html, index.css and index.js.
+Download and include ldcp.js and ldcp.css file of ldColorPicker:
 
-You can also watch all your changes and build them automatically. To do so, run
-
-    npm i
-
-once (for installing all dependencies), then run
-
-    npm start
-
-It will start watching all styl, jade and livescript changes, and also run a simple web server listening on localhost:9999.
+    <link rel="stylesheet" type="text/css" href="ldcp.css"/>
+    <script type="text/javascript" src="ldcp.js"></script>
 
 
-Configuration
-========
+Add data-toggle="colorpicker" in the input box you want to apply ldColorPicker, e.g.:
 
-Options about CDN, Open Graph, Favicon, thumbnail and used libraries are available in index.jade:
+    <input type="input" data-toggle="colorpicker">
 
-    - var use = { cdn: false, og: false, favicon: true }
-    - var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false }
-    - var assets = "assets"
-    - var thumbnail = "thumbnail.png"
-    - var favicon = "thumbnail.png"
+
+and initialize with following script:
+
+    <script type="text/javascript">
+      ldColorPicker.init();
+    </script>
+
+
+Documentation
+---------------
+
+check (this url)[http://zbryikt.github.io/ldcolorpicker/] for documentation and demos.
+
+
+License
+---------
+
+MIT License

@@ -27,14 +27,45 @@ html(lang="en")
             .subtitle 
               | Palette-Aware 
               span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
-              data-cpclass="palette-only flat round shadow round-palette",data-pinned="true")
+              data-cpclass="palette-only flat round shadow round-palette landing",data-pinned="true",data-context="landing")
                 span(data-toggle="tooltip",data-placement="top",title="wow!") Color
               |  Picker 
           .col-sm-6
-            .ldColorPicker.round.shadow.flat.no-button.no-empty-color
+            .ldColorPicker.round.shadow.flat.no-button.no-empty-color(data-palette="#ff1d00 #ffb651 #fff882 #80de40 #3c8df1 #923dd1",data-context="landing")
+    .text-center(style="margin-top:-16px")
+      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548937",data-context="landing1",onclick="setpalette('landing1')")
+      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548932",data-context="landing2",onclick="setpalette('landing2')")
+      .ldColorPicker.palette-only.compact-palette.shadow.noptr.flat(data-context="landing",onclick="setpalette('landing')",style="width:200px")
+      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548930",data-context="landing3",onclick="setpalette('landing3')")
+      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548931",data-context="landing4",onclick="setpalette('landing4')")
     #root
+
       .row
         .col-sm-8
+          h2#overview Overview
+          p #[b: i ldColorPicker] is a Palette-aware color picker module with following features:
+          ul
+            li Load palette on the fly
+            li Share palette across pickers
+            li vanilla JS / jQuery / AngularJS compatible
+            li highly configurable
+            br
+            .panel.panel-default: .panel-body
+              .row
+                .col-sm-6
+                  .text-center 
+                    div Tiny palette
+                    .ldColorPicker.palette-only.compact-palette.noborder.mini-palette.flat
+                    br
+                    br
+                    br
+                    div Circle Palette
+                    .ldColorPicker.palette-only.round-palette.middle.shadow
+                .col-sm-6
+                  .text-center 
+                    div Default palette
+                    .ldColorPicker
+
           h2#usage Usage
           p Download and include #[code ldcp.js] and #[code ldcp.css] file of ldColorPicker:
           pre.well.
@@ -357,9 +388,28 @@ html(lang="en")
                 td on(event, callback)
                 td 
                   span listen to #[code event] with #[code callback] as handler function.
-                  span Currently only #[code "change"] event is used:
-                  pre.well(style="margin-top:10px").
-                    obj.on("change", function(color) { ... });
+                  span There are several differen events:
+                  br
+                  br
+                  ul
+                    li 
+                      span #[code inited] - fired when color picked is initialized
+                      pre.well(style="margin-top:10px").
+                        obj.on("inited", function() { ... });
+                    li 
+                      span #[code change] - fired when color changed
+                      pre.well(style="margin-top:10px").
+                        obj.on("change", function(color) { ... });
+                        /* color is hex, rgba or "none" */
+                    li 
+                      span #[code change-idx] - fired when index of active color changed
+                      pre.well(style="margin-top:10px").
+                        obj.on("change-idx", function(idx) { ... });
+                    li 
+                      span #[code change-pin] - fired when pin state changed
+                      pre.well(style="margin-top:10px").
+                        obj.on("change-pin", function(isPinned) { ... });
+
               tr
                 td toggle(isOn)
                 td change color picker widget state. Calling without parameter will invert widget state. 
@@ -451,6 +501,8 @@ html(lang="en")
           br
         .col-sm-4.scrollspy
           ul#affix.nav.hidden-xs.hidden-sm(data-spy="affix")
+            li
+              a(href="#overview") Overview &#xbb;
             li
               a(href="#usage") Usage &#xbb;
               ul.nav.subnav

@@ -140,7 +140,7 @@
       return this$.removeColor();
     });
     setTimeout(function(){
-      var x$, i, i$, to$, idx, c;
+      var x$, i, i$, to$, idx, c, value;
       this$.chooser = {
         panel: node.querySelector(".ldcp-chooser"),
         input: node.querySelector(".ldcp-chooser input")
@@ -207,13 +207,18 @@
       if (customPinned) {
         this$.toggle(true);
       }
-      return document.addEventListener('keydown', function(e){
+      document.addEventListener('keydown', function(e){
         var code;
         code = e.which || e.keyCode;
         if (code === 27) {
           return this$.toggle(false);
         }
       });
+      this$.handle('inited');
+      value = c.alpha != null && c.alpha < 1
+        ? this$.toRgbaString(c)
+        : this$.toHexString(c);
+      return this$.handle('change', value);
       function fn$(e){
         return this$.setIdx(e.target.idx);
       }
@@ -252,6 +257,33 @@
     },
     palette: {
       members: [],
+      set: function(context, pal){
+        var result, res$, i$, len$, it, ref$;
+        if (!this.val[context]) {
+          return;
+        }
+        if (Array.isArray(pal)) {
+          res$ = [];
+          for (i$ = 0, len$ = pal.length; i$ < len$; ++i$) {
+            it = pal[i$];
+            res$.push(ldColorPicker.prototype.convert.color(it));
+          }
+          result = res$;
+        } else {
+          res$ = [];
+          for (i$ = 0, len$ = (ref$ = pal.colors).length; i$ < len$; ++i$) {
+            it = ref$[i$];
+            res$.push(ldColorPicker.prototype.convert.color(it.hex));
+          }
+          result = res$;
+        }
+        this.val[context].splice(0);
+        for (i$ = 0, len$ = result.length; i$ < len$; ++i$) {
+          it = result[i$];
+          this.val[context].push(it);
+        }
+        return this.update();
+      },
       get: function(context){
         var it;
         return {
@@ -259,7 +291,9 @@
             var i$, ref$, len$, results$ = [];
             for (i$ = 0, len$ = (ref$ = this.val[context] || []).length; i$ < len$; ++i$) {
               it = ref$[i$];
-              results$.push(ldColorPicker.prototype.toHexString(it));
+              results$.push({
+                hex: ldColorPicker.prototype.toHexString(it)
+              });
             }
             return results$;
           }.call(this))

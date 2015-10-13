@@ -40,26 +40,34 @@
 .ldColorPicker.no-palette .ldcp-g2 {
   display: none;
 }
-.ldColorPicker.palette-only {
+.ldColorPicker.palette-only,
+.ldColorPicker.mini-palette {
   height: 22px;
 }
-.ldColorPicker.palette-only .ldcp-panel {
+.ldColorPicker.palette-only .ldcp-panel,
+.ldColorPicker.mini-palette .ldcp-panel {
   padding-bottom: 27px;
 }
-.ldColorPicker.palette-only .ldcp-g2 {
+.ldColorPicker.palette-only .ldcp-g2,
+.ldColorPicker.mini-palette .ldcp-g2 {
   margin-top: 5px;
 }
-.ldColorPicker.palette-only .ldcp-g3 {
+.ldColorPicker.palette-only .ldcp-g3,
+.ldColorPicker.mini-palette .ldcp-g3 {
   display: none;
 }
-.ldColorPicker.palette-only .ldcp-colors {
+.ldColorPicker.palette-only .ldcp-colors,
+.ldColorPicker.mini-palette .ldcp-colors {
   height: 22px;
 }
 .ldColorPicker.palette-only .ldcp-2d,
-.ldColorPicker.palette-only .ldcp-1d {
+.ldColorPicker.mini-palette .ldcp-2d,
+.ldColorPicker.palette-only .ldcp-1d,
+.ldColorPicker.mini-palette .ldcp-1d {
   display: none;
 }
-.ldColorPicker.palette-only .ldcp-cbtn {
+.ldColorPicker.palette-only .ldcp-cbtn,
+.ldColorPicker.mini-palette .ldcp-cbtn {
   display: none;
 }
 .ldColorPicker.round-palette .ldcp-color,
@@ -69,23 +77,37 @@
   -webkit-flex: 0 0 22px;
   flex: 0 0 22px;
 }
+.ldColorPicker.round-palette .ldcp-color > div,
+.ldColorPicker.round-palette .ldcp-color-none > div {
+  border-radius: 50%;
+}
 .ldColorPicker.round-palette .ldcp-sep {
   -webkit-flex: 1 1;
   flex: 1 1;
 }
+.ldColorPicker.round-palette.middle .ldcp-palette {
+  justify-content: center;
+}
+.ldColorPicker.round-palette.middle .ldcp-sep {
+  display: none;
+}
 /* no padding palette */
-.ldColorPicker.compact-palette .ldcp-colors .ldcp-color {
+.ldColorPicker.compact-palette .ldcp-colors .ldcp-color,
+.ldColorPicker.mini-palette .ldcp-colors .ldcp-color {
   margin: 0;
   border-radius: 0;
 }
-.ldColorPicker.compact-palette .ldcp-colors .ldcp-color:last-of-type {
+.ldColorPicker.compact-palette .ldcp-colors .ldcp-color:last-of-type,
+.ldColorPicker.mini-palette .ldcp-colors .ldcp-color:last-of-type {
   margin-right: 5px;
   border-radius: 0 3px 3px 0;
 }
-.ldColorPicker.compact-palette .ldcp-colors .ldcp-color:first-of-type {
+.ldColorPicker.compact-palette .ldcp-colors .ldcp-color:first-of-type,
+.ldColorPicker.mini-palette .ldcp-colors .ldcp-color:first-of-type {
   border-radius: 3px 0 0 3px;
 }
-.ldColorPicker.compact-palette .ldcp-colors span:first-of-type {
+.ldColorPicker.compact-palette .ldcp-colors span:first-of-type,
+.ldColorPicker.mini-palette .ldcp-colors span:first-of-type {
   margin-left: 0;
 }
 /* no button */
@@ -95,9 +117,33 @@
 .ldColorPicker.no-button .ldcp-color-none {
   margin-right: 0;
 }
-.ldColorPicker.no-empty-color .ldcp-color-none {
+.ldColorPicker.no-empty-color .ldcp-color-none,
+.ldColorPicker.palette-only .ldcp-color-none,
+.ldColorPicker.mini-palette .ldcp-color-none {
   display: none;
 }
-.ldColorPicker.no-empty-color .ldcp-palette {
+.ldColorPicker.no-empty-color .ldcp-palette,
+.ldColorPicker.palette-only .ldcp-palette,
+.ldColorPicker.mini-palette .ldcp-palette {
   margin-right: 0;
+}
+.ldColorPicker.mini-palette {
+  width: 160px;
+}
+.ldColorPicker.mini-palette .ldcp-panel {
+  background: none;
+}
+.ldColorPicker.mini-palette.shadow .ldcp-panel {
+  box-shadow: none;
+}
+.ldColorPicker.mini-palette.shadow .ldcp-palette {
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+  border-radius: 3px;
+}
+.ldColorPicker.mini-palette.shadow .ldcp-color:last-of-type {
+  margin-right: 0;
+}
+.ldColorPicker.palette-only.noptr .ldcp-colorptr,
+.ldColorPicker.mini-palette.noptr .ldcp-colorptr {
+  display: none;
 }

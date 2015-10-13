@@ -35,7 +35,7 @@
   .ldcp-g2
     display: none
 
-.ldColorPicker.palette-only
+.ldColorPicker.palette-only, .ldColorPicker.mini-palette
   height: 22px
   .ldcp-panel
     padding-bottom: gap + 22px
@@ -54,12 +54,19 @@
     border-radius: 50%
     width: 22px
     flex(0 0 22px)
+    & > div
+      border-radius: 50%
   .ldcp-sep
     flex(1 1)
+  &.middle
+    .ldcp-palette
+      justify-content: center
+    .ldcp-sep
+      display: none
 
 
 /* no padding palette */
-.ldColorPicker.compact-palette
+.ldColorPicker.compact-palette, .ldColorPicker.mini-palette
   .ldcp-colors
     .ldcp-color
       margin: 0
@@ -79,8 +86,25 @@
   .ldcp-color-none
     margin-right: 0
 
-.ldColorPicker.no-empty-color
+.ldColorPicker.no-empty-color, .ldColorPicker.palette-only, .ldColorPicker.mini-palette
   .ldcp-color-none
     display: none
   .ldcp-palette
     margin-right: 0
+
+.ldColorPicker.mini-palette
+  width: 160px
+  .ldcp-panel
+    background: none
+  &.shadow
+    .ldcp-panel
+      box-shadow: none
+    .ldcp-palette
+      box-shadow: 0 2px 2px rgba(0,0,0,0.3)
+      border-radius: 3px
+    .ldcp-color:last-of-type
+      margin-right: 0
+
+.ldColorPicker.palette-only, .ldColorPicker.mini-palette
+  &.noptr .ldcp-colorptr
+    display: none

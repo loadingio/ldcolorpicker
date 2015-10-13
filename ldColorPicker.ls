@@ -102,6 +102,9 @@ do ->
       document.addEventListener \keydown, (e) ~>
         code = (e.which or e.keyCode)
         if code == 27 => @toggle false
+      @handle \inited
+      value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
+      @handle \change, value
     ), 0
     @
   ) <<< do
@@ -115,9 +118,19 @@ do ->
       else @default-palette-path = pal
     palette: do
       members: []
+      set: (context, pal)->
+        if !@val[context] => return # throw exception?
+        if Array.isArray(pal) => 
+          result = [ldColorPicker.prototype.convert.color(it) for it in pal]
+        else =>
+          result = [ldColorPicker.prototype.convert.color(it.hex) for it in pal.colors]
+        @val[context].splice 0
+        for it in result => @val[context].push it
+        @update!
+
       # object with hex version of getVal, just like ldcp.getPalette()
       get: (context)-> 
-        {colors: [ldColorPicker.prototype.toHexString it for it in (@val[context] or [])]}
+        {colors: [{hex:ldColorPicker.prototype.toHexString it} for it in (@val[context] or [])]}
       getVal: (node,context='default') -> 
         if node and typeof(node)!=typeof("") => @members.push node
         if typeof(node) == typeof("") => context = node

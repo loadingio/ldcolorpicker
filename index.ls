@@ -5,6 +5,11 @@ angular.module \main, <[ldColorPicker]>
     $scope.$watch 'idx', (->)
     $scope.$watch 'pin', (->)
 
+setpalette = (context) ->
+  pal = ldColorPicker.palette.get context
+  console.log pal
+  ldColorPicker.palette.set \landing, pal
+
 <- $(document).ready
 
 ldColorPicker.init!
@@ -13,8 +18,7 @@ ldColorPicker.set-palette \http://localhost/palette/ldwrnh
 
 btn-color = document.getElementById("btn-color")
 ldcp = new ldColorPicker(btn-color,{})
-ldcp.on \change, (color)-> 
-  btn-color.style.color = color
+ldcp.on \change, (color)-> btn-color.style.color = color
 
 $(\#input).ldColorPicker()
 

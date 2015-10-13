@@ -121,6 +121,9 @@ do ->
       if @initpal =>
         @set-palette @initpal
       if custom-pinned => @toggle true
+      document.addEventListener \keydown, (e) ~>
+        code = (e.which or e.keyCode)
+        if code == 27 => @toggle false
     ), 0
     @
   ) <<< do

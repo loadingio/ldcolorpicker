@@ -225,8 +225,15 @@
         this$.setPalette(this$.initpal);
       }
       if (customPinned) {
-        return this$.toggle(true);
+        this$.toggle(true);
       }
+      return document.addEventListener('keydown', function(e){
+        var code;
+        code = e.which || e.keyCode;
+        if (code === 27) {
+          return this$.toggle(false);
+        }
+      });
       function fn$(e){
         return this$.setIdx(e.target.idx);
       }

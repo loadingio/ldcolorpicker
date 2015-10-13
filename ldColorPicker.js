@@ -122,7 +122,7 @@
       "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     */
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>";
-    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small><div class='ldcp-color'></div></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>";
+    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>";
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>";
     node.innerHTML = HTML;
     node.addEventListener('click', function(e){
@@ -471,7 +471,7 @@
           this.node.style.display = 'none';
           if (this.target) {
             ret = this.color.vals.map(function(it, idx){
-              return [idx, this$.toHexString(it)];
+              return [idx, this$.toValue(it), it];
             }).filter(function(it){
               return it[1] === this$.target.value.toLowerCase();
             })[0];
@@ -513,7 +513,7 @@
           this.updateDimension();
           if (this.target) {
             ret = this.color.vals.map(function(it, idx){
-              return [idx, this$.toHexString(it)];
+              return [idx, this$.toValue(it)];
             }).filter(function(it){
               return it[1] === this$.target.value.toLowerCase();
             })[0];
@@ -569,11 +569,17 @@
         }
         return ldColorPicker.palette.update();
       },
-      setColor: function(c){
+      setColor: function(c, alpha, isNone){
         if (typeof c === typeof "") {
           c = this.convert.color(c);
+          if (alpha != null) {
+            c.alpha = alpha;
+          }
+          if (isNone != null) {
+            c.isNone = isNone;
+          }
         }
-        this.color.vals.splice(this.idx, 1, c);
+        import$(this.color.vals[this.idx], c);
         return ldColorPicker.palette.update();
       },
       updatePalette: function(){
@@ -586,6 +592,7 @@
             x$.setAttribute('class', 'ldcp-color');
             x$.addEventListener('click', fn$);
             x$.idx = i;
+            node.appendChild(document.createElement("div"));
             this.color.palette.appendChild(node);
             this.color.nodes.push(node);
           }
@@ -618,13 +625,17 @@
         this.inputA.value = c.alpha != null ? c.alpha : 1;
         return this.inputhex.value = this.getHexString();
         function fn$(e){
-          return this$.setIdx(e.target.idx);
+          var idx;
+          idx = e.target.idx != null
+            ? e.target.idx
+            : e.target.parentNode.idx;
+          return this$.setIdx(idx);
         }
       },
       updateColor: function(idx){
         var c, n;
         c = this.color.vals[idx];
-        n = this.color.nodes[idx];
+        n = this.color.nodes[idx].childNodes[0];
         n.style.background = this.toHslaString(c);
         if (c.isNone) {
           return n.style.border = "1px dashed #ccc";
@@ -634,7 +645,7 @@
       },
       convert: {
         color: function(it){
-          var r, g, b, ret, ref$, hue, sat, lit;
+          var r, g, b, ret, ref$, hue, sat, lit, that;
           if (/#[a-fA-F0-9]{6}/.exec(it)) {
             r = parseInt(it.substring(1, 3), 16) / 255;
             g = parseInt(it.substring(3, 5), 16) / 255;
@@ -644,6 +655,18 @@
               g: g,
               b: b
             }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
+            return ret;
+          }
+          if (that = /rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)/.exec(it)) {
+            ref$ = [that[1], that[2], that[3]].map(function(it){
+              return parseInt(it) / 255;
+            }), r = ref$[0], g = ref$[1], b = ref$[2];
+            ret = (ref$ = this.rgbHsl({
+              r: r,
+              g: g,
+              b: b
+            }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
+            ret.alpha = parseFloat(that[4]);
             return ret;
           }
           return {
@@ -762,12 +785,13 @@
         return "#" + this.hex(r) + this.hex(g) + this.hex(b);
       },
       getValue: function(){
-        var c;
-        c = this.color.vals[this.idx];
+        return this.toValue(this.color.vals[this.idx]);
+      },
+      toValue: function(c){
         if (c.alpha != null && c.alpha < 1) {
-          return this.getRgbaString();
+          return this.toRgbaString(c);
         } else {
-          return this.getHexString();
+          return this.toHexString(c);
         }
       },
       isPinned: function(){
@@ -800,6 +824,7 @@
         }
         c = this.color.vals[idx];
         this.setHsl(c.hue, c.sat, c.lit);
+        this.setAlpha(c.alpha);
         n = this.palpad.childNodes[idx + 1];
         return this.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
       },
@@ -972,10 +997,16 @@
             });
           });
           s.$watch('color', function(color){
-            if (color != null) {
-              return setTimeout(function(){
-                return ldcp.setColor(color);
-              }, 0);
+            var cc, e;
+            try {
+              cc = ldcp.getValue();
+              if (color != null && cc !== color) {
+                return setTimeout(function(){
+                  return ldcp.setColor(color);
+                }, 0);
+              }
+            } catch (e$) {
+              return e = e$;
             }
           });
           ldcp.on('change-idx', function(idx){
@@ -985,6 +1016,9 @@
               }
             });
           });
+          if (a.ngIdx && !(s.idx != null)) {
+            s.idx = ldcp.getIdx();
+          }
           s.$watch('idx', function(idx){
             if (idx != null) {
               return setTimeout(function(){

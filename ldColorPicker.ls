@@ -51,7 +51,7 @@ do ->
       "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     */
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
-    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small><div class='ldcp-color'></div></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
+    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     node.innerHTML = HTML
     node.addEventListener(\click, (e) -> cancelAll e)
@@ -209,7 +209,7 @@ do ->
           document.removeEventListener \click, @clickToggler
           @node.style.display = \none
           if @target =>
-            ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)])
+            ret = @color.vals.map((it,idx) ~> [idx, @toValue(it), it])
               .filter(~> it.1 == @target.value.to-lower-case!).0
             if ret => @idx = ret.0
             else @color.vals.splice 0, 0, @convert.color @target.value
@@ -236,7 +236,7 @@ do ->
           @update-dimension!
 
           if @target =>
-            ret = @color.vals.map((it,idx) ~> [idx, @toHexString(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
+            ret = @color.vals.map((it,idx) ~> [idx, @toValue(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
             if ret => @idx = ret.0
             else @color.vals.splice 0, 0, @convert.color @target.value
           c = @color.vals[@idx]
@@ -251,9 +251,12 @@ do ->
         if clean => @color.vals = []
         for it in result => @color.vals.push it
         ldColorPicker.palette.update!
-      set-color: (c)->
-        if typeof(c) == typeof("") => c = @convert.color c
-        @color.vals.splice @idx, 1, c
+      set-color: (c, alpha, is-none)->
+        if typeof(c) == typeof("") =>
+          c = @convert.color c
+          if alpha? => c.alpha = alpha
+          if is-none? => c.is-none = is-none
+        @color.vals[@idx] <<< c
         ldColorPicker.palette.update!
       update-palette: -> 
         [nlen, vlen] = [@color.nodes.length, @color.vals.length]
@@ -261,8 +264,11 @@ do ->
           for i from nlen til vlen =>
             node = document.createElement("div")
               ..setAttribute \class, \ldcp-color
-              ..addEventListener \click, (e) ~> @set-idx e.target.idx
+              ..addEventListener \click, (e) ~>
+                idx = (if e.target.idx? => e.target.idx else e.target.parentNode.idx)
+                @set-idx idx
               ..idx = i
+            node.appendChild(document.createElement("div"))
             @color.palette.appendChild(node)
             @color.nodes.push node
         else if vlen < nlen =>
@@ -283,7 +289,7 @@ do ->
         @inputhex.value = @getHexString!
       update-color: (idx) ->
         c = @color.vals[idx]
-        n = @color.nodes[idx]
+        n = @color.nodes[idx].childNodes.0
         n.style.background = @toHslaString(c)
         if c.is-none => n.style.border = "1px dashed \#ccc"
         else n.style.border = "1px dashed transparent"
@@ -294,6 +300,11 @@ do ->
             g = parseInt(it.substring(3,5), 16) / 255
             b = parseInt(it.substring(5,7), 16) / 255
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
+            return ret
+          if /rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)/.exec(it) =>
+            [r,g,b] = that[1,2,3]map(->parseInt(it)/255)
+            ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
+            ret.alpha = parseFloat(that.4)
             return ret
           {hue:0,sat:0,lit:0,sat-v:0,val:0}
 
@@ -351,9 +362,9 @@ do ->
         if c.is-none => return \none
         [r,g,b,a] = @toRgba c
         "\##{@hex r}#{@hex g}#{@hex b}"
-      getValue: ->
-        c = @color.vals[@idx]
-        if c.alpha? and c.alpha < 1 => @getRgbaString! else @getHexString!
+      getValue: -> @toValue @color.vals[@idx]
+      toValue: (c) ->
+        if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
 
       is-pinned: -> @pinned
       set-pin: -> 
@@ -366,13 +377,13 @@ do ->
       set-idx: (idx) ->
         if @idx != idx => 
           c = @color.vals[idx]
-          @handle \change, (if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
+          @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
           @handle \change-idx, idx
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit
-        #@colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
+        @set-alpha c.alpha
         n = @palpad.childNodes[idx + 1]
         @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
 
@@ -483,9 +494,13 @@ do ->
           s.ldcp = ldcp = new ldColorPicker e.0, {}, null
           ldcp.on \change, (color) -> s.$apply -> s.color = color
           s.$watch 'color', (color) -> 
-            if color? => setTimeout((-> ldcp.set-color color),0)
+            try
+              cc = ldcp.getValue!
+              if color? and cc != color => setTimeout((-> ldcp.set-color color),0)
+            catch e =>
 
           ldcp.on \change-idx, (idx)-> s.$apply -> if a.ngIdx => s.idx = idx
+          if a.ngIdx and !(s.idx?) => s.idx = ldcp.get-idx!
           s.$watch 'idx', (idx) -> if idx? => setTimeout((->ldcp.set-idx idx),0)
 
           ldcp.on \change-pin, (pin) -> s.$apply -> if a.ngPinned => s.pinned = pin

@@ -145,8 +145,8 @@ do ->
         if typeof(node) == typeof("") => context = node
         if !@val[context] => @val[context] = @random!
         @val[context]
-      update: ->
-        for item in @members => item.update-palette!
+      update: (context, affect-idx, direction) ->
+        for item in @members => item.update-palette context, affect-idx, direction
       random: ->
         [{hue: parseInt(Math.random!*30 + i * 90 - 15), sat: 0.3 + Math.random!*0.4, lit: 0.4 + Math.random!*0.4} for i from 0 til 5]
       val: do
@@ -181,10 +181,10 @@ do ->
           ..send!
       add-color: -> if @color.vals.length < 12 =>
         @color.vals.splice 0, 0, @random!
-        @update-palette!
+        ldColorPicker.palette.update @context, 0, 1
       remove-color: -> if @color.vals.length > 1 =>
         @color.vals.splice @idx, 1
-        @update-palette!
+        ldColorPicker.palette.update @context, @idx, -1
       edit: -> 
         hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
         window.open "http://loading.io/color/?colors=#hex"
@@ -258,7 +258,7 @@ do ->
           if is-none? => c.is-none = is-none
         @color.vals[@idx] <<< c
         ldColorPicker.palette.update!
-      update-palette: -> 
+      update-palette: (context, affect-idx, direction) -> 
         [nlen, vlen] = [@color.nodes.length, @color.vals.length]
         if vlen > nlen =>
           for i from nlen til vlen =>
@@ -277,6 +277,11 @@ do ->
           @color.nodes.splice vlen
         for idx from 0 til vlen => @update-color idx
         if @idx >= vlen => @idx = vlen - 1
+        old-idx = @idx
+        if (context?) and context == @context and (affect-idx?) and (direction?) and affect-idx <= @idx => 
+          @idx += direction
+          @idx = @idx >? 0 <? @color.vals.length - 1
+          if old-idx != @idx => @handle \change-idx, @idx
         c = @color.vals[@idx]
         value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
         if @old-value != value => @handle \change, value

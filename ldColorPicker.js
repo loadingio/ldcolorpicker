@@ -298,11 +298,11 @@
         }
         return this.val[context];
       },
-      update: function(){
+      update: function(context, affectIdx, direction){
         var i$, ref$, len$, item, results$ = [];
         for (i$ = 0, len$ = (ref$ = this.members).length; i$ < len$; ++i$) {
           item = ref$[i$];
-          results$.push(item.updatePalette());
+          results$.push(item.updatePalette(context, affectIdx, direction));
         }
         return results$;
       },
@@ -401,13 +401,13 @@
       addColor: function(){
         if (this.color.vals.length < 12) {
           this.color.vals.splice(0, 0, this.random());
-          return this.updatePalette();
+          return ldColorPicker.palette.update(this.context, 0, 1);
         }
       },
       removeColor: function(){
         if (this.color.vals.length > 1) {
           this.color.vals.splice(this.idx, 1);
-          return this.updatePalette();
+          return ldColorPicker.palette.update(this.context, this.idx, -1);
         }
       },
       edit: function(){
@@ -582,8 +582,8 @@
         import$(this.color.vals[this.idx], c);
         return ldColorPicker.palette.update();
       },
-      updatePalette: function(){
-        var ref$, nlen, vlen, i$, i, x$, node, idx, c, value, this$ = this;
+      updatePalette: function(context, affectIdx, direction){
+        var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, this$ = this;
         ref$ = [this.color.nodes.length, this.color.vals.length], nlen = ref$[0], vlen = ref$[1];
         if (vlen > nlen) {
           for (i$ = nlen; i$ < vlen; ++i$) {
@@ -609,6 +609,14 @@
         }
         if (this.idx >= vlen) {
           this.idx = vlen - 1;
+        }
+        oldIdx = this.idx;
+        if (context != null && context === this.context && affectIdx != null && direction != null && affectIdx <= this.idx) {
+          this.idx += direction;
+          this.idx = (ref$ = (ref2$ = this.idx) > 0 ? ref2$ : 0) < (ref1$ = this.color.vals.length - 1) ? ref$ : ref1$;
+          if (oldIdx !== this.idx) {
+            this.handle('change-idx', this.idx);
+          }
         }
         c = this.color.vals[this.idx];
         value = c.alpha != null && c.alpha < 1

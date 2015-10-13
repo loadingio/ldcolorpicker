@@ -20,6 +20,7 @@ body {
   width: 287px;
   height: 160px;
   text-align: left;
+  z-index: 1;
 }
 .ldColorPicker *,
 .ldColorPicker *:before,

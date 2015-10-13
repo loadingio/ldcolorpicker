@@ -1,5 +1,5 @@
 .ldcp-panel {
-  padding-bottom: 54px;
+  padding-bottom: 29px;
 }
 .ldcp-g1 {
   height: 100%;
@@ -16,6 +16,13 @@
   height: 19px;
 }
 .ldcp-g21 {
+  width: 100%;
+}
+.ldcp-g3 {
+  height: 20px;
+  display: none;
+}
+.ldcp-g31 {
   width: 100%;
 }
 .ldColorPicker.no-alpha .ldcp-2d {

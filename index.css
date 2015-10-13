@@ -232,14 +232,10 @@ body {
 .ldcp-colors span:last-of-type {
   border-radius: 0 2px 2px 0;
 }
-.ldcp-g3 {
-  height: 20px;
-}
 .ldcp-g31 {
-  width: 100%;
   text-align: right;
 }
-.ldcp-g31 input.hex,
+.ldcp-g31 input.ldcp-input-hex,
 .ldcp-g31 input {
   height: 100%;
   border-radius: 1px;
@@ -344,7 +340,7 @@ body {
   display: none;
 }
 .ldcp-panel {
-  padding-bottom: 54px;
+  padding-bottom: 29px;
 }
 .ldcp-g1 {
   height: 100%;
@@ -361,6 +357,13 @@ body {
   height: 19px;
 }
 .ldcp-g21 {
+  width: 100%;
+}
+.ldcp-g3 {
+  height: 20px;
+  display: none;
+}
+.ldcp-g31 {
   width: 100%;
 }
 .ldColorPicker.no-alpha .ldcp-2d {

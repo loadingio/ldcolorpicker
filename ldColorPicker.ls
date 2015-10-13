@@ -49,7 +49,7 @@ do ->
       "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     */
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
-    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small><div class='ldcp-color'></div></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>R</span><input value='255'><span>G</span><input value='255'><span>B</span><input value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha'><span>Hex</span><input value='#00ff00' class='hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
+    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small><div class='ldcp-color'></div></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     node.innerHTML = HTML
     node.addEventListener(\click, (e) -> cancelAll e)
@@ -85,9 +85,16 @@ do ->
       @chooser = do
         panel: node.querySelector(".ldcp-chooser")
         input: node.querySelector(".ldcp-chooser input")
+      @inputhex = node.querySelector(".ldcp-input-hex")
+      @inputH = node.querySelector(".ldcp-input-h")
+      @inputS = node.querySelector(".ldcp-input-s")
+      @inputL = node.querySelector(".ldcp-input-l")
+      @inputA = node.querySelector(".ldcp-input-a")
+      @colornone = node.querySelector(".ldcp-color-none")
+        ..addEventListener(\click, (~> @toggle-none!))
       @palpad = node.querySelector(".ldcp-palette")
       @P2D = {ptr: node.querySelector(".ldcp-ptr-circle"), panel: node.querySelector(".ldcp-2d img")}
-      @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar")}
+      @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar"), panel: node.querySelectorAll(".ldcp-1d img")}
       @colorptr = node.querySelector(".ldcp-colorptr")
       @update-dimension!
       @ <<< {width: node.offsetWidth, height: node.offsetHeight}
@@ -253,13 +260,22 @@ do ->
           @color.nodes.splice vlen
         for idx from 0 til vlen => @update-color idx
         if @idx >= vlen => @idx = vlen - 1
-        hex = ldColorPicker.prototype.toHexString @color.vals[@idx]
-        if @old-hex != hex => @handle \change, hex
-        @old-hex = ldColorPicker.prototype.toHexString @color.vals[@idx]
+        c = @color.vals[@idx]
+        value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
+        if @old-value != value => @handle \change, value
+        @old-value = value
         @set-idx @idx
+        @inputH.value = c.hue
+        @inputS.value = c.sat
+        @inputL.value = c.lit
+        @inputA.value = (if c.alpha? => c.alpha else 1)
+        @inputhex.value = @getHexString!
       update-color: (idx) ->
         c = @color.vals[idx]
-        @color.nodes[idx]style.background = "hsl(#{c.hue or 0},#{100 * c.sat or 0}%,#{100 * c.lit or 0}%)"
+        n = @color.nodes[idx]
+        n.style.background = @toHslaString(c)
+        if c.is-none => n.style.border = "1px dashed \#ccc"
+        else n.style.border = "1px dashed transparent"
       convert: do
         color: ->
           if /#[a-fA-F0-9]{6}/.exec(it) => 
@@ -287,7 +303,7 @@ do ->
           hue = ( hue + 360 ) % 360
           return {hue, sat, lit, sat-v, val}
 
-      toRgb: (c) -> 
+      toRgba: (c) ->
         C = ( 1 - Math.abs(2 * c.lit - 1)) * c.sat
         X = C * ( 1 - Math.abs( ( (c.hue / 60) % 2 ) - 1 ) )
         m = c.lit - C / 2
@@ -299,40 +315,74 @@ do ->
           | 4 => [X,0,C]
           | 5 => [C,0,X]
           | 6 => [C,X,0]
-        [r,g,b] = [r + m, g + m, b + m]
+        [r,g,b,a] = [r + m, g + m, b + m, (if c.alpha? => c.alpha else 1)]
       hex: -> 
         it = Math.round(it * 255) >? 0 <? 255
         it = it.toString 16
         if it.length < 2 => "0#it" else it
 
-      toHexString: (c) -> 
-        [r,g,b] = @toRgb c
-        "\##{@hex r}#{@hex g}#{@hex b}"
+      getHslaString: -> @toHslaString @color.vals[@idx]
+      toHslaString: (c) ->
+        if c.is-none => return \none
+        return "hsla(#{c.hue or 0},#{100 * c.sat or 0}%,#{100 * c.lit or 0}%,#{if c.alpha? => c.alpha else 1})"
+
+      getRgbaString: -> @toRgbaString @color.vals[@idx]
+      toRgbaString: (c) ->
+        if c.is-none => return \none
+        ret = @toRgba c
+        for i from 0 til 3 => ret[i] = parseInt(ret[i] * 255)
+        return "rgba(#{ret.join(\,)})"
 
       getHexString: (addhash = true) -> 
         ret = @toHexString @color.vals[@idx]
         return if !addhash => ret.replace /#/g, '' else ret
+      toHexString: (c) ->
+        if c.is-none => return \none
+        [r,g,b,a] = @toRgba c
+        "\##{@hex r}#{@hex g}#{@hex b}"
+      getValue: ->
+        c = @color.vals[@idx]
+        if c.alpha? and c.alpha < 1 => @getRgbaString! else @getHexString!
 
       get-idx: -> @idx
-
       set-idx: (idx) ->
         if @idx != idx => 
-          @handle \change, @toHexString(@color.vals[idx])
+          c = @color.vals[idx]
+          @handle \change, if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
           @handle \change-idx, idx
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit
         @colorptr.style.left = "#{((idx + 0.25) * 100 / @color.nodes.length)}%"
+
+      set-alpha: (alpha, no-recurse = false) ->
+        c = @color.vals[@idx]
+        alpha-old = c.alpha
+        c.alpha = alpha
+        y = @P1D.h * (1 - alpha)
+        if alpha-old != alpha =>
+          if c.is-none => c.is-none = false
+          ldColorPicker.palette.update!
+        @set-pos 1, 0, y, true
+
+      toggle-none: ->
+        c = @color.vals[@idx]
+        c.is-none = true
+        ldColorPicker.palette.update!
+
       set-hsl: (hue, sat, lit, no-recurse = false) ->
-        hex-old = @toHexString @color.vals[@idx]
-        @color.vals[@idx] <<< {hue, sat, lit}
+        c = @color.vals[@idx]
+        value-old = @toRgba c .join(\,)
+        c <<< {hue, sat, lit}
         @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})
-        hex = @toHexString @color.vals[@idx]
+        @P1D.panel.1.style.backgroundColor = @toHexString({hue, sat, lit})
+        value = @toRgba c .join(\,)
         if @target => 
-          @target.value = hex
-          @target.setAttribute("data-color",hex)
-        if hex-old != hex => 
+          @target.value = @getValue!
+          @target.setAttribute("data-color", value)
+        if value-old != value =>
+          if c.is-none => c.is-none = false
           ldColorPicker.palette.update!
 
         if !no-recurse =>
@@ -355,10 +405,15 @@ do ->
         x = x >? 0 <? ctx.w
         y = y >? 0 <? ctx.h
         ptr.style.top = "#{y}px"
+        #@inputhex.value = @getValue!
         if type == 2 => ptr.style.left = "#{x}px"
-        if !no-recurse =>
+        if !no-recurse and type == 1 =>
+          ly = y * 1.04 - ctx.h * 0.02
+          ly = (ly / ctx.h) >? 0 <? 1
+          @set-alpha parseInt(1000 * (1 - ly)) / 1000
+          @update-color @idx
+        if !no-recurse and type != 1 =>
           [lx, ly] = [x * 1.04 - ctx.w * 0.02, y * 1.04 - ctx.h * 0.02]
-          #[lx, ly] = [x, y]
           lx = (lx / ctx.w) >? 0 <? 1
           ly = (ly / ctx.h) >? 0 <? 1
           c = @color.vals[@idx]

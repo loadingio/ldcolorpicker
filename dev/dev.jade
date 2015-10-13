@@ -1,0 +1,122 @@
+doctype html
+//- basic libraries: jquery(1.10.2), d3js(3.3.11), angularjs(1.2.3), bootstrap(3.0)/semantic-ui(0.9.3/0.9.5)
+- var use = { cdn: false, og: true, favicon: true }
+- var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false }
+- var assets = "assets"
+- var thumbnail = "http://zbryikt.github.io/ldcolorpicker/thumbnail.png"
+- var favicon = "http://zbryikt.github.io/ldcolorpicker/thumbnail.png"
+html(lang="en")
+  head(prefix="og: http://ogp.me/ns#")
+    meta(charset="utf-8")
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title template
+    // libraries
+    include library.jade
+    // custom files
+    link(rel="stylesheet",type="text/css",href="index.css")
+    script(type="text/javascript",src="ldColorPicker.js")
+    script(type="text/javascript",src="dev.js")
+  body
+    #root
+      .ldColorPicker.custom.shadow.round(data-palette="#ff0000 #00ff00 #0000ff")
+      //-.ldColorPicker.round.shadow.top.bubble.custom.palette-only.compact-palette
+      //-.ldColorPicker.round.shadow.top.bubble.custom.palette-only.round-palette
+      .ldColorPicker.round.shadow.top.bubble.custom.flat
+        .ldcp-panel
+          .ldcp-v.ldcp-g1
+            .ldcp-h.ldcp-g11.ldcp-2d
+              .ldcp-ptr-circle(style="top:20px;left:20px")
+              img(src="gradient.png")
+              .ldcp-mask
+            .ldcp-h.ldcp-g12.ldcp-1d
+              .ldcp-ptr-bar
+              img(src="hue.png")
+              .ldcp-mask
+            .ldcp-h.ldcp-g13.ldcp-1d.ldcp-alpha
+              .ldcp-ptr-bar
+              img(src="opacity.png")
+              .ldcp-mask
+          .ldcp-v.ldcp-g2
+            .ldcp-colors.ldcp-h.ldcp-g21
+              small.ldcp-colorptr
+              .ldcp-palette
+                .ldcp-color(style="background:#ac5d53")
+                .ldcp-color(style="background:#e2b955")
+                .ldcp-color(style="background:#f6fcc5")
+                .ldcp-color(style="background:#32b343")
+                .ldcp-color(style="background:#376aa9")
+              small.ldcp-sep
+              .ldcp-color.ldcp-color-none
+              //-span.ldcp-cbtn.ldcp-btn-none x
+              span.ldcp-cbtn.ldcp-btn-add +
+              span.ldcp-cbtn.ldcp-btn-remove -
+              span.ldcp-cbtn.ldcp-btn-edit(style="font-family:wingdings") &#228;
+              //-span.ldcp-cbtn.ldcp-btn-load L
+          .ldcp-v.ldcp-g3
+            .ldcp-h.ldcp-g31
+              span R
+              input(value="255")
+              span G
+              input(value="255")
+              span B
+              input(value="255")
+              span.ldcp-alpha A
+              input.ldcp-alpha(value="255")
+              span Hex
+              input.hex(value="#00ff00")
+
+      br
+
+      .ldColorPicker.round.shadow.custom
+        .ldcp-panel.ldcp-picker
+          .ldcp-v.ldcp-g1
+            .ldcp-2d.ldcp-h.ldcp-g11
+              .ldcp-ptr-circle
+              img(src="gradient.png")
+              .ldcp-mask
+            .ldcp-1d.ldcp-h.ldcp-g12
+              div
+              div
+              .ldcp-ptr-bar
+              img(src="hue.png")
+              .ldcp-mask(style="margin:0;padding:0;left:auto")
+
+            .ldcp-1d.ldcp-h.ldcp-g13
+              div
+              div
+              .ldcp-bar
+              img(style="margin:0;padding:0;left:auto")
+              .ldcp-mask(style="margin:0;padding:0;left:auto")
+          .ldcp-v.ldcp-g2
+            .ldcp-colorsx.ldcp-h.ldcp-g21
+              small.ldcp-colorptr
+              .ldcp-palette
+                .ldcp-color(style="background:#ac5d53")
+                .ldcp-color(style="background:#e2b955")
+                .ldcp-color(style="background:#f6fcc5")
+                .ldcp-color(style="background:#32b343")
+                .ldcp-color(style="background:#376aa9")
+              //-span.ldcp-cbtn.ldcp-btn-none
+              span.ldcp-cbtn.ldcp-btn-add +
+              span.ldcp-cbtn.ldcp-btn-remove -
+              //-span.ldcp-cbtn.ldcp-btn-edit E
+              //-span.ldcp-cbtn.ldcp-btn-load L
+          .ldcp-v.ldcp-g3
+            .ldcp-h.ldcp-g31
+              span R
+              input(value="255")
+              span G
+              input(value="255")
+              span B
+              input(value="255")
+              span Hex
+              input.hex(value="#00ff00")
+
+          //-.ldcp-vp.ldcp-wg3
+            .ldcp-functionsx.ldcp-hp.ldcp-wg31
+              .ldcp-button +
+              .ldcp-button -
+              .ldcp-button ?
+        .ldcp-panel.ldcp-chooser
+        
+

@@ -111,16 +111,6 @@
     this.callback = customCallback;
     this.pinned = customPinned;
     this.eventHandler = {};
-    /*
-    HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div>"
-    HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div>"
-    #HTML1D += HTML1D
-    HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 5) + "</div>"
-    HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
-    HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
-    node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
-      "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
-    */
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>";
     HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>";
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>";
@@ -149,16 +139,6 @@
     node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", function(){
       return this$.removeColor();
     });
-    /*
-    node.querySelector(".ldcp-chooser button:nth-of-type(1)").addEventListener("click", ~> 
-      @chooser.input.value = ldColorPicker.default-palette-path or 'http://loading.io/palette/559087d71deb8c3a54548932'
-    )
-    node.querySelector(".ldcp-chooser button:nth-of-type(2)").addEventListener("click", ~> 
-      @load-palette @chooser.input.value
-      @toggle-config!
-    )
-    node.querySelector(".ldcp-chooser button:nth-of-type(3)").addEventListener("click", ~> @toggle-config!)
-    */
     setTimeout(function(){
       var x$, i, i$, to$, idx, c;
       this$.chooser = {

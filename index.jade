@@ -385,8 +385,14 @@ html(lang="en")
                 td setPin(isPinned)
                 td pin color picker widget
               tr
-                td setColor(hexString, alpha, isNone)
+                td setColor(hex, alpha, isNone)
                 td set active item in palette to color of hexString. alpha and isNone are optional.
+              tr
+                td setAlpha(alpha)
+                td set alpha value
+              tr
+                td getAlpha()
+                td get alpha value
           br
           h3#jquery jQuery
           p ldColorPicker also provides jQuery interface to initialize and access color picker:

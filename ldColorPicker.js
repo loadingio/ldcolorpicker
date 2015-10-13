@@ -836,6 +836,9 @@
         n = this.palpad.childNodes[idx + 1];
         return this.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
       },
+      getAlpha: function(){
+        return this.color.vals[this.idx].alpha != null ? this.color.vals[this.idx].alpha : 1;
+      },
       setAlpha: function(alpha, noRecurse){
         var c, alphaOld, y;
         noRecurse == null && (noRecurse = false);

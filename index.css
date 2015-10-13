@@ -181,6 +181,7 @@ body {
   height: 100%;
   background: #eee;
   display: inline-block;
+  overflow: hidden;
   -webkit-flex: 1 1;
   flex: 1 1;
   text-align: center;

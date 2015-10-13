@@ -392,6 +392,7 @@ do ->
         n = @palpad.childNodes[idx + 1]
         @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
 
+      get-alpha: -> return if (@color.vals[@idx].alpha?) => @color.vals[@idx].alpha else 1
       set-alpha: (alpha, no-recurse = false) ->
         c = @color.vals[@idx]
         alpha-old = c.alpha

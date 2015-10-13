@@ -395,7 +395,8 @@ body {
 .ldColorPicker.palette-only .ldcp-cbtn {
   display: none;
 }
-.ldColorPicker.round-palette .ldcp-color {
+.ldColorPicker.round-palette .ldcp-color,
+.ldColorPicker.round-palette .ldcp-color-none {
   border-radius: 50%;
   width: 22px;
   -webkit-flex: 0 0 22px;
@@ -418,6 +419,18 @@ body {
 }
 .ldColorPicker.compact-palette .ldcp-colors span:first-of-type {
   margin-left: 0;
+}
+.ldColorPicker.no-button .ldcp-cbtn {
+  display: none;
+}
+.ldColorPicker.no-button .ldcp-color-none {
+  margin-right: 0;
+}
+.ldColorPicker.no-empty-color .ldcp-color-none {
+  display: none;
+}
+.ldColorPicker.no-empty-color .ldcp-palette {
+  margin-right: 0;
 }
 .ldColorPicker.flat .ldcp-panel {
   box-shadow: none;

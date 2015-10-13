@@ -13,6 +13,7 @@ do ->
     custom-callback = config.oncolorchange or (srcnode and srcnode.getAttribute(\data-oncolorchange)) or null
     custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0
     custom-palette = (config.palette or (srcnode and srcnode.getAttribute(\data-palette))) or null
+    custom-pinned = (config.pinned or (srcnode and srcnode.getAttribute(\data-pinned))) or null
     if typeof(custom-palette) == typeof("") =>
       custom-palette = custom-palette.trim!
       if custom-palette.0 == \[ => @initpal = {colors:[{hex:it} for it in JSON.parse(custom-palette)]}
@@ -37,6 +38,7 @@ do ->
     if !(\ldColorPickr in custom-class.split(' ')) => custom-class += ' ldColorPicker'
     node.setAttribute("class", "#{custom-class}")
     @ <<< {node, target, idx: custom-idx, context: custom-context, class: custom-class, callback: custom-callback}
+    @ <<< {pinned: custom-pinned}
     @event-handler = {}
     /*
     HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div>"
@@ -118,6 +120,7 @@ do ->
         setTimeout((~>@load-palette @chooser.input.value),0)
       if @initpal =>
         @set-palette @initpal
+      if custom-pinned => @toggle true
     ), 0
     @
   ) <<< do
@@ -198,6 +201,7 @@ do ->
       handle: (name, value) -> if @event-handler[name] => for cb in that => cb value
       on: (name, cb) -> @event-handler.[][name].push cb
       toggle: (isOn=null) ->
+        if @pinned => isOn = true
         if isOn == false or ( isOn == null and @node.style.display == \block ) =>
           document.removeEventListener \click, @clickToggler
           @node.style.display = \none

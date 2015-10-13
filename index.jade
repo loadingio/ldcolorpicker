@@ -26,11 +26,12 @@ html(lang="en")
             .brand by loading.io
             .subtitle 
               | Palette-Aware 
-              span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color")
-                span(data-toggle="tooltip",data-placement="bottom",title="click me!") Color
+              span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
+              data-cpclass="palette-only flat round shadow",data-pinned="true")
+                span(data-toggle="tooltip",data-placement="top",title="wow!") Color
               |  Picker 
           .col-sm-6
-            .ldColorPicker.round.shadow.flat
+            .ldColorPicker.round.shadow.flat.no-button.no-empty-color
     #root
       .row
         .col-sm-8

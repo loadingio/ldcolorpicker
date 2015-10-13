@@ -13,7 +13,7 @@
     return false;
   };
   ldColorPicker = import$(function(target, config, node){
-    var srcnode, that, customClass, customContext, customCallback, customIdx, customPalette, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
+    var srcnode, that, customClass, customContext, customCallback, customIdx, customPalette, customPinned, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
     target == null && (target = null);
     config == null && (config = {});
     node == null && (node = null);
@@ -23,6 +23,7 @@
     customCallback = config.oncolorchange || (srcnode && srcnode.getAttribute('data-oncolorchange')) || null;
     customIdx = config.index || (srcnode && parseInt(srcnode.getAttribute('data-palette-idx'))) || 0;
     customPalette = (config.palette || (srcnode && srcnode.getAttribute('data-palette'))) || null;
+    customPinned = (config.pinned || (srcnode && srcnode.getAttribute('data-pinned'))) || null;
     if (typeof customPalette === typeof "") {
       customPalette = customPalette.trim();
       if (customPalette[0] === '[') {
@@ -108,6 +109,7 @@
     this.context = customContext;
     this['class'] = customClass;
     this.callback = customCallback;
+    this.pinned = customPinned;
     this.eventHandler = {};
     /*
     HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div>"
@@ -220,7 +222,10 @@
         }, 0);
       }
       if (this$.initpal) {
-        return this$.setPalette(this$.initpal);
+        this$.setPalette(this$.initpal);
+      }
+      if (customPinned) {
+        return this$.toggle(true);
       }
       function fn$(e){
         return this$.setIdx(e.target.idx);
@@ -451,6 +456,9 @@
       toggle: function(isOn){
         var ret, c, ref$, sx, sy, bcr, classList, left, top, this$ = this;
         isOn == null && (isOn = null);
+        if (this.pinned) {
+          isOn = true;
+        }
         if (isOn === false || (isOn === null && this.node.style.display === 'block')) {
           document.removeEventListener('click', this.clickToggler);
           this.node.style.display = 'none';

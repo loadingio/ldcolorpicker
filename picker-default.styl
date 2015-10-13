@@ -50,7 +50,7 @@
   .ldcp-cbtn
     display: none
 .ldColorPicker.round-palette
-  .ldcp-color
+  .ldcp-color, .ldcp-color-none
     border-radius: 50%
     width: 22px
     flex(0 0 22px)
@@ -71,3 +71,16 @@
       border-radius: 3px 0 0 3px
     span:first-of-type
       margin-left: 0
+
+/* no button */
+.ldColorPicker.no-button
+  .ldcp-cbtn
+    display: none
+  .ldcp-color-none
+    margin-right: 0
+
+.ldColorPicker.no-empty-color
+  .ldcp-color-none
+    display: none
+  .ldcp-palette
+    margin-right: 0

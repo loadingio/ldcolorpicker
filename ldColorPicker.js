@@ -186,7 +186,7 @@
       this$.width = node.offsetWidth;
       this$.height = node.offsetHeight;
       this$.color = {
-        nodes: node.querySelectorAll(".ldcp-color"),
+        nodes: node.querySelectorAll(".ldcp-palette .ldcp-color"),
         palette: node.querySelector(".ldcp-colors .ldcp-palette"),
         vals: ldColorPicker.palette.getVal(this$, this$.context)
       };
@@ -766,7 +766,7 @@
         }
         c = this.color.vals[idx];
         this.setHsl(c.hue, c.sat, c.lit);
-        return this.colorptr.style.left = (idx + 0.25) * 100 / this.color.nodes.length + "%";
+        return this.colorptr.style.left = (idx + 0.5) * 100 / this.color.nodes.length + "%";
       },
       setAlpha: function(alpha, noRecurse){
         var c, alphaOld, y;

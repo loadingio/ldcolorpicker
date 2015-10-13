@@ -99,7 +99,7 @@ do ->
       @update-dimension!
       @ <<< {width: node.offsetWidth, height: node.offsetHeight}
       @color = do
-        nodes: node.querySelectorAll(".ldcp-color")
+        nodes: node.querySelectorAll(".ldcp-palette .ldcp-color")
         palette: node.querySelector(".ldcp-colors .ldcp-palette")
         vals: ldColorPicker.palette.getVal(@, @context)
       # arrayize
@@ -354,7 +354,7 @@ do ->
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit
-        @colorptr.style.left = "#{((idx + 0.25) * 100 / @color.nodes.length)}%"
+        @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
 
       set-alpha: (alpha, no-recurse = false) ->
         c = @color.vals[@idx]

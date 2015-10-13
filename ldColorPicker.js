@@ -23,7 +23,7 @@
     customCallback = config.oncolorchange || (srcnode && srcnode.getAttribute('data-oncolorchange')) || null;
     customIdx = config.index || (srcnode && parseInt(srcnode.getAttribute('data-palette-idx'))) || 0;
     customPalette = (config.palette || (srcnode && srcnode.getAttribute('data-palette'))) || null;
-    customPinned = (config.pinned || (srcnode && srcnode.getAttribute('data-pinned'))) || null;
+    customPinned = (config.pinned || (srcnode && srcnode.getAttribute('data-pinned') === 'true')) || null;
     if (typeof customPalette === typeof "") {
       customPalette = customPalette.trim();
       if (customPalette[0] === '[') {
@@ -756,11 +756,21 @@
           return this.getHexString();
         }
       },
+      isPinned: function(){
+        return this.pinned;
+      },
+      setPin: function(it){
+        if (this.pinned !== !!it) {
+          this.pinned = !!it;
+          this.handle('change-pin', this.pinned);
+        }
+        return this.toggle(this.pinned);
+      },
       getIdx: function(){
         return this.idx;
       },
       setIdx: function(idx){
-        var c;
+        var c, n;
         if (this.idx !== idx) {
           c = this.color.vals[idx];
           this.handle('change', c.alpha != null && c.alpha < 1
@@ -774,7 +784,8 @@
         }
         c = this.color.vals[idx];
         this.setHsl(c.hue, c.sat, c.lit);
-        return this.colorptr.style.left = (idx + 0.5) * 100 / this.color.nodes.length + "%";
+        n = this.palpad.childNodes[idx + 1];
+        return this.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
       },
       setAlpha: function(alpha, noRecurse){
         var c, alphaOld, y;
@@ -933,7 +944,8 @@
         scope: {
           ldcp: '=ngLdcp',
           color: '=ngModel',
-          idx: '=ngIdx'
+          idx: '=ngIdx',
+          pinned: '=ngPinned'
         },
         link: function(s, e, a, c){
           var ldcp;
@@ -951,8 +963,20 @@
             });
           });
           if (a.ngIdx) {
-            return s.idx = ldcp.getIdx();
+            s.idx = ldcp.getIdx();
           }
+          ldcp.on('change-pin', function(pin){
+            return s.$apply(function(){
+              if (a.ngPinned) {
+                return s.pinned = pin;
+              }
+            });
+          });
+          return s.$watch('pinned', function(pin){
+            return setTimeout(function(){
+              return ldcp.setPin(pin);
+            }, 0);
+          });
         }
       };
     });

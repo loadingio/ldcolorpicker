@@ -13,7 +13,7 @@ do ->
     custom-callback = config.oncolorchange or (srcnode and srcnode.getAttribute(\data-oncolorchange)) or null
     custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0
     custom-palette = (config.palette or (srcnode and srcnode.getAttribute(\data-palette))) or null
-    custom-pinned = (config.pinned or (srcnode and srcnode.getAttribute(\data-pinned))) or null
+    custom-pinned = (config.pinned or (srcnode and srcnode.getAttribute(\data-pinned)==\true)) or null
     if typeof(custom-palette) == typeof("") =>
       custom-palette = custom-palette.trim!
       if custom-palette.0 == \[ => @initpal = {colors:[{hex:it} for it in JSON.parse(custom-palette)]}
@@ -348,6 +348,13 @@ do ->
         c = @color.vals[@idx]
         if c.alpha? and c.alpha < 1 => @getRgbaString! else @getHexString!
 
+      is-pinned: -> @pinned
+      set-pin: -> 
+        if @pinned != !!it =>
+          @pinned = !!it
+          @handle \change-pin, @pinned
+        @toggle @pinned
+
       get-idx: -> @idx
       set-idx: (idx) ->
         if @idx != idx => 
@@ -358,7 +365,9 @@ do ->
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit
-        @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
+        #@colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
+        n = @palpad.childNodes[idx + 1]
+        @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
 
       set-alpha: (alpha, no-recurse = false) ->
         c = @color.vals[@idx]
@@ -462,7 +471,7 @@ do ->
       ..directive \ldcolorpicker, -> do
         require: <[]>
         restrict: \A
-        scope: ldcp: \=ngLdcp, color: \=ngModel, idx: \=ngIdx
+        scope: ldcp: \=ngLdcp, color: \=ngModel, idx: \=ngIdx, pinned: \=ngPinned
         link: (s,e,a,c) ->
           s.ldcp = ldcp = new ldColorPicker e.0, {}, null
           ldcp.on \change, (color) -> s.$apply ->
@@ -470,3 +479,5 @@ do ->
           ldcp.on \change-idx, (idx)-> s.$apply ->
             if a.ngIdx => s.idx = idx
           if a.ngIdx => s.idx = ldcp.getIdx!
+          ldcp.on \change-pin, (pin) -> s.$apply -> if a.ngPinned => s.pinned = pin
+          s.$watch 'pinned', (pin) -> setTimeout((->ldcp.set-pin pin),0)

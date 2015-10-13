@@ -1,6 +1,6 @@
 doctype html
 //- basic libraries: jquery(1.10.2), d3js(3.3.11), angularjs(1.2.3), bootstrap(3.0)/semantic-ui(0.9.3/0.9.5)
-- var use = { cdn: true, og: true, favicon: true }
+- var use = { cdn: false, og: true, favicon: true }
 - var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false }
 - var assets = "assets"
 - var thumbnail = "http://zbryikt.github.io/ldcolorpicker/thumbnail.png"
@@ -27,7 +27,7 @@ html(lang="en")
             .subtitle 
               | Palette-Aware 
               span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
-              data-cpclass="palette-only flat round shadow",data-pinned="true")
+              data-cpclass="palette-only flat round shadow round-palette",data-pinned="true")
                 span(data-toggle="tooltip",data-placement="top",title="wow!") Color
               |  Picker 
           .col-sm-6
@@ -297,6 +297,9 @@ html(lang="en")
               tr
                 td data-color
                 td get value of current color
+              tr
+                td data-pinned
+                td set if widget is pinned ( sticked and forced popup )
               tr: td(colspan="2")
             thead
               tr
@@ -351,6 +354,12 @@ html(lang="en")
               tr
                 td setHsl(hue, sat, lit)
                 td set HSL for active color of palette
+              tr
+                td isPinned()
+                td is widget pinned (sticked) and forced popup?
+              tr
+                td setPin(isPinned)
+                td pin color picker widget
           br
           h3#jquery jQuery
           p ldColorPicker also provides jQuery interface to initialize and access color picker:
@@ -376,7 +385,7 @@ html(lang="en")
           .panel.panel-default: .panel-body.row
             .col-sm-4
               label choose color
-              input.form-control(ldColorPicker,ng-model="color",ng-ldcp="ldcp",ng-idx="idx")
+              input.form-control(ldColorPicker,ng-model="color",ng-ldcp="ldcp",ng-idx="idx",ng-pinned="pin")
             .col-sm-4
               label your color
               .btn.btn-default.btn-block(ng-attr-style="background:{{color}};height:34px")
@@ -400,7 +409,9 @@ html(lang="en")
               tr
                 td ng-idx
                 td index of active color in palette
-
+              tr
+                td ng-pinned
+                td is widget pinned
 
           br
           hr

@@ -7,11 +7,12 @@ do ->
     false
 
   ldColorPicker = ( (target = null, config = {}, node = null) ->
-    custom-class = config.class or (target and target.getAttribute(\data-cpclass)) or ""
-    custom-context = config.context or (target and target.getAttribute(\data-context)) or \default
-    custom-callback = config.oncolorchange or (target and target.getAttribute(\data-oncolorchange)) or null
-    custom-idx = config.index or (target and parseInt(target.getAttribute(\data-palette-idx))) or 0
-    custom-palette = (config.palette or (target and target.getAttribute(\data-palette))) or null
+    srcnode = (if target => that else node)
+    custom-class = config.class or (srcnode and srcnode.getAttribute(\data-cpclass)) or ""
+    custom-context = config.context or (srcnode and srcnode.getAttribute(\data-context)) or \default
+    custom-callback = config.oncolorchange or (srcnode and srcnode.getAttribute(\data-oncolorchange)) or null
+    custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0
+    custom-palette = (config.palette or (srcnode and srcnode.getAttribute(\data-palette))) or null
     if typeof(custom-palette) == typeof("") =>
       custom-palette = custom-palette.trim!
       if custom-palette.0 == \[ => @initpal = {colors:[{hex:it} for it in JSON.parse(custom-palette)]}
@@ -37,24 +38,40 @@ do ->
     node.setAttribute("class", "#{custom-class}")
     @ <<< {node, target, idx: custom-idx, context: custom-context, class: custom-class, callback: custom-callback}
     @event-handler = {}
+    /*
     HTML2D = "<div class='ldcp-2d'><div class='ldcp-ptr'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div>"
     HTML1D = "<div class='ldcp-1d'><div></div><div></div><div class='ldcp-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div>"
+    #HTML1D += HTML1D
     HTMLCOLOR = "<div class='ldcp-colors'><div class='ldcp-colorptr'></div>" + ("<div class='ldcp-color'></div>" * 5) + "</div>"
     HTMLPALS = "<div class='ldcp-functions'>" + ("<div class='ldcp-btn'></div>") * 4 + "</div>"
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
     node.innerHTML = "<div class='ldcp-panel ldcp-picker'>" + HTML2D + HTML1D + HTMLCOLOR + HTMLPALS + "</div>" + 
       "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
+    */
+    HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
+    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='opacity.png'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small><div class='ldcp-color'></div></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>R</span><input value='255'><span>G</span><input value='255'><span>B</span><input value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha'><span>Hex</span><input value='#00ff00' class='hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
+    HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
+    node.innerHTML = HTML
     node.addEventListener(\click, (e) -> cancelAll e)
-    node.querySelector(".ldcp-2d .ldcp-mask")
-      ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 2 )
-      ..addEventListener("click", (e) ~> @move e, 2, true )
-    node.querySelector(".ldcp-1d .ldcp-mask")
-      ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 1 )
-      ..addEventListener("click", (e) ~> @move e, 1, true )
-    node.querySelector(".ldcp-btn:nth-of-type(1)").addEventListener("click", ~> @add-color! )
-    node.querySelector(".ldcp-btn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
-    node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @edit!)
-    node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
+    for selector in [".ldcp-2d .ldcp-mask", ".ldcp-2d .ldcp-ptr-circle"]
+      node.querySelector(selector)
+        ..addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, 2 )
+        ..addEventListener("click", (e) ~> @move e, 2, true )
+
+    for selector in [".ldcp-1d .ldcp-mask", ".ldcp-1d .ldcp-ptr-bar"] =>
+      for item,idx in node.querySelectorAll(selector) =>
+        _ = (item,idx) ~>
+          item.addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, idx )
+          item.addEventListener("click", (e) ~> 
+            @move e, idx, true
+          )
+        _(item, idx)
+
+    node.querySelector(".ldcp-cbtn:nth-of-type(1)").addEventListener("click", ~> @add-color! )
+    node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
+    #node.querySelector(".ldcp-btn:nth-of-type(3)").addEventListener("click", ~> @edit!)
+    #node.querySelector(".ldcp-btn:nth-of-type(4)").addEventListener("click", ~> @toggle-config! )
+    /*
     node.querySelector(".ldcp-chooser button:nth-of-type(1)").addEventListener("click", ~> 
       @chooser.input.value = ldColorPicker.default-palette-path or 'http://loading.io/palette/559087d71deb8c3a54548932'
     )
@@ -63,18 +80,20 @@ do ->
       @toggle-config!
     )
     node.querySelector(".ldcp-chooser button:nth-of-type(3)").addEventListener("click", ~> @toggle-config!)
+    */
     setTimeout (~>
       @chooser = do
         panel: node.querySelector(".ldcp-chooser")
         input: node.querySelector(".ldcp-chooser input")
-      @P2D = {ptr: node.querySelector(".ldcp-ptr"), panel: node.querySelector(".ldcp-2d img")}
-      @P1D = {ptr: node.querySelector(".ldcp-bar")}
+      @palpad = node.querySelector(".ldcp-palette")
+      @P2D = {ptr: node.querySelector(".ldcp-ptr-circle"), panel: node.querySelector(".ldcp-2d img")}
+      @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar")}
       @colorptr = node.querySelector(".ldcp-colorptr")
       @update-dimension!
       @ <<< {width: node.offsetWidth, height: node.offsetHeight}
       @color = do
         nodes: node.querySelectorAll(".ldcp-color")
-        palette: node.querySelector(".ldcp-colors")
+        palette: node.querySelector(".ldcp-colors .ldcp-palette")
         vals: ldColorPicker.palette.getVal(@, @context)
       # arrayize
       @color.nodes = [@color.nodes[i] for i from 0 til @color.nodes.length]
@@ -83,11 +102,10 @@ do ->
         c.idx = idx
         c.addEventListener \click, (e) ~> @set-idx(e.target.idx)
       c = @color.vals[@idx]
+      @update-palette!
       @set-idx @idx # set ptr correctly
       @set-hsl c.hue, c.sat, c.lit
       if @callback => @on \change, ~> @callback.apply @target, [it]
-      @update-palette!
-
       if @url => 
         @chooser.input.value = @url
         setTimeout((~>@load-palette @chooser.input.value),0)
@@ -305,7 +323,7 @@ do ->
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit
-        @colorptr.style.left = "#{((idx + 0.5) * 100 / @color.nodes.length)}%"
+        @colorptr.style.left = "#{((idx + 0.25) * 100 / @color.nodes.length)}%"
       set-hsl: (hue, sat, lit, no-recurse = false) ->
         hex-old = @toHexString @color.vals[@idx]
         @color.vals[@idx] <<< {hue, sat, lit}
@@ -327,26 +345,27 @@ do ->
           y2 = ( @P1D.h * (hue / 360 ) ) / 1.00
 
           @set-pos 2, x, y1, true
-          @set-pos 1, x, y2, true
+          @set-pos 0, x, y2, true
 
           @update-color @idx
 
       set-pos: (type, x, y, no-recurse = false) ->
         ctx = if type == 2 => @P2D else @P1D
+        ptr = if type == 2 => ctx.ptr else ctx.ptr[type]
         x = x >? 0 <? ctx.w
         y = y >? 0 <? ctx.h
-        ctx.ptr.style.top = "#{y}px"
-        if type == 2 => ctx.ptr.style.left = "#{x}px"
+        ptr.style.top = "#{y}px"
+        if type == 2 => ptr.style.left = "#{x}px"
         if !no-recurse =>
           [lx, ly] = [x * 1.04 - ctx.w * 0.02, y * 1.04 - ctx.h * 0.02]
-          [lx, ly] = [x, y]
+          #[lx, ly] = [x, y]
           lx = (lx / ctx.w) >? 0 <? 1
           ly = (ly / ctx.h) >? 0 <? 1
           c = @color.vals[@idx]
 
           lit-v = if type == 2 => 1 - ly else ( 2 * c.lit + c.sat * ( 1 - Math.abs( 2 * c.lit - 1 ) ) ) / 2
           sat-v = if type == 2 => lx else 2 * ( lit-v - c.lit ) / lit-v
-          hue = if type == 1 => ly * 360 else c.hue
+          hue = if type == 0 => ly * 360 else c.hue
 
           lit = lit-v * ( 2 - sat-v ) / 2
           sat = if lit != 0 and lit != 1 => lit-v * sat-v / ( 1 - Math.abs( 2 * lit - 1 ) ) else c.sat
@@ -358,7 +377,7 @@ do ->
         if !e.buttons and !isClick => return
         rect = @node.getBoundingClientRect!
         [y, x] = [e.clientY - rect.top, e.clientX - rect.left]
-        @set-pos type, x, y
+        @set-pos type, x - 5, y - 5
 
         if e.stopPropagation => e.stopPropagation!
         if e.preventDefault => e.preventDefault!

@@ -1,0 +1,70 @@
+@import 'vars'
+@import 'basic'
+
+.ldcp-panel
+  padding-bottom: 3 * gap + 19px + 20px
+  //padding-bottom: 2 * gap + 19px
+.ldcp-g1
+  height: 100%
+  padding-right: 2 * gap
+.ldcp-g11
+  width: 80%
+  background: #f00
+.ldcp-g12, .ldcp-g13
+  width: 10%
+  background: #f00
+.ldcp-g2
+  height: 19px
+.ldcp-g21
+  width: 100%
+
+.ldColorPicker.no-alpha
+  .ldcp-2d
+    width: 90%
+  .ldcp-g1
+    padding-right: gap
+  .ldcp-alpha
+    display: none
+
+.ldColorPicker.no-palette 
+  .ldcp-panel
+    padding-bottom: 2 * gap + 19px
+  .ldcp-g2
+    display: none
+
+.ldColorPicker.palette-only
+  height: 22px
+  .ldcp-panel
+    padding-bottom: gap + 22px
+  .ldcp-g2
+    margin-top: gap
+  .ldcp-g3
+    display: none
+  .ldcp-colors
+    height: 22px
+  .ldcp-2d, .ldcp-1d
+    display: none
+  .ldcp-cbtn
+    display: none
+.ldColorPicker.round-palette
+  .ldcp-color
+    border-radius: 50%
+    width: 22px
+    flex(0 0 22px)
+  .ldcp-sep
+    flex(1 1)
+
+
+/* no padding palette */
+.ldColorPicker.compact-palette
+  .ldcp-colors
+    .ldcp-color
+      margin: 0
+      border-radius: 0
+    .ldcp-color:last-of-type
+      margin-right: gap
+      border-radius: 0 3px 3px 0
+    .ldcp-color:first-of-type
+      border-radius: 3px 0 0 3px
+    span:first-of-type
+      margin-left: 0

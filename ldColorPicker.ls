@@ -248,6 +248,10 @@ do ->
         if clean => @color.vals = []
         for it in result => @color.vals.push it
         ldColorPicker.palette.update!
+      set-color: (c)->
+        if typeof(c) == typeof("") => c = @convert.color c
+        @color.vals.splice @idx, 1, c
+        ldColorPicker.palette.update!
       update-palette: -> 
         [nlen, vlen] = [@color.nodes.length, @color.vals.length]
         if vlen > nlen =>
@@ -353,13 +357,13 @@ do ->
         if @pinned != !!it =>
           @pinned = !!it
           @handle \change-pin, @pinned
-        @toggle @pinned
+        if @pinned => @toggle true
 
       get-idx: -> @idx
       set-idx: (idx) ->
         if @idx != idx => 
           c = @color.vals[idx]
-          @handle \change, if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
+          @handle \change, (if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
           @handle \change-idx, idx
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
@@ -474,10 +478,12 @@ do ->
         scope: ldcp: \=ngLdcp, color: \=ngModel, idx: \=ngIdx, pinned: \=ngPinned
         link: (s,e,a,c) ->
           s.ldcp = ldcp = new ldColorPicker e.0, {}, null
-          ldcp.on \change, (color) -> s.$apply ->
-            s.color = color
-          ldcp.on \change-idx, (idx)-> s.$apply ->
-            if a.ngIdx => s.idx = idx
-          if a.ngIdx => s.idx = ldcp.getIdx!
+          ldcp.on \change, (color) -> s.$apply -> s.color = color
+          s.$watch 'color', (color) -> 
+            if color? => setTimeout((-> ldcp.set-color color),0)
+
+          ldcp.on \change-idx, (idx)-> s.$apply -> if a.ngIdx => s.idx = idx
+          s.$watch 'idx', (idx) -> if idx? => setTimeout((->ldcp.set-idx idx),0)
+
           ldcp.on \change-pin, (pin) -> s.$apply -> if a.ngPinned => s.pinned = pin
           s.$watch 'pinned', (pin) -> setTimeout((->ldcp.set-pin pin),0)

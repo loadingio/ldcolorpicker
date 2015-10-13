@@ -4,7 +4,8 @@ x$ = angular.module('main', ['ldColorPicker']);
 x$.controller('main', ['$scope', '$timeout'].concat(function($scope, $timeout){
   $scope.$watch('ldcp', function(){});
   $scope.$watch('color', function(){});
-  return $scope.$watch('idx', function(){});
+  $scope.$watch('idx', function(){});
+  return $scope.$watch('pin', function(){});
 }));
 $(document).ready(function(){
   var btnColor, ldcp;

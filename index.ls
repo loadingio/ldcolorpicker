@@ -3,6 +3,7 @@ angular.module \main, <[ldColorPicker]>
     $scope.$watch 'ldcp', (->)
     $scope.$watch 'color', (->)
     $scope.$watch 'idx', (->)
+    $scope.$watch 'pin', (->)
 
 <- $(document).ready
 

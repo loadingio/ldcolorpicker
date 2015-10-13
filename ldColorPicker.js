@@ -562,6 +562,13 @@
         }
         return ldColorPicker.palette.update();
       },
+      setColor: function(c){
+        if (typeof c === typeof "") {
+          c = this.convert.color(c);
+        }
+        this.color.vals.splice(this.idx, 1, c);
+        return ldColorPicker.palette.update();
+      },
       updatePalette: function(){
         var ref$, nlen, vlen, i$, i, x$, node, idx, c, value, this$ = this;
         ref$ = [this.color.nodes.length, this.color.vals.length], nlen = ref$[0], vlen = ref$[1];
@@ -764,7 +771,9 @@
           this.pinned = !!it;
           this.handle('change-pin', this.pinned);
         }
-        return this.toggle(this.pinned);
+        if (this.pinned) {
+          return this.toggle(true);
+        }
       },
       getIdx: function(){
         return this.idx;
@@ -955,6 +964,13 @@
               return s.color = color;
             });
           });
+          s.$watch('color', function(color){
+            if (color != null) {
+              return setTimeout(function(){
+                return ldcp.setColor(color);
+              }, 0);
+            }
+          });
           ldcp.on('change-idx', function(idx){
             return s.$apply(function(){
               if (a.ngIdx) {
@@ -962,9 +978,13 @@
               }
             });
           });
-          if (a.ngIdx) {
-            s.idx = ldcp.getIdx();
-          }
+          s.$watch('idx', function(idx){
+            if (idx != null) {
+              return setTimeout(function(){
+                return ldcp.setIdx(idx);
+              }, 0);
+            }
+          });
           ldcp.on('change-pin', function(pin){
             return s.$apply(function(){
               if (a.ngPinned) {

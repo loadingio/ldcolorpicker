@@ -19,20 +19,23 @@ html(lang="en")
     script(type="text/javascript",src="static/js/index.js")
   body(data-spy="scroll",data-target=".scrollspy",ng-app="main",ng-controller="main")
 
+
+
     #landing
       .inner.text-center
         .row
           .col-sm-6
             .title ldColorPicker 
-            .brand by loading.io
+            .brand by #[a(href="http://loading.io",target="_blank") loading.io]
             .subtitle 
               | Palette-Aware 
               span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
               data-cpclass="palette-only flat rounder shadow round-palette landing",data-pinned="true",data-context="landing")
-                span(data-toggle="tooltip",data-placement="top",title="wow!") Color
+                span(data-toggle="tooltip",data-placement="top",title="Let's Change Some Colors!") Color
               |  Picker 
           .col-sm-6
             .ldColorPicker.round.shadow.flat.no-button.no-empty-color(data-palette="#ff1d00 #ffb651 #fff882 #80de40 #3c8df1 #923dd1",data-context="landing")
+            br
     #landing-palettes.text-center(style="margin-top:-16px")
       .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#514134 #e35839 #d28d4f #dbae1d #477187 #323a3f",data-context="landing1",onclick="setpalette('landing1')")
       .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#F5542E #F2C327 #008B6E #00AEDE #0067AD",data-context="landing2",onclick="setpalette('landing2')")
@@ -543,9 +546,6 @@ html(lang="en")
                 td ng-pinned
                 td is widget pinned
 
-          br
-          hr
-          br
         .col-sm-4.scrollspy
           ul#affix.nav.hidden-xs.hidden-sm(data-spy="affix")
             li
@@ -570,4 +570,15 @@ html(lang="en")
                 li: a(href="#vanilla-js") Vanilla JS
                 li: a(href="#jquery") jQuery
                 li: a(href="#angularjs") AngularJS
-
+            li: a(style="background:none")
+              iframe.pull-left(src="https://ghbtns.com/github-btn.html?user=zbryikt&repo=ldcolorpicker&type=star&size=large",frameborder="0",scrolling="0",width="160px",height="30px")
+      #footer
+        small ldColorPicker v.0.1.0 &copy; #[a(href="http://loading.io",target="_blank") loading.io] released under MIT License
+        small.pull-right
+          a(href="http://zbryikt.github.io/ldcolorpicker",target="_blank") Github
+          span ．
+          a(href="https://github.com/zbryikt/ldcolorpicker/releases",target="_blank") Releases
+          span ．
+          a(href="http://loading.io/color/",target="_blank") Loading Colors
+          span ．
+          i.glyphicon.glyphicon-heart

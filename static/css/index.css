@@ -59,6 +59,9 @@ h3 {
   color: #808080;
   display: inline-block;
 }
+#landing .brand a {
+  color: #808080;
+}
 @media (max-width: 900px) {
   #landing .brand {
     margin-bottom: 8px;
@@ -125,4 +128,11 @@ h3 {
 }
 #examples .row {
   margin-top: 30px;
+}
+#footer {
+  font-family: 'century gothic';
+  color: #999;
+  margin-top: 20px;
+  padding-top: 5px;
+  border-top: 1px solid #e0e0e0;
 }

@@ -120,6 +120,14 @@ h3 {
     display: none;
   }
 }
+@media (max-width: 768px) {
+  #landing-palettes {
+    display: none;
+  }
+  .ldColorPicker.landing {
+    display: none !important;
+  }
+}
 #examples .ldColorPicker {
   display: block;
   max-width: 100%;

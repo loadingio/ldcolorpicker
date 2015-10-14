@@ -1,6 +1,13 @@
 ![ldColorPicker Banner](/img/banner.png)
 
-Palette-Aware Color Picker. Works with Vanilla JS and jQuery.
+Palette-Aware Color Picker, [Demo + Docs Here](http://zbryikt.github.io/ldcolorpicer).
+
+Features:
+ * Load palette on the fly
+ * Share palette across pickers
+ * vanilla JS / jQuery / AngularJS compatible
+ * highly configurable
+
 
 Usage
 --------

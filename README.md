@@ -1,6 +1,3 @@
-ldColorPicker
-========
-
 ![ldColorPicker Banner](/img/banner.png)
 
 Palette-Aware Color Picker. Works with Vanilla JS and jQuery.

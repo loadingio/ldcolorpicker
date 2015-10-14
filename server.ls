@@ -248,33 +248,55 @@ update-file = ->
 
   if type == \other => return
   if type == \ls =>
-    if /src\/ls/.exec src =>
+    if /^src\/ls\/ldcp\//.exec src =>
       try
-        files = fs.readdir-sync \src/ls/ .map -> "src/ls/#it"
+        files = fs.readdir-sync \src/ls/ldcp/ .map -> "src/ls/ldcp/#it"
         files = files.filter -> (/\/\./.exec it) == null
-        result = [uglify.minify(lsc.compile(fs.read-file-sync(file)toString!,{bare:true}),{fromString:true}).code for file in files].join("")
-        fs.write-file-sync "build.min.js", result
-        console.log "[BUILD] #src --> build.min.js"
+        raw = [lsc.compile(fs.read-file-sync(file)toString!,{bare:true}) for file in files].join(\\n)
+        mini = uglify.minify(raw,{fromString:true}).code
+        mkdir-recurse \dist
+        fs.write-file-sync "dist/ldcp.js", raw
+        fs.write-file-sync "dist/ldcp.min.js", raw
+        console.log "[BUILD] #src --> dist/ldcp.js"
+        console.log "[BUILD] #src --> dist/ldcp.min.js"
       catch
         console.log "[BUILD] #src failed: "
         console.log e.message
       return
-    else =>
-      des = src.replace /\.ls$/, ".js"
+    if /^src\/ls\//.exec src =>
       try
-        mkdir-recurse path.dirname(des)
-        fs.write-file-sync(
-          des,
-          #uglify.minify(lsc.compile(fs.read-file-sync(src)toString!,{bare:true}),{fromString:true}).code
-          lsc.compile(fs.read-file-sync(src)toString!,{bare:true})
-        )
-        console.log "[BUILD] #src --> #des"
-      catch
-        console.log "[BUILD] #src failed: "
-        console.log e.message
-      return
+        des = src.replace(/\.ls$/, ".js").replace(/^src\/ls/, "static/js")
+        try
+          mkdir-recurse path.dirname(des)
+          ret = uglify.minify(lsc.compile(fs.read-file-sync(src)toString!,{bare:true}),{fromString:true}).code
+          fs.write-file-sync(des, ret)
+          console.log "[BUILD] #src --> #des"
+        catch
+          console.log "[BUILD] #src failed: "
+          console.log e.message
+        return
+
   if type == \styl =>
     if /(basic|vars)\.styl/.exec it => return
+    # build colorpicker style file to dist
+    if /^src\/styl\/ldcp\//.exec(it) =>
+      des = "dist/ldcp.css"
+      stylus fs.read-file-sync("src/styl/ldcp/main.styl")toString!
+        .set \filename, \src/styl/ldcp/main.styl
+        .define 'index', (a,b) ->
+          a = (a.string or a.val).split(' ')
+          return new stylus.nodes.Unit(a.indexOf b.val)
+        .render (e, css) ->
+          if e =>
+            console.log "[BUILD]   #src failed: "
+            console.log "  >>>", e.name
+            console.log "  >>>", e.message
+          else => 
+            mkdir-recurse path.dirname(des)
+            fs.write-file-sync des, css
+            console.log "[BUILD] #src --> #des"
+      return
+
     try
       styl-tree.parse src
       srcs = styl-tree.find-root src

@@ -1,6 +1,6 @@
 ![ldColorPicker Banner](/img/banner.png)
 
-Palette-Aware Color Picker. [Demo + docs here](http://zbryikt.github.io/ldcolorpicer).
+Palette-Aware Color Picker. [Demo + docs here](http://zbryikt.github.io/ldcolorpicker/).
 
 Features:
  * Load palette on the fly

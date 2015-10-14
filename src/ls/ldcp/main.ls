@@ -14,6 +14,7 @@ do ->
     custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0
     custom-palette = (config.palette or (srcnode and srcnode.getAttribute(\data-palette))) or null
     custom-pinned = (config.pinned or (srcnode and srcnode.getAttribute(\data-pinned)==\true)) or null
+    custom-exclusive = (config.exclusive or (srcnode and srcnode.getAttribute(\data-exclusive)==\true)) or null
     if typeof(custom-palette) == typeof("") =>
       custom-palette = custom-palette.trim!
       if custom-palette.0 == \[ => @initpal = {colors:[{hex:it} for it in JSON.parse(custom-palette)]}
@@ -32,13 +33,13 @@ do ->
         target._ldcpnode = node
         target.getColorPicker = ~> return @
         target.addEventListener \click, (e) -> 
-          @_ldcpnode._ldcp.toggle!
-          cancelAll e
+          setTimeout((~>@_ldcpnode._ldcp.toggle!),0)
+          if !@_ldcpnode._ldcp.exclusive or @_ldcpnode.style.display != \none => cancelAll e
     else => custom-class += node.getAttribute("class")
     if !(\ldColorPickr in custom-class.split(' ')) => custom-class += ' ldColorPicker'
     node.setAttribute("class", "#{custom-class}")
     @ <<< {node, target, idx: custom-idx, context: custom-context, class: custom-class, callback: custom-callback}
-    @ <<< {pinned: custom-pinned}
+    @ <<< {pinned: custom-pinned, exclusive: custom-exclusive}
     @event-handler = {}
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
     HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.opacity}'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
@@ -206,6 +207,7 @@ do ->
             else @color.vals.splice 0, 0, @convert.color @target.value
           c = @color.vals[@idx]
           @set-hsl c.hue, c.sat, c.lit  
+          @handle \toggle, false
 
         else
           @node.style.display = \block
@@ -232,6 +234,7 @@ do ->
             else @color.vals.splice 0, 0, @convert.color @target.value
           c = @color.vals[@idx]
           @set-hsl c.hue, c.sat, c.lit  
+          @handle \toggle, true
         ldColorPicker.palette.update!
 
       random: -> {hue: Math.random!*360, sat: 0.5, lit: 0.5}

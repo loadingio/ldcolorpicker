@@ -13,7 +13,7 @@
     return false;
   };
   ldColorPicker = import$(function(target, config, node){
-    var srcnode, that, customClass, customContext, customCallback, customIdx, customPalette, customPinned, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
+    var srcnode, that, customClass, customContext, customCallback, customIdx, customPalette, customPinned, customExclusive, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
     target == null && (target = null);
     config == null && (config = {});
     node == null && (node = null);
@@ -24,6 +24,7 @@
     customIdx = config.index || (srcnode && parseInt(srcnode.getAttribute('data-palette-idx'))) || 0;
     customPalette = (config.palette || (srcnode && srcnode.getAttribute('data-palette'))) || null;
     customPinned = (config.pinned || (srcnode && srcnode.getAttribute('data-pinned') === 'true')) || null;
+    customExclusive = (config.exclusive || (srcnode && srcnode.getAttribute('data-exclusive') === 'true')) || null;
     if (typeof customPalette === typeof "") {
       customPalette = customPalette.trim();
       if (customPalette[0] === '[') {
@@ -92,8 +93,13 @@
           return this$;
         };
         target.addEventListener('click', function(e){
-          this._ldcpnode._ldcp.toggle();
-          return cancelAll(e);
+          var this$ = this;
+          setTimeout(function(){
+            return this$._ldcpnode._ldcp.toggle();
+          }, 0);
+          if (!this._ldcpnode._ldcp.exclusive || this._ldcpnode.style.display !== 'none') {
+            return cancelAll(e);
+          }
         });
       }
     } else {
@@ -110,6 +116,7 @@
     this['class'] = customClass;
     this.callback = customCallback;
     this.pinned = customPinned;
+    this.exclusive = customExclusive;
     this.eventHandler = {};
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>";
     HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.opacity + "'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>";
@@ -497,6 +504,7 @@
           }
           c = this.color.vals[this.idx];
           this.setHsl(c.hue, c.sat, c.lit);
+          this.handle('toggle', false);
         } else {
           this.node.style.display = 'block';
           if (this.target) {
@@ -539,6 +547,7 @@
           }
           c = this.color.vals[this.idx];
           this.setHsl(c.hue, c.sat, c.lit);
+          this.handle('toggle', true);
         }
         return ldColorPicker.palette.update();
       },

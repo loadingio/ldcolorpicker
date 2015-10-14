@@ -18,9 +18,6 @@ html(lang="en")
     script(type="text/javascript",src="dist/ldcp.min.js")
     script(type="text/javascript",src="static/js/index.js")
   body(data-spy="scroll",data-target=".scrollspy",ng-app="main",ng-controller="main")
-
-
-
     #landing
       .inner.text-center
         .row
@@ -262,7 +259,7 @@ html(lang="en")
               .col-sm-4
                 input.form-control(type="text",data-toggle="colorpicker",
                 data-palette="#ff0000 #00ff00 #0000ff",data-context="predefined1",
-                data-cpclass="round shadow")
+                data-cpclass="round shadow",data-exclusive="true")
               .col-sm-4
                 input.form-control(type="text",data-toggle="colorpicker",
                 data-palette='["#f0f000","#00f0f0","#f000f0"]',data-context="predefined2",
@@ -321,6 +318,12 @@ html(lang="en")
               tr
                 td palette
                 td default palette. Can be string, array of hex strings, or a object described in #[b Predefined Palette] section.
+              tr
+                td pinned
+                td set to true is widget should be sticked and always popup.
+              tr
+                td exclusive
+                td close all color pickers while this widget is opened.
           p an sample config object is like this:
           pre.well.
             {
@@ -403,7 +406,10 @@ html(lang="en")
                 td get value of current color
               tr
                 td data-pinned
-                td set if widget is pinned ( sticked and forced popup )
+                td set to true if widget is pinned ( sticked and forced popup )
+              tr
+                td data-exclusive
+                td set to true if opening this widget closes all other widget.
               tr: td(colspan="2")
             thead
               tr
@@ -458,6 +464,10 @@ html(lang="en")
                       span #[code change-pin] - fired when pin state changed
                       pre.well(style="margin-top:10px").
                         obj.on("change-pin", function(isPinned) { ... });
+                    li 
+                      span #[code toggle] - fired when widget toggles on / off
+                      pre.well(style="margin-top:10px").
+                        obj.on("toggle", function(isOn) { ... });
 
               tr
                 td toggle(isOn)

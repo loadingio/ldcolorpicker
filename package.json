@@ -1,12 +1,12 @@
 {
   "author": "Kirby Wu",
-  "name": "template",
-  "description": "simple, quick template for bootstrap a page",
+  "name": "ldColorPicker",
+  "description": "ldColorPicker - Palette-Aware Color Picker",
   "version": "0.0.1",
-  "homepage": "https://github.com/zbryikt/template",
+  "homepage": "https://github.com/zbryikt/ldcolorpicker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zbryikt/template"
+    "url": "https://github.com/zbryikt/ldcolorpicker"
   },
   "engines": {
     "node": ">=0.8.18",
@@ -14,8 +14,7 @@
   },
   "scripts": {
     "start": "node_modules/.bin/lsc server.ls",
-    "restart": "node_modules\\.bin\\lsc server.ls",
-    "prepare": "npm install chokidar@0.8.0"
+    "restart": "node_modules\\.bin\\lsc server.ls"
   },
   "dependencies": {
     "LiveScript": ">=1.2.0",

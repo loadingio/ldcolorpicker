@@ -26,13 +26,15 @@
 .ldColorPicker
   .ldcp-panel
     border: 1px solid #ccc
-  &.noborder, &.mini-palette
+  &.no-border, &.mini-palette
     .ldcp-panel
       border: 1px transparent
-  &.shadow .ldcp-panel
+  &.shadow .ldcp-panel, &.shadow.flat .ldcp-panel
     box-shadow: 0 1px 3px rgba(0,0,0,0.2)
   &.round .ldcp-panel
     border-radius: 3px
+  &.rounder .ldcp-panel
+    border-radius: 6px
   &.bubble .ldcp-panel:after
     content: " "
     display: block

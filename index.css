@@ -41,15 +41,19 @@ body {
 .ldColorPicker .ldcp-panel {
   border: 1px solid #ccc;
 }
-.ldColorPicker.noborder .ldcp-panel,
+.ldColorPicker.no-border .ldcp-panel,
 .ldColorPicker.mini-palette .ldcp-panel {
   border: 1px transparent;
 }
-.ldColorPicker.shadow .ldcp-panel {
+.ldColorPicker.shadow .ldcp-panel,
+.ldColorPicker.shadow.flat .ldcp-panel {
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .ldColorPicker.round .ldcp-panel {
   border-radius: 3px;
+}
+.ldColorPicker.rounder .ldcp-panel {
+  border-radius: 6px;
 }
 .ldColorPicker.bubble .ldcp-panel:after {
   content: " ";
@@ -375,7 +379,7 @@ body {
   display: none;
 }
 .ldColorPicker.no-palette .ldcp-panel {
-  padding-bottom: 29px;
+  padding-bottom: 5px;
 }
 .ldColorPicker.no-palette .ldcp-g2 {
   display: none;
@@ -445,10 +449,6 @@ body {
 .ldColorPicker.mini-palette .ldcp-colors .ldcp-color:first-of-type {
   border-radius: 3px 0 0 3px;
 }
-.ldColorPicker.compact-palette .ldcp-colors span:first-of-type,
-.ldColorPicker.mini-palette .ldcp-colors span:first-of-type {
-  margin-left: 0;
-}
 .ldColorPicker.no-button .ldcp-cbtn {
   display: none;
 }
@@ -465,6 +465,11 @@ body {
 .ldColorPicker.mini-palette .ldcp-palette {
   margin-right: 0;
 }
+.ldColorPicker.no-empty-color .ldcp-colors .ldcp-palette .ldcp-color:last-of-type,
+.ldColorPicker.palette-only .ldcp-colors .ldcp-palette .ldcp-color:last-of-type,
+.ldColorPicker.mini-palette .ldcp-colors .ldcp-palette .ldcp-color:last-of-type {
+  margin-right: 0;
+}
 .ldColorPicker.mini-palette {
   width: 160px;
 }
@@ -478,11 +483,8 @@ body {
   box-shadow: 0 2px 2px rgba(0,0,0,0.3);
   border-radius: 3px;
 }
-.ldColorPicker.mini-palette.shadow .ldcp-color:last-of-type {
-  margin-right: 0;
-}
-.ldColorPicker.palette-only.noptr .ldcp-colorptr,
-.ldColorPicker.mini-palette.noptr .ldcp-colorptr {
+.ldColorPicker.palette-only.no-ptr .ldcp-colorptr,
+.ldColorPicker.mini-palette.no-ptr .ldcp-colorptr {
   display: none;
 }
 .ldColorPicker.flat .ldcp-panel {
@@ -564,6 +566,12 @@ h3 {
 }
 #landing .subtitle {
   font-size: 1.6em;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 #landing .subtitle span {
   text-shadow: 0 0 3px rgba(0,0,0,0.3);
@@ -602,4 +610,19 @@ h3 {
 }
 .ldColorPicker.landing .ldcp-panel:after {
   left: 85px;
+}
+@media (max-width: 900px) {
+  #landing-palettes .ldColorPicker:nth-of-type(1),
+  #landing-palettes .ldColorPicker:nth-of-type(5) {
+    display: none;
+  }
+}
+#examples .ldColorPicker {
+  display: block;
+  max-width: 100%;
+  margin: auto;
+  margin-top: 5px;
+}
+#examples .row {
+  margin-top: 30px;
 }

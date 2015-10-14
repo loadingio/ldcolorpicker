@@ -27,17 +27,17 @@ html(lang="en")
             .subtitle 
               | Palette-Aware 
               span(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
-              data-cpclass="palette-only flat round shadow round-palette landing",data-pinned="true",data-context="landing")
+              data-cpclass="palette-only flat rounder shadow round-palette landing",data-pinned="true",data-context="landing")
                 span(data-toggle="tooltip",data-placement="top",title="wow!") Color
               |  Picker 
           .col-sm-6
             .ldColorPicker.round.shadow.flat.no-button.no-empty-color(data-palette="#ff1d00 #ffb651 #fff882 #80de40 #3c8df1 #923dd1",data-context="landing")
-    .text-center(style="margin-top:-16px")
-      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548937",data-context="landing1",onclick="setpalette('landing1')")
-      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548932",data-context="landing2",onclick="setpalette('landing2')")
-      .ldColorPicker.palette-only.compact-palette.shadow.noptr.flat(data-context="landing",onclick="setpalette('landing')",style="width:200px")
-      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548930",data-context="landing3",onclick="setpalette('landing3')")
-      .ldColorPicker.mini-palette.shadow.noptr.flat(data-palette="http://loading.io/palette/559087d71deb8c3a54548931",data-context="landing4",onclick="setpalette('landing4')")
+    #landing-palettes.text-center(style="margin-top:-16px")
+      .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#514134 #e35839 #d28d4f #dbae1d #477187 #323a3f",data-context="landing1",onclick="setpalette('landing1')")
+      .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#F5542E #F2C327 #008B6E #00AEDE #0067AD",data-context="landing2",onclick="setpalette('landing2')")
+      .ldColorPicker.palette-only.compact-palette.shadow.no-ptr.flat.rounder(data-context="landing",onclick="setpalette('landing')",style="width:200px")
+      .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#51CACC #9DF871 #E0FF77 #DE9DD6 #FF708E",data-context="landing3",onclick="setpalette('landing3')")
+      .ldColorPicker.mini-palette.shadow.no-ptr.flat(data-palette="#F29C98 #F5B697 #F5E797 #A2E4F5 #009DD3",data-context="landing4",onclick="setpalette('landing4')")
     #root
 
       .row
@@ -55,7 +55,7 @@ html(lang="en")
                 .col-sm-6
                   .text-center 
                     div Tiny palette
-                    .ldColorPicker.palette-only.compact-palette.noborder.mini-palette.flat
+                    .ldColorPicker.palette-only.compact-palette.no-border.mini-palette.flat
                     br
                     br
                     br
@@ -65,6 +65,7 @@ html(lang="en")
                   .text-center 
                     div Default palette
                     .ldColorPicker
+              br
 
           h2#usage Usage
           p Download and include #[code ldcp.js] and #[code ldcp.css] file of ldColorPicker:
@@ -103,8 +104,8 @@ html(lang="en")
           p Use #[code data-cpclass] to config color picker style:
           .row
             .col-sm-4: form.form: .form-group
-                label data-cpclass="noborder"
-                input.form-control(data-toggle="colorpicker",data-cpclass="noborder")
+                label data-cpclass="no-border"
+                input.form-control(data-toggle="colorpicker",data-cpclass="no-border")
             .col-sm-4: form.form: .form-group
                 label data-cpclass="shadow"
                 input.form-control(data-toggle="colorpicker",data-cpclass="shadow")
@@ -128,11 +129,14 @@ html(lang="en")
                 td shadow
                 td Render shadow around the widget
               tr
-                td noborder
+                td no-border
                 td hide the border around the widget
               tr
                 td round
                 td make the border round
+              tr
+                td rounder
+                td make the border rounder
               tr
                 td top / right / bottom / left
                 td set the direction in which color pick widget will popup
@@ -160,6 +164,48 @@ html(lang="en")
               tr
                 td no-alpha
                 td hide slider for alpha ( opacity ) value
+              tr
+                td no-ptr
+                td hide pointer of palette
+          br
+          hr
+          h3#style-example Styling Example
+          p 
+            span Here are examples you can use as a start point. First Begins with 
+            code &#60;div class="ldColorPicker 
+            span , and followed by ...
+          #examples
+            .row.text-center
+              .col-sm-4.text-center
+                code flat
+                .ldColorPicker.flat
+              .col-sm-4.text-center
+                code shadow no-border
+                .ldColorPicker.shadow.no-border
+              .col-sm-4.text-center
+                code no-palette
+                .ldColorPicker.no-palette
+            .row.text-center
+              .col-sm-6.text-center
+                code flat compact-palette no-border no-button
+                .ldColorPicker.flat.compact-palette.no-border.no-button
+              .col-sm-6.text-center
+                code no-alpha no-button no-empty-color
+                .ldColorPicker.no-alpha.no-button.no-empty-color
+            br
+            p with #[code palette-only flat] :
+            .row.text-center
+              .col-sm-4.text-center
+                code round-palette
+                .ldColorPicker.palette-only.flat.round-palette
+              .col-sm-4.text-center
+                code compact-palette
+                .ldColorPicker.palette-only.compact-palette.flat
+              .col-sm-4.text-center
+                code mini-palette no-ptr
+                .ldColorPicker.palette-only.mini-palette.flat.no-ptr
+          br
+          hr
           br
           h3#readonly-mode Readonly Mode
           p You can use #[code data-cpclass="palette-only"] to constrain user to only choose colors from your palette:
@@ -511,6 +557,7 @@ html(lang="en")
               a(href="#config") Configuration &#xbb;
               ul.nav.subnav
                 li: a(href="#styling") Styling
+                li: a(href="#style-example") Styling Example
                 li: a(href="#readonly-mode") Readonly Mode
                 li: a(href="#share-palette") Share Palette
                 li: a(href="#index-of-color") Index of Color

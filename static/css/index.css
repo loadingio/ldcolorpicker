@@ -127,6 +127,9 @@ h3 {
   .ldColorPicker.landing {
     display: none !important;
   }
+  #root {
+    margin-top: 50px;
+  }
 }
 #examples .ldColorPicker {
   display: block;

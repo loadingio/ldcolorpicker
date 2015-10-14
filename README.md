@@ -6,10 +6,10 @@ Palette-Aware Color Picker. Works with Vanilla JS and jQuery.
 Usage
 --------
 
-Download and include ldcp.js and ldcp.css file of ldColorPicker:
+Download and include [dist/ldcp.min.js](https://raw.githubusercontent.com/zbryikt/ldcolorpicker/master/dist/ldcp.min.js) and [dist/ldcp.css](https://raw.githubusercontent.com/zbryikt/ldcolorpicker/master/dist/ldcp.css) file of ldColorPicker:
 
     <link rel="stylesheet" type="text/css" href="ldcp.css"/>
-    <script type="text/javascript" src="ldcp.js"></script>
+    <script type="text/javascript" src="ldcp.min.js"></script>
 
 
 Add data-toggle="colorpicker" in the input box you want to apply ldColorPicker, e.g.:

@@ -24,6 +24,9 @@ if use.cdn
   if lib.semantic
     link(rel="stylesheet",type="text/css",href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.9.3/css/semantic.min.css")
     script(type="Text/javascript",src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.9.3/javascript/semantic.min.js")
+  if lib.reactjs
+    script(type="text/javascript",src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js")
+    script(type="text/javascript",src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js")
 else
   //- from local
   if lib.jquery
@@ -38,4 +41,6 @@ else
   if lib.semantic
     link(rel="stylesheet",type="text/css",href="#{assets}/semantic-ui/0.9.5/css/semantic.min.css")
     script(type="text/javascript",src="#{assets}/semantic-ui/0.9.5/js/semantic.min.js")
-
+  if lib.reactjs
+    script(type="text/javascript",src="#{assets}/reactjs/0.14.0/react.js")
+    script(type="text/javascript",src="#{assets}/reactjs/0.14.0/react-dom.js")

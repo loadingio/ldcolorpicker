@@ -1,9 +1,9 @@
 doctype html
 //- basic libraries: jquery(1.10.2), d3js(3.3.11), angularjs(1.2.3), bootstrap(3.0)/semantic-ui(0.9.3/0.9.5)
 - var use = { cdn: true, og: true, favicon: true }
-- var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false }
+- var lib = { jquery: true, d3js: false, angular: true, bootstrap: true, semantic: false, reactjs: true }
 - var assets = "assets"
-- var thumbnail = "http://zbryikt.github.io/ldcolorpicker/img/thumbnail.png?1"
+- var thumbnail = "http://zbryikt.github.io/ldcolorpicker/img/thumbnail.png"
 - var favicon = "http://zbryikt.github.io/ldcolorpicker/img/favicon.png"
 html(lang="en")
   head(prefix="og: http://ogp.me/ns#")
@@ -17,6 +17,7 @@ html(lang="en")
     link(rel="stylesheet",type="text/css",href="dist/ldcp.css")
     script(type="text/javascript",src="dist/ldcp.min.js")
     script(type="text/javascript",src="static/js/index.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js")
   body(data-spy="scroll",data-target=".scrollspy",ng-app="main",ng-controller="main")
     #landing
       .inner.text-center
@@ -555,6 +556,34 @@ html(lang="en")
                 td ng-pinned
                 td is widget pinned
 
+          br
+          h3#reactjs ReactJS
+          p use #[code &#60;LDColorPicker&#62;] component to create color picker widget. All parameters in Vanilla JS can be used as properties in this component, e.g.:
+          pre.well.
+            ReactDOM.render(&#60;LDColorPicker 
+              palette="#ff0000 #0000ff" 
+              class="palette-only round shadow"
+              oncolorchange="document.getElementById('your-output').innerText=color"
+              context="mycontext"
+            /&#62;, document.getElementById("your-container");
+          p will be like this:
+          script(type="text/babel").
+            ReactDOM.render(<LDColorPicker 
+              palette="#ff0000 #0000ff" 
+              class="palette-only round shadow" 
+              context="mycontext"
+              oncolorchange="document.getElementById('react-output').innerText=color"
+            />,document.getElementById("react-container"));
+          .row
+            .col-sm-8
+              #react-container
+            .col-sm-4
+              #react-output
+          br
+          br
+          p Note that it's uppercase in the first two letter of 'LDColorPicker'.
+          br
+          br
         .col-sm-4.scrollspy
           ul#affix.nav.hidden-xs.hidden-sm(data-spy="affix")
             li
@@ -579,6 +608,7 @@ html(lang="en")
                 li: a(href="#vanilla-js") Vanilla JS
                 li: a(href="#jquery") jQuery
                 li: a(href="#angularjs") AngularJS
+                li: a(href="#reactjs") ReactJS
             li: a(style="background:none")
               iframe.pull-left(src="https://ghbtns.com/github-btn.html?user=zbryikt&repo=ldcolorpicker&type=star&size=large",frameborder="0",scrolling="0",width="160px",height="30px")
       #footer

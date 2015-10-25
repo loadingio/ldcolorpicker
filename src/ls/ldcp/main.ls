@@ -99,6 +99,7 @@ do ->
         setTimeout((~>@load-palette @chooser.input.value),0)
       if @initpal =>
         @set-palette @initpal
+        c = @color.vals[@idx]
       if custom-pinned => @toggle true
       document.addEventListener \keydown, (e) ~>
         code = (e.which or e.keyCode)

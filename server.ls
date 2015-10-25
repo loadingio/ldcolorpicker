@@ -1,4 +1,4 @@
-require! <[chokidar http fs path jade stylus]>
+require! <[chokidar http fs path jade stylus babel]>
 require! 'uglify-js': uglify, LiveScript: lsc
 
 RegExp.escape = -> it.replace /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"
@@ -192,6 +192,7 @@ ctype = (name=null) ->
 
 ftype = ->
   switch
+  | /\.jsx/.exec it => "jsx"
   | /\.ls$/.exec it => "ls"
   | /\.styl/.exec it => "styl"
   | /\.jade$/.exec it => "jade"
@@ -247,12 +248,18 @@ update-file = ->
   [type,cmd,des] = [ftype(src), "",""]
 
   if type == \other => return
-  if type == \ls =>
+  if type == \ls or type == \jsx =>
     if /^src\/ls\/ldcp\//.exec src =>
       try
         files = fs.readdir-sync \src/ls/ldcp/ .map -> "src/ls/ldcp/#it"
         files = files.filter -> (/\/\./.exec it) == null
+        react = files.filter(-> /\.jsx$/.exec it)
+        files = files.filter(-> /\.ls$/.exec it)
         raw = [lsc.compile(fs.read-file-sync(file)toString!,{bare:true}) for file in files].join(\\n)
+        jsx = [babel.transform(
+          fs.read-file-sync(file)toString!,{optional:<[reactCompat]>}
+        ).code for file in react].join(\\n)
+        raw = raw + jsx
         mini = uglify.minify(raw,{fromString:true}).code
         mkdir-recurse \dist
         fs.write-file-sync "dist/ldcp.js", raw

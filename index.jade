@@ -528,7 +528,7 @@ html(lang="en")
           .panel.panel-default: .panel-body.row
             .col-sm-4
               label choose color
-              input.form-control(ldColorPicker,ng-model="color",ng-ldcp="ldcp",ng-idx="idx",ng-pinned="pin")
+              input.form-control(ldColorPicker,ng-model="color",ng-ldcp="ldcp",ng-idx="idx",ng-pinned="pin",ng-palette="palette")
             .col-sm-4
               label your color
               .btn.btn-default.btn-block(ng-attr-style="background:{{color}};height:34px")
@@ -536,7 +536,7 @@ html(lang="en")
               label Color Index
               br
               input.form-control(type="text",disabled,ng-model="idx")
-          p you can bind color and ColorPicker object to angular scope by following attributes:
+          p you can build a two-way-binding of color, ColorPicker object and other state information to angular scope by following attributes:
           table.table.table-bordered
             thead
               tr
@@ -555,7 +555,12 @@ html(lang="en")
               tr
                 td ng-pinned
                 td is widget pinned
-
+              tr
+                td ng-palette
+                td palette of the colorpicker
+          p to configure ColorPicker, use #[code config] attributes:
+          pre.well.
+            &#60;input ldColorPicker config="someVar"&#62;
           br
           h3#reactjs ReactJS
           p use #[code &#60;LDColorPicker&#62;] component to create color picker widget. All parameters in Vanilla JS can be used as properties in this component, e.g.:

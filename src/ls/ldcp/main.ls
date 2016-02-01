@@ -491,10 +491,19 @@ do ->
       ..directive \ldcolorpicker, -> do
         require: <[]>
         restrict: \A
-        scope: ldcp: \=ngLdcp, color: \=ngModel, idx: \=ngIdx, pinned: \=ngPinned
+        scope: do
+          ldcp: \=ngLdcp
+          color: \=ngModel
+          idx: \=ngIdx
+          pinned: \=ngPinned
+          palette: \=ngPalette
+          config: \&config
         link: (s,e,a,c) ->
-          s.ldcp = ldcp = new ldColorPicker e.0, {}, null
-          ldcp.on \change, (color) -> s.$apply -> s.color = color
+          ldcp = new ldColorPicker e.0, (s.config! or {}), null
+          if a.ngLdcp => s.ldcp = ldcp
+          ldcp.on \change, (color) -> s.$apply -> 
+            if a.ngModel => s.color = color
+            if a.ngPalette => s.palette = ldcp.get-palette!
           s.$watch 'color', (color) -> 
             try
               cc = ldcp.getValue!

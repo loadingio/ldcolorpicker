@@ -1022,14 +1022,24 @@
           ldcp: '=ngLdcp',
           color: '=ngModel',
           idx: '=ngIdx',
-          pinned: '=ngPinned'
+          pinned: '=ngPinned',
+          palette: '=ngPalette',
+          config: '&config'
         },
         link: function(s, e, a, c){
           var ldcp;
-          s.ldcp = ldcp = new ldColorPicker(e[0], {}, null);
+          ldcp = new ldColorPicker(e[0], s.config() || {}, null);
+          if (a.ngLdcp) {
+            s.ldcp = ldcp;
+          }
           ldcp.on('change', function(color){
             return s.$apply(function(){
-              return s.color = color;
+              if (a.ngModel) {
+                s.color = color;
+              }
+              if (a.ngPalette) {
+                return s.palette = ldcp.getPalette();
+              }
             });
           });
           s.$watch('color', function(color){

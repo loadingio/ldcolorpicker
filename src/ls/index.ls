@@ -1,9 +1,11 @@
 angular.module \main, <[ldColorPicker]>
   ..controller \main, <[$scope $timeout]> ++ ($scope, $timeout) ->
+    $scope.option = pinned: true
     $scope.$watch 'ldcp', (->)
     $scope.$watch 'color', (->)
     $scope.$watch 'idx', (->)
     $scope.$watch 'pin', (->)
+    $scope.$watch 'palette', (->console.log it)
 
 setpalette = (context) ->
   pal = ldColorPicker.palette.get context

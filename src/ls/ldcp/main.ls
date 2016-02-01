@@ -103,7 +103,7 @@ do ->
       if custom-pinned => @toggle true
       document.addEventListener \keydown, (e) ~>
         code = (e.which or e.keyCode)
-        if code == 27 => @toggle false
+        if code == 27 and @target => @toggle false
       @handle \inited
       value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
       @handle \change, value

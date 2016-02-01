@@ -218,7 +218,7 @@
       document.addEventListener('keydown', function(e){
         var code;
         code = e.which || e.keyCode;
-        if (code === 27) {
+        if (code === 27 && this$.target) {
           return this$.toggle(false);
         }
       });

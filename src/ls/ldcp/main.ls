@@ -385,7 +385,9 @@ do ->
         @set-hsl c.hue, c.sat, c.lit
         @set-alpha c.alpha
         n = @palpad.childNodes[idx + 1]
-        @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
+        if !n.offsetWidth =>
+          setTimeout (~> @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"), 0
+        else @colorptr.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
 
       get-alpha: -> return if (@color.vals[@idx].alpha?) => @color.vals[@idx].alpha else 1
       set-alpha: (alpha, no-recurse = false) ->

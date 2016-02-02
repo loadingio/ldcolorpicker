@@ -842,7 +842,7 @@
         return this.idx;
       },
       setIdx: function(idx){
-        var c, n;
+        var c, n, this$ = this;
         if (this.idx !== idx) {
           c = this.color.vals[idx];
           this.handle('change', c.alpha != null && c.alpha < 1
@@ -858,7 +858,13 @@
         this.setHsl(c.hue, c.sat, c.lit);
         this.setAlpha(c.alpha);
         n = this.palpad.childNodes[idx + 1];
-        return this.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
+        if (!n.offsetWidth) {
+          return setTimeout(function(){
+            return this$.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
+          }, 0);
+        } else {
+          return this.colorptr.style.left = (n.offsetLeft + n.offsetWidth / 2) + "px";
+        }
       },
       getAlpha: function(){
         return this.color.vals[this.idx].alpha != null ? this.color.vals[this.idx].alpha : 1;

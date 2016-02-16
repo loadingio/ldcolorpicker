@@ -468,6 +468,10 @@ html(lang="en")
                         obj.on("change", function(color) { ... });
                         /* color is hex, rgba or "none" */
                     li 
+                      span #[code change-palette] - fired when palette changed
+                      pre.well(style="margin-top:10px").
+                        obj.on("change-palette", function(palette) { ... });
+                    li 
                       span #[code change-idx] - fired when index of active color changed
                       pre.well(style="margin-top:10px").
                         obj.on("change-idx", function(idx) { ... });

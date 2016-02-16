@@ -13,7 +13,7 @@
     return false;
   };
   ldColorPicker = import$(function(target, config, node){
-    var srcnode, that, customClass, customContext, customCallback, customIdx, customPalette, customPinned, customExclusive, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
+    var srcnode, that, customClass, customContext, customCallback, customPalCallback, customIdx, customPalette, customPinned, customExclusive, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
     target == null && (target = null);
     config == null && (config = {});
     node == null && (node = null);
@@ -21,6 +21,7 @@
     customClass = config['class'] || (srcnode && srcnode.getAttribute('data-cpclass')) || "";
     customContext = config.context || (srcnode && srcnode.getAttribute('data-context')) || 'default';
     customCallback = config.oncolorchange || (srcnode && srcnode.getAttribute('data-oncolorchange')) || null;
+    customPalCallback = config.onpalettechange || (srcnode && srcnode.getAttribute('data-onpalettechange')) || null;
     customIdx = config.index || (srcnode && parseInt(srcnode.getAttribute('data-palette-idx'))) || 0;
     customPalette = (config.palette || (srcnode && srcnode.getAttribute('data-palette'))) || null;
     customPinned = (config.pinned || (srcnode && srcnode.getAttribute('data-pinned') === 'true')) || null;
@@ -78,6 +79,9 @@
     if (typeof customCallback === typeof "") {
       customCallback = new Function(['color'], customCallback);
     }
+    if (typeof customPalCallback === typeof "") {
+      customPalCallback = new Function(['palette'], customPalCallback);
+    }
     if (!node) {
       if (!in$('bubble', customClass.split(' '))) {
         customClass += " bubble";
@@ -115,6 +119,7 @@
     this.context = customContext;
     this['class'] = customClass;
     this.callback = customCallback;
+    this.palCallback = customPalCallback;
     this.pinned = customPinned;
     this.exclusive = customExclusive;
     this.eventHandler = {};
@@ -177,6 +182,7 @@
       this$.color = {
         nodes: node.querySelectorAll(".ldcp-palette .ldcp-color"),
         palette: node.querySelector(".ldcp-colors .ldcp-palette"),
+        lastvals: null,
         vals: ldColorPicker.palette.getVal(this$, this$.context)
       };
       this$.color.nodes = (function(){
@@ -200,6 +206,11 @@
       if (this$.callback) {
         this$.on('change', function(it){
           return this$.callback.apply(this$.target, [it]);
+        });
+      }
+      if (this$.palCallback) {
+        this$.on('change-palette', function(it){
+          return this$.palCallback.apply(this$.target, [it]);
         });
       }
       if (this$.url) {
@@ -226,7 +237,8 @@
       value = c.alpha != null && c.alpha < 1
         ? this$.toRgbaString(c)
         : this$.toHexString(c);
-      return this$.handle('change', value);
+      this$.handle('change', value);
+      return this$.handle('change-palette', this$.getPalette());
       function fn$(e){
         return this$.setIdx(e.target.idx);
       }
@@ -583,7 +595,7 @@
           res$.push(this.convert.color(it.hex));
         }
         result = res$;
-        this.color.vals.splice(0);
+        this.color.lastvals = this.color.vals.splice(0);
         if (clean) {
           this.color.vals = [];
         }
@@ -607,7 +619,7 @@
         return ldColorPicker.palette.update();
       },
       updatePalette: function(context, affectIdx, direction){
-        var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, this$ = this;
+        var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, changed, this$ = this;
         ref$ = [this.color.nodes.length, this.color.vals.length], nlen = ref$[0], vlen = ref$[1];
         if (vlen > nlen) {
           for (i$ = nlen; i$ < vlen; ++i$) {
@@ -646,16 +658,30 @@
         value = c.alpha != null && c.alpha < 1
           ? this.toRgbaString(c)
           : this.toHexString(c);
-        if (this.oldValue !== value) {
-          this.handle('change', value);
-        }
+        changed = this.oldValue !== value;
         this.oldValue = value;
         this.setIdx(this.idx);
         this.inputH.value = c.hue;
         this.inputS.value = c.sat;
         this.inputL.value = c.lit;
         this.inputA.value = c.alpha != null ? c.alpha : 1;
-        return this.inputhex.value = this.getHexString();
+        this.inputhex.value = this.getHexString();
+        this.color.lastvals = null;
+        if (changed) {
+          this.handle('change', value);
+        }
+        if (changed || direction) {
+          return this.handle('change-palette', this.getPalette());
+        } else if (this.color.lastvals) {
+          c = this.color;
+          if (c.lastvals.length !== c.vals.length) {
+            return this.handle('change-palette', this.getPalette());
+          } else if (c.lastvals.map(function(d, i){
+            return d !== c.vals[i];
+          }).length) {
+            return this.handle('change-palette', this.getPalette());
+          }
+        }
         function fn$(e){
           var idx;
           idx = e.target.idx != null
@@ -842,12 +868,15 @@
         return this.idx;
       },
       setIdx: function(idx){
-        var c, n, this$ = this;
+        var c, oldc, n, this$ = this;
         if (this.idx !== idx) {
           c = this.color.vals[idx];
-          this.handle('change', c.alpha != null && c.alpha < 1
-            ? this.toRgbaString(c)
-            : this.toHexString(c));
+          oldc = this.color.vals[this.idx];
+          if (c !== oldc) {
+            this.handle('change', c.alpha != null && c.alpha < 1
+              ? this.toRgbaString(c)
+              : this.toHexString(c));
+          }
           this.handle('change-idx', idx);
         }
         this.idx = idx;
@@ -1041,8 +1070,12 @@
           ldcp.on('change', function(color){
             return s.$apply(function(){
               if (a.ngModel) {
-                s.color = color;
+                return s.color = color;
               }
+            });
+          });
+          ldcp.on('change-palette', function(palette){
+            return s.$apply(function(){
               if (a.ngPalette) {
                 return s.palette = ldcp.getPalette();
               }

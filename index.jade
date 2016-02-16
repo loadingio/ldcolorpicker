@@ -291,6 +291,10 @@ html(lang="en")
             input.form-control(data-toggle="colorpicker",data-oncolorchange="this.style.color=color",
             data-cpclass="round shadow")
 
+          p and use #[code data-onpalettechange] to handle palette change event:
+          pre.well.
+            &#60;input data-toggle="colorpicker" data-onpalettechange="this.style.color=color" data-cpclass="shadow round"&#62;
+
           h2#apis APIs
           p ldColorPicker provides APIs for vanilla JS, jQuery and AngularJS.
           h3#vanilla-js Vanilla JS
@@ -313,6 +317,9 @@ html(lang="en")
               tr
                 td oncolorchange
                 td callback function that will be invoked when color is changed
+              tr
+                td onpalettechange
+                td callback function that will be invoked when palette is changed
               tr
                 td index
                 td default index of color in palette
@@ -402,6 +409,9 @@ html(lang="en")
               tr
                 td data-oncolorchange
                 td callback function when color is changed. Access variable #[code color] for new value.
+              tr
+                td data-onpalettechange
+                td callback function when palette is changed. Access variable #[code palette] for new value.
               tr
                 td data-color
                 td get value of current color

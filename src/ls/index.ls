@@ -5,11 +5,10 @@ angular.module \main, <[ldColorPicker]>
     $scope.$watch 'color', (->)
     $scope.$watch 'idx', (->)
     $scope.$watch 'pin', (->)
-    $scope.$watch 'palette', (->console.log it)
+    $scope.$watch 'palette', (->)
 
 setpalette = (context) ->
   pal = ldColorPicker.palette.get context
-  console.log pal
   ldColorPicker.palette.set \landing, pal
 
 <- $(document).ready

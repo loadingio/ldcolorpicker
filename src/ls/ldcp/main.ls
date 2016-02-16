@@ -11,6 +11,7 @@ do ->
     custom-class = config.class or (srcnode and srcnode.getAttribute(\data-cpclass)) or ""
     custom-context = config.context or (srcnode and srcnode.getAttribute(\data-context)) or \default
     custom-callback = config.oncolorchange or (srcnode and srcnode.getAttribute(\data-oncolorchange)) or null
+    custom-pal-callback = config.onpalettechange or (srcnode and srcnode.getAttribute(\data-onpalettechange)) or null
     custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0
     custom-palette = (config.palette or (srcnode and srcnode.getAttribute(\data-palette))) or null
     custom-pinned = (config.pinned or (srcnode and srcnode.getAttribute(\data-pinned)==\true)) or null
@@ -24,6 +25,7 @@ do ->
     else @initpal = custom-palette
     if isNaN(custom-idx) => custom-idx = 0
     if typeof(custom-callback) == typeof("") => custom-callback = new Function(<[color]>,custom-callback)
+    if typeof(custom-pal-callback) == typeof("") => custom-pal-callback = new Function(<[palette]>,custom-pal-callback)
     if !node =>
       if !(\bubble in custom-class.split(' ')) => custom-class += " bubble"
       document.body.appendChild(node = document.createElement("div"))
@@ -38,7 +40,10 @@ do ->
     else => custom-class += node.getAttribute("class")
     if !(\ldColorPickr in custom-class.split(' ')) => custom-class += ' ldColorPicker'
     node.setAttribute("class", "#{custom-class}")
-    @ <<< {node, target, idx: custom-idx, context: custom-context, class: custom-class, callback: custom-callback}
+    @ <<< {
+      node, target, idx: custom-idx, context: custom-context, class: custom-class
+      callback: custom-callback, pal-callback: custom-pal-callback
+    }
     @ <<< {pinned: custom-pinned, exclusive: custom-exclusive}
     @event-handler = {}
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
@@ -82,6 +87,7 @@ do ->
       @color = do
         nodes: node.querySelectorAll(".ldcp-palette .ldcp-color")
         palette: node.querySelector(".ldcp-colors .ldcp-palette")
+        lastvals: null
         vals: ldColorPicker.palette.getVal(@, @context)
       # arrayize
       @color.nodes = [@color.nodes[i] for i from 0 til @color.nodes.length]
@@ -94,6 +100,7 @@ do ->
       @set-idx @idx # set ptr correctly
       @set-hsl c.hue, c.sat, c.lit
       if @callback => @on \change, ~> @callback.apply @target, [it]
+      if @pal-callback => @on \change-palette, ~> @pal-callback.apply @target, [it]
       if @url => 
         @chooser.input.value = @url
         setTimeout((~>@load-palette @chooser.input.value),0)
@@ -107,6 +114,7 @@ do ->
       @handle \inited
       value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
       @handle \change, value
+      @handle \change-palette, @get-palette!
     ), 0
     @
   ) <<< do
@@ -242,7 +250,7 @@ do ->
       get-palette: -> {colors: [{hex: @toHexString v} for v in @color.vals]}
       set-palette: (pal, clean = false) ->
         result = [@convert.color(it.hex) for it in pal.colors]
-        @color.vals.splice 0
+        @color.lastvals = @color.vals.splice 0
         if clean => @color.vals = []
         for it in result => @color.vals.push it
         ldColorPicker.palette.update!
@@ -279,7 +287,7 @@ do ->
           if old-idx != @idx => @handle \change-idx, @idx
         c = @color.vals[@idx]
         value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
-        if @old-value != value => @handle \change, value
+        changed = (@old-value != value)
         @old-value = value
         @set-idx @idx
         @inputH.value = c.hue
@@ -287,6 +295,16 @@ do ->
         @inputL.value = c.lit
         @inputA.value = (if c.alpha? => c.alpha else 1)
         @inputhex.value = @getHexString!
+        @color.lastvals = null
+        if changed => @handle \change, value
+        if changed or direction => @handle \change-palette, @get-palette!
+        else if @color.lastvals =>
+          c = @color
+          if c.lastvals.length != c.vals.length =>
+            @handle \change-palette, @get-palette!
+          else if c.lastvals.map((d,i) ~> d != c.vals[i]).length =>
+            @handle \change-palette, @get-palette!
+
       update-color: (idx) ->
         c = @color.vals[idx]
         n = @color.nodes[idx].childNodes.0
@@ -377,7 +395,8 @@ do ->
       set-idx: (idx) ->
         if @idx != idx => 
           c = @color.vals[idx]
-          @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
+          oldc = @color.vals[@idx]
+          if c != oldc => @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
           @handle \change-idx, idx
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
@@ -505,6 +524,7 @@ do ->
           if a.ngLdcp => s.ldcp = ldcp
           ldcp.on \change, (color) -> s.$apply -> 
             if a.ngModel => s.color = color
+          ldcp.on \change-palette, (palette) -> s.$apply -> 
             if a.ngPalette => s.palette = ldcp.get-palette!
           s.$watch 'color', (color) -> 
             try

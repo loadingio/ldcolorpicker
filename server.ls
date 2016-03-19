@@ -263,7 +263,7 @@ update-file = ->
         mini = uglify.minify(raw,{fromString:true}).code
         mkdir-recurse \dist
         fs.write-file-sync "dist/ldcp.js", raw
-        fs.write-file-sync "dist/ldcp.min.js", raw
+        fs.write-file-sync "dist/ldcp.min.js", mini
         console.log "[BUILD] #src --> dist/ldcp.js"
         console.log "[BUILD] #src --> dist/ldcp.min.js"
       catch

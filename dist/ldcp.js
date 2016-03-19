@@ -124,7 +124,7 @@
     this.exclusive = customExclusive;
     this.eventHandler = {};
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>";
-    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.opacity + "'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>";
+    HTML = ["<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='" + ldColorPicker.base64.gradient + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.hue + "'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='" + ldColorPicker.base64.opacity + "'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div>", "<div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'>", "<div class='ldcp-edit-group'><span>R</span><input class='ldcp-input-r' value='255'><span>G</span><input class='ldcp-input-g' value='255'><span>B</span><input class='ldcp-input-b' value='255'></div>", "<div class='ldcp-edit-group' style='display:none'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'></div>", "<div class='ldcp-edit-group ldcp-edit-hex' style='display:none'><span>HEX</span><input class='ldcp-input-hex' value='#000000'></div>", "<span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'>", "<span class='ldcp-caret'>RGBA &#x25be;</span></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"].join("");
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>";
     node.innerHTML = HTML;
     node.addEventListener('click', function(e){
@@ -152,18 +152,83 @@
       return this$.removeColor();
     });
     setTimeout(function(){
-      var x$, i, i$, to$, idx, c, value;
+      var x$, y$, z$, z1$, z2$, z3$, z4$, z5$, z6$, z7$, i, i$, to$, idx, c, value;
+      x$ = this$.inputCaret = node.querySelector(".ldcp-caret");
+      x$.addEventListener("click", function(){
+        return this$.nextEditMode();
+      });
+      this$.editGroup = node.querySelectorAll(".ldcp-edit-group");
       this$.chooser = {
         panel: node.querySelector(".ldcp-chooser"),
         input: node.querySelector(".ldcp-chooser input")
       };
-      this$.inputhex = node.querySelector(".ldcp-input-hex");
-      this$.inputH = node.querySelector(".ldcp-input-h");
-      this$.inputS = node.querySelector(".ldcp-input-s");
-      this$.inputL = node.querySelector(".ldcp-input-l");
-      this$.inputA = node.querySelector(".ldcp-input-a");
-      x$ = this$.colornone = node.querySelector(".ldcp-color-none");
-      x$.addEventListener('click', function(){
+      y$ = this$.inputhex = node.querySelector(".ldcp-input-hex");
+      y$.addEventListener('change', function(){
+        var c;
+        c = this$.convert.color(this$.inputhex.value);
+        this$.setHsl(c.hue, c.sat, c.lit);
+        return c = this$.color.vals[this$.idx];
+      });
+      z$ = this$.inputH = node.querySelector(".ldcp-input-h");
+      z$.addEventListener('change', function(){
+        var c, ref$;
+        c = (ref$ = this$.color.vals[this$.idx], ref$.hue = parseInt(this$.inputH.value), ref$);
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z1$ = this$.inputS = node.querySelector(".ldcp-input-s");
+      z1$.addEventListener('change', function(){
+        var c, ref$;
+        c = (ref$ = this$.color.vals[this$.idx], ref$.sat = parseFloat(this$.inputS.value), ref$);
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z2$ = this$.inputL = node.querySelector(".ldcp-input-l");
+      z2$.addEventListener('change', function(){
+        var c, ref$;
+        c = (ref$ = this$.color.vals[this$.idx], ref$.lit = parseFloat(this$.inputL.value), ref$);
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z3$ = this$.inputR = node.querySelector(".ldcp-input-r");
+      z3$.addEventListener('change', function(){
+        var ref$, r, g, b, c;
+        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+        r = parseInt(this$.inputR.value) / 255;
+        c = this$.convert.rgbHsl({
+          r: r,
+          g: g,
+          b: b
+        });
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z4$ = this$.inputG = node.querySelector(".ldcp-input-g");
+      z4$.addEventListener('change', function(){
+        var ref$, r, g, b, c;
+        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+        g = parseInt(this$.inputG.value) / 255;
+        c = this$.convert.rgbHsl({
+          r: r,
+          g: g,
+          b: b
+        });
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z5$ = this$.inputB = node.querySelector(".ldcp-input-b");
+      z5$.addEventListener('change', function(){
+        var ref$, r, g, b, c;
+        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+        b = parseInt(this$.inputB.value) / 255;
+        c = this$.convert.rgbHsl({
+          r: r,
+          g: g,
+          b: b
+        });
+        return this$.setHsl(c.hue, c.sat, c.lit);
+      });
+      z6$ = this$.inputA = node.querySelector(".ldcp-input-a");
+      z6$.addEventListener('change', function(){
+        return this$.setAlpha(parseFloat(this$.inputA.value));
+      });
+      z7$ = this$.colornone = node.querySelector(".ldcp-color-none");
+      z7$.addEventListener('click', function(){
         return this$.toggleNone();
       });
       this$.palpad = node.querySelector(".ldcp-palette");
@@ -456,6 +521,12 @@
         }.call(this)).join(",");
         return window.open("http://loading.io/color/?colors=" + hex);
       },
+      nextEditMode: function(){
+        this.editGroup[this.editMode || 0].style.display = 'none';
+        this.editMode = ((this.editMode || 0) + 1) % 3;
+        this.inputCaret.innerText = ["RGBA \u25be", "HSLA \u25be", "HEX \u25be"][this.editMode];
+        return this.editGroup[this.editMode].style.display = 'inline';
+      },
       updateDimension: function(){
         var ref$, n2, n1;
         ref$ = [this.node.querySelector(".ldcp-2d"), this.node.querySelector(".ldcp-1d")], n2 = ref$[0], n1 = ref$[1];
@@ -619,7 +690,7 @@
         return ldColorPicker.palette.update();
       },
       updatePalette: function(context, affectIdx, direction){
-        var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, changed, this$ = this;
+        var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, changed, rgb, this$ = this;
         ref$ = [this.color.nodes.length, this.color.vals.length], nlen = ref$[0], vlen = ref$[1];
         if (vlen > nlen) {
           for (i$ = nlen; i$ < vlen; ++i$) {
@@ -661,10 +732,14 @@
         changed = this.oldValue !== value;
         this.oldValue = value;
         this.setIdx(this.idx);
-        this.inputH.value = c.hue;
+        this.inputH.value = (ref$ = c.hue) > 0 ? ref$ : 0;
         this.inputS.value = c.sat;
         this.inputL.value = c.lit;
-        this.inputA.value = c.alpha != null ? c.alpha : 1;
+        rgb = this.toRgba(c);
+        this.inputR.value = parseInt(rgb[0] * 255);
+        this.inputG.value = parseInt(rgb[1] * 255);
+        this.inputB.value = parseInt(rgb[2] * 255);
+        this.inputA.value = rgb[3];
         this.inputhex.value = this.getHexString();
         this.color.lastvals = null;
         if (changed) {
@@ -703,11 +778,22 @@
       },
       convert: {
         color: function(it){
-          var r, g, b, ret, ref$, hue, sat, lit, that;
-          if (/#[a-fA-F0-9]{6}/.exec(it)) {
-            r = parseInt(it.substring(1, 3), 16) / 255;
-            g = parseInt(it.substring(3, 5), 16) / 255;
-            b = parseInt(it.substring(5, 7), 16) / 255;
+          var i, r, g, b, ret, ref$, hue, sat, lit, that;
+          if (/#?[a-fA-F0-9]{3}|#?[a-fA-F0-9]{6}/.exec(it)) {
+            it = it.replace(/^#/, '');
+            if (it.length === 3) {
+              it = (function(){
+                var i$, results$ = [];
+                for (i$ = 0; i$ <= 2; ++i$) {
+                  i = i$;
+                  results$.push(it.charAt(i) + it.charAt(i));
+                }
+                return results$;
+              }()).join("");
+            }
+            r = parseInt(it.substring(0, 2), 16) / 255;
+            g = parseInt(it.substring(2, 4), 16) / 255;
+            b = parseInt(it.substring(4, 6), 16) / 255;
             ret = (ref$ = this.rgbHsl({
               r: r,
               g: g,
@@ -974,6 +1060,7 @@
         x = (ref$ = x > 0 ? x : 0) < (ref1$ = ctx.w) ? ref$ : ref1$;
         y = (ref$ = y > 0 ? y : 0) < (ref1$ = ctx.h) ? ref$ : ref1$;
         ptr.style.top = y + "px";
+        this.inputhex.value = this.getHexString();
         if (type === 2) {
           ptr.style.left = x + "px";
         }

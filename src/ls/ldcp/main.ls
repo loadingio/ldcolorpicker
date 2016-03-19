@@ -47,7 +47,16 @@ do ->
     @ <<< {pinned: custom-pinned, exclusive: custom-exclusive}
     @event-handler = {}
     HTMLCONFIG = "<span>Paste Link of You Palette:</span><input placeholder='e.g., loading.io/palette/xddlf'/><div class='ldcp-chooser-btnset'><button>Sample</button><button>Load</button><button>Cancel</button></div>"
-    HTML = "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.opacity}'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div><div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'><span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'><span>Hex</span><input value='#00ff00' class='ldcp-input-hex'></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>"
+    HTML = [
+      "<div class='ldcp-panel'><div class='ldcp-v ldcp-g1'><div class='ldcp-h ldcp-g11 ldcp-2d'><div style='top:20px;left:20px' class='ldcp-ptr-circle'></div><img src='#{ldColorPicker.base64.gradient}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g12 ldcp-1d'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.hue}'><div class='ldcp-mask'></div></div><div class='ldcp-h ldcp-g13 ldcp-1d ldcp-alpha'><div class='ldcp-ptr-bar'></div><img src='#{ldColorPicker.base64.opacity}'><div class='ldcp-mask'></div></div></div><div class='ldcp-v ldcp-g2'><div class='ldcp-colors ldcp-h ldcp-g21'><div class='ldcp-palette'><small class='ldcp-colorptr'></small></div><small class='ldcp-sep'></small><div class='ldcp-color-none'></div><span class='ldcp-cbtn ldcp-btn-add'>+</span><span class='ldcp-cbtn ldcp-btn-remove'>-</span><span style='font-family:wingdings' class='ldcp-cbtn ldcp-btn-edit'>&#228;</span></div></div>"
+      "<div class='ldcp-v ldcp-g3'><div class='ldcp-h ldcp-g31'>"
+      "<div class='ldcp-edit-group'><span>R</span><input class='ldcp-input-r' value='255'><span>G</span><input class='ldcp-input-g' value='255'><span>B</span><input class='ldcp-input-b' value='255'></div>"
+      "<div class='ldcp-edit-group' style='display:none'><span>H</span><input class='ldcp-input-h' value='255'><span>S</span><input class='ldcp-input-s' value='255'><span>L</span><input class='ldcp-input-l' value='255'></div>"
+      "<div class='ldcp-edit-group ldcp-edit-hex' style='display:none'><span>HEX</span><input class='ldcp-input-hex' value='#000000'></div>"
+      "<span class='ldcp-alpha'>A</span><input value='255' class='ldcp-alpha ldcp-input-a'>"
+      "<span class='ldcp-caret'>RGBA &\#x25be;</span></div></div></div><div class='ldcp-chooser'><button/><button/><button/></div>" #<span>R</span><input/><span>G</span><input/><span>B</span><input/>"
+    ].join("")
+
     HTML += "<div class='ldcp-panel ldcp-chooser'>" + HTMLCONFIG + "</div>"
     node.innerHTML = HTML
     node.addEventListener(\click, (e) -> cancelAll e)
@@ -64,18 +73,53 @@ do ->
             @move e, idx, true
           )
         _(item, idx)
-
     node.querySelector(".ldcp-cbtn:nth-of-type(1)").addEventListener("click", ~> @add-color! )
     node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
     setTimeout (~>
+      @inputCaret = node.querySelector(".ldcp-caret")
+        ..addEventListener("click", ~> @next-edit-mode!)
+      @editGroup = node.querySelectorAll(".ldcp-edit-group")
       @chooser = do
         panel: node.querySelector(".ldcp-chooser")
         input: node.querySelector(".ldcp-chooser input")
       @inputhex = node.querySelector(".ldcp-input-hex")
+        ..addEventListener \change, ~> 
+          c = @convert.color(@inputhex.value)
+          @set-hsl c.hue, c.sat, c.lit
+          c = @color.vals[@idx]
       @inputH = node.querySelector(".ldcp-input-h")
+        ..addEventListener \change, ~> 
+          c = @color.vals[@idx] <<< {hue: parseInt(@inputH.value)}
+          @set-hsl c.hue, c.sat, c.lit
       @inputS = node.querySelector(".ldcp-input-s")
+        ..addEventListener \change, ~> 
+          c = @color.vals[@idx] <<< {sat: parseFloat(@inputS.value)}
+          @set-hsl c.hue, c.sat, c.lit
       @inputL = node.querySelector(".ldcp-input-l")
+        ..addEventListener \change, ~> 
+          c = @color.vals[@idx] <<< {lit: parseFloat(@inputL.value)}
+          @set-hsl c.hue, c.sat, c.lit
+      @inputR = node.querySelector(".ldcp-input-r")
+        ..addEventListener \change, ~> 
+          [r,g,b] = @toRgba(@color.vals[@idx]) 
+          r = parseInt(@inputR.value) / 255
+          c = @convert.rgb-hsl {r,g,b}
+          @set-hsl c.hue, c.sat, c.lit
+      @inputG = node.querySelector(".ldcp-input-g")
+        ..addEventListener \change, ~> 
+          [r,g,b] = @toRgba(@color.vals[@idx]) 
+          g = parseInt(@inputG.value) / 255
+          c = @convert.rgb-hsl {r,g,b}
+          @set-hsl c.hue, c.sat, c.lit
+      @inputB = node.querySelector(".ldcp-input-b")
+        ..addEventListener \change, ~> 
+          [r,g,b] = @toRgba(@color.vals[@idx]) 
+          b = parseInt(@inputB.value) / 255
+          c = @convert.rgb-hsl {r,g,b}
+          @set-hsl c.hue, c.sat, c.lit
       @inputA = node.querySelector(".ldcp-input-a")
+        ..addEventListener \change, ~> 
+          @set-alpha parseFloat(@inputA.value)
       @colornone = node.querySelector(".ldcp-color-none")
         ..addEventListener(\click, (~> @toggle-none!))
       @palpad = node.querySelector(".ldcp-palette")
@@ -189,6 +233,13 @@ do ->
       edit: -> 
         hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
         window.open "http://loading.io/color/?colors=#hex"
+      next-edit-mode: ->
+        @editGroup[@edit-mode or 0].style.display = \none
+        @edit-mode = ((@edit-mode or 0) + 1) % 3
+        @inputCaret.innerText = ["RGBA \u25be" "HSLA \u25be" "HEX \u25be"][@edit-mode]
+        @editGroup[@edit-mode].style.display = \inline
+        
+
       update-dimension: ->
         [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-1d")]
         @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}
@@ -290,10 +341,14 @@ do ->
         changed = (@old-value != value)
         @old-value = value
         @set-idx @idx
-        @inputH.value = c.hue
+        @inputH.value = c.hue >? 0
         @inputS.value = c.sat
         @inputL.value = c.lit
-        @inputA.value = (if c.alpha? => c.alpha else 1)
+        rgb = @toRgba(c)
+        @inputR.value = parseInt(rgb.0 * 255)
+        @inputG.value = parseInt(rgb.1 * 255)
+        @inputB.value = parseInt(rgb.2 * 255)
+        @inputA.value = rgb.3
         @inputhex.value = @getHexString!
         @color.lastvals = null
         if changed => @handle \change, value
@@ -313,10 +368,12 @@ do ->
         else n.style.border = "1px dashed transparent"
       convert: do
         color: ->
-          if /#[a-fA-F0-9]{6}/.exec(it) => 
-            r = parseInt(it.substring(1,3), 16) / 255
-            g = parseInt(it.substring(3,5), 16) / 255
-            b = parseInt(it.substring(5,7), 16) / 255
+          if /#?[a-fA-F0-9]{3}|#?[a-fA-F0-9]{6}/.exec(it) => 
+            it = it.replace /^#/, ''
+            if it.length == 3 => it = [it.charAt(i) + it.charAt(i) for i from 0 to 2].join("")
+            r = parseInt(it.substring(0,2), 16) / 255
+            g = parseInt(it.substring(2,4), 16) / 255
+            b = parseInt(it.substring(4,6), 16) / 255
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             return ret
           if /rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)/.exec(it) =>
@@ -458,7 +515,7 @@ do ->
         x = x >? 0 <? ctx.w
         y = y >? 0 <? ctx.h
         ptr.style.top = "#{y}px"
-        #@inputhex.value = @getValue!
+        @inputhex.value = @getHexString!
         if type == 2 => ptr.style.left = "#{x}px"
         if !no-recurse and type == 1 =>
           ly = y * 1.04 - ctx.h * 0.02

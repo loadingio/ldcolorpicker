@@ -1,4 +1,5 @@
 .ldColorPicker {
+  -webkit-font-smoothing: antialiased;
   line-height: 1.428571429;
   display: inline-block;
   position: relative;
@@ -230,39 +231,64 @@
   border-radius: 0 2px 2px 0;
 }
 .ldcp-g31 {
-  text-align: right;
+  color: #666;
+  font-family: calibri;
 }
-.ldcp-g31 input.ldcp-input-hex,
 .ldcp-g31 input {
+  width: 29px;
+  margin-left: -2px;
+  margin-right: 5px;
+  border-radius: 0;
+  color: #666;
   height: 100%;
-  border-radius: 1px;
-  border: 1px solid #ccc;
-  font-size: 12px;
-  padding: 0;
+  padding: 1px 2px 0;
+  font-weight: 200;
+  font-size: 13px;
   vertical-align: top;
-  font-family: monospace;
-  width: 56px;
   text-align: center;
+}
+.ldcp-g31 input.ldcp-alpha {
   margin-right: 0;
 }
-.ldcp-g31 input {
-  width: 30px;
-  margin-left: -2px;
-  margin-right: 6px;
-  border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 1px rgba(0,0,0,0.3);
+.ldcp-g31 input.ldcp-input-hex {
+  width: 54px;
 }
 .ldcp-g31 span {
-  background: #f9f9f9;
   display: inline-block;
-  line-height: 18px;
   padding: 0 2px;
   border-radius: 2px 0 0 2px;
+  width: 16px;
   height: 100%;
   vertical-align: top;
-  font-size: 12px;
+  font-size: 13px;
   margin-right: 0;
   border: 1px solid #ccc;
+  text-align: center;
+  font-weight: 200;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ldcp-g31 .ldcp-caret {
+  border-radius: 2px;
+  width: 52px;
+  float: right;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.ldcp-edit-group {
+  display: inline;
+}
+.ldcp-edit-hex span {
+  width: 32px;
 }
 .ldcp-panel .ldcp-ptr-circle,
 .ldcp-panel .ldcp-ptr-bar {
@@ -327,6 +353,19 @@
 .ldcp-chooser {
   display: none;
 }
+/*.ldColorPicker input
+  color: #777
+  width: 32px
+  height: 18px
+  font-size: 12px
+  vertical-align: top
+  margin: 1px 0 0 2px
+  border-radius: 1px
+  border: 1px solid #ccc
+  font-family: calibr, roboto
+  padding: 2px
+  text-align: center
+*/
 .ldcp-panel {
   padding-bottom: 29px;
 }
@@ -348,11 +387,19 @@
   width: 100%;
 }
 .ldcp-g3 {
-  height: 20px;
   display: none;
+  height: 17px;
+  line-height: 17px;
+  margin-top: 12px;
 }
 .ldcp-g31 {
   width: 100%;
+}
+.ldColorPicker.text-input .ldcp-panel {
+  padding-bottom: 54px;
+}
+.ldColorPicker.text-input .ldcp-g3 {
+  display: block;
 }
 .ldColorPicker.no-alpha .ldcp-2d {
   width: 90%;
@@ -366,7 +413,10 @@
 .ldColorPicker.no-palette .ldcp-panel {
   padding-bottom: 5px;
 }
-.ldColorPicker.no-palette .ldcp-g2 {
+.ldColorPicker.no-palette.text-input .ldcp-panel {
+  padding-bottom: 29px;
+}
+.ldColorPicker.no-palette.text-input .ldcp-g2 {
   display: none;
 }
 .ldColorPicker.palette-only,

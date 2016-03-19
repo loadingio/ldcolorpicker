@@ -413,11 +413,11 @@
 .ldColorPicker.no-palette .ldcp-panel {
   padding-bottom: 5px;
 }
+.ldColorPicker.no-palette .ldcp-g2 {
+  display: none;
+}
 .ldColorPicker.no-palette.text-input .ldcp-panel {
   padding-bottom: 29px;
-}
-.ldColorPicker.no-palette.text-input .ldcp-g2 {
-  display: none;
 }
 .ldColorPicker.palette-only,
 .ldColorPicker.mini-palette {

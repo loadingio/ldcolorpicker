@@ -779,7 +779,7 @@
       convert: {
         color: function(it){
           var i, r, g, b, ret, ref$, hue, sat, lit, that;
-          if (/#?[a-fA-F0-9]{3}|#?[a-fA-F0-9]{6}/.exec(it)) {
+          if (/^#?[a-fA-F0-9]{3}$|^#?[a-fA-F0-9]{6}$/.exec(it)) {
             it = it.replace(/^#/, '');
             if (it.length === 3) {
               it = (function(){

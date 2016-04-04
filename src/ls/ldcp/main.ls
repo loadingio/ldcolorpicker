@@ -368,7 +368,7 @@ do ->
         else n.style.border = "1px dashed transparent"
       convert: do
         color: ->
-          if /#?[a-fA-F0-9]{3}|#?[a-fA-F0-9]{6}/.exec(it) => 
+          if /^#?[a-fA-F0-9]{3}$|^#?[a-fA-F0-9]{6}$/.exec(it) => 
             it = it.replace /^#/, ''
             if it.length == 3 => it = [it.charAt(i) + it.charAt(i) for i from 0 to 2].join("")
             r = parseInt(it.substring(0,2), 16) / 255

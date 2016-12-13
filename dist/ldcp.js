@@ -801,7 +801,7 @@
             }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
             return ret;
           }
-          if (that = /rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)/.exec(it)) {
+          if (that = /^rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)$/.exec(it)) {
             ref$ = [that[1], that[2], that[3]].map(function(it){
               return parseInt(it) / 255;
             }), r = ref$[0], g = ref$[1], b = ref$[2];

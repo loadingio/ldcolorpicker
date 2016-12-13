@@ -376,7 +376,7 @@ do ->
             b = parseInt(it.substring(4,6), 16) / 255
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             return ret
-          if /rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)/.exec(it) =>
+          if /^rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)$/.exec(it) =>
             [r,g,b] = that[1,2,3]map(->parseInt(it)/255)
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             ret.alpha = parseFloat(that.4)

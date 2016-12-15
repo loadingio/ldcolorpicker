@@ -241,11 +241,13 @@
   border-radius: 0;
   color: #666;
   height: 100%;
-  padding: 1px 2px 0;
+  padding: 0 2px 0;
   font-weight: 200;
   font-size: 13px;
   vertical-align: top;
   text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 0 3px 3px 0;
 }
 .ldcp-g31 input.ldcp-alpha {
   margin-right: 0;
@@ -256,6 +258,7 @@
 .ldcp-g31 span {
   display: inline-block;
   padding: 0 2px;
+  line-height: 15px;
   border-radius: 2px 0 0 2px;
   width: 16px;
   height: 100%;

@@ -139,6 +139,7 @@ do ->
         c = @color.nodes[idx]
         c.idx = idx
         c.addEventListener \click, (e) ~> @set-idx(e.target.idx)
+      if @initpal => @set-palette @initpal
       c = @color.vals[@idx]
       @update-palette!
       @set-idx @idx # set ptr correctly
@@ -148,9 +149,10 @@ do ->
       if @url => 
         @chooser.input.value = @url
         setTimeout((~>@load-palette @chooser.input.value),0)
-      if @initpal =>
-        @set-palette @initpal
-        c = @color.vals[@idx]
+      #moved to above to prevent redundant events
+      #if @initpal =>
+      #  @set-palette @initpal
+      #  c = @color.vals[@idx]
       if custom-pinned => @toggle true
       document.addEventListener \keydown, (e) ~>
         code = (e.which or e.keyCode)

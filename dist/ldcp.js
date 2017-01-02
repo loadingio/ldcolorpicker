@@ -264,6 +264,9 @@
         c.idx = idx;
         c.addEventListener('click', fn$);
       }
+      if (this$.initpal) {
+        this$.setPalette(this$.initpal);
+      }
       c = this$.color.vals[this$.idx];
       this$.updatePalette();
       this$.setIdx(this$.idx);
@@ -283,10 +286,6 @@
         setTimeout(function(){
           return this$.loadPalette(this$.chooser.input.value);
         }, 0);
-      }
-      if (this$.initpal) {
-        this$.setPalette(this$.initpal);
-        c = this$.color.vals[this$.idx];
       }
       if (customPinned) {
         this$.toggle(true);

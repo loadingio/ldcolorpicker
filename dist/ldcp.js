@@ -909,7 +909,7 @@
         ret = this.toRgba(c);
         for (i$ = 0; i$ < 3; ++i$) {
           i = i$;
-          ret[i] = parseInt(ret[i] * 255);
+          ret[i] = ret[i] * 100 + "%";
         }
         return "rgba(" + ret.join(',') + ")";
       },

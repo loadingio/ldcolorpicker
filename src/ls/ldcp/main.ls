@@ -429,7 +429,8 @@ do ->
       toRgbaString: (c) ->
         if c.is-none => return \none
         ret = @toRgba c
-        for i from 0 til 3 => ret[i] = parseInt(ret[i] * 255)
+        # use percentage to prevent floating point problem when doing interpolation
+        for i from 0 til 3 => ret[i] = "#{ret[i] * 100}%"
         return "rgba(#{ret.join(\,)})"
 
       getHexString: (addhash = true) -> 

@@ -800,9 +800,11 @@
             }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
             return ret;
           }
-          if (that = /^rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)$/.exec(it)) {
+          if (that = /^\s*rgba\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*\)\s*$/.exec(it)) {
             ref$ = [that[1], that[2], that[3]].map(function(it){
-              return parseInt(it) / 255;
+              return it[it.length - 1] === '%'
+                ? (+it.substring(0, it.length - 1)) / 100
+                : parseInt(it) / 255;
             }), r = ref$[0], g = ref$[1], b = ref$[2];
             ret = (ref$ = this.rgbHsl({
               r: r,

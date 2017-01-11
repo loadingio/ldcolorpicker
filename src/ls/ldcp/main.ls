@@ -378,8 +378,11 @@ do ->
             b = parseInt(it.substring(4,6), 16) / 255
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             return ret
-          if /^rgba\(([0-9.]+),([0-9.]+),([0-9.]+),([0-9.]+)\)$/.exec(it) =>
-            [r,g,b] = that[1,2,3]map(->parseInt(it)/255)
+          if /^\s*rgba\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*\)\s*$/.exec(it) =>
+            [r,g,b] = that[1,2,3]map(->
+              return if it[* - 1] == \% => (+it.substring(0,it.length - 1))/100
+              else parseInt(it)/255
+            )
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             ret.alpha = parseFloat(that.4)
             return ret

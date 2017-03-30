@@ -585,19 +585,26 @@ do ->
         link: (s,e,a,c) ->
           ldcp = new ldColorPicker e.0, (s.config! or {}), null
           if a.ngLdcp => s.ldcp = ldcp
-          ldcp.on \change, (color) -> s.$apply -> 
-            if a.ngModel => s.color = color
-          ldcp.on \change-palette, (palette) -> s.$apply -> 
-            if a.ngPalette => s.palette = ldcp.get-palette!
+          ldcp.on \change, (color) ->
+            if s.color == color => return
+            f = -> if a.ngModel => s.color = color
+            if s.$$phase => f! else s.$apply f
+          ldcp.on \change-palette, (palette) ->
+            if !a.ngPalette => return
+            f = -> if a.ngPalette => s.palette = ldcp.get-palette!
+            if s.$$phase => f! else s.$apply f
           s.$watch 'color', (color) -> 
             try
               cc = ldcp.getValue!
-              if color? and cc != color => setTimeout((-> ldcp.set-color color),0)
+              if color? and cc != color => ldcp.set-color color
             catch e =>
 
-          ldcp.on \change-idx, (idx)-> s.$apply -> if a.ngIdx => s.idx = idx
+          ldcp.on \change-idx, (idx)->
+            f = -> if a.ngIdx => s.idx = idx
+            if s.$$phase => f! else s.$apply f
+
           if a.ngIdx and !(s.idx?) => s.idx = ldcp.get-idx!
-          s.$watch 'idx', (idx) -> if idx? => setTimeout((->ldcp.set-idx idx),0)
+          s.$watch 'idx', (idx) -> if idx? => ldcp.set-idx idx
 
           ldcp.on \change-pin, (pin) -> s.$apply -> if a.ngPinned => s.pinned = pin
           s.$watch 'pinned', (pin) -> setTimeout((->ldcp.set-pin pin),0)

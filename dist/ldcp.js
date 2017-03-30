@@ -1156,47 +1156,67 @@
             s.ldcp = ldcp;
           }
           ldcp.on('change', function(color){
-            return s.$apply(function(){
+            var f;
+            if (s.color === color) {
+              return;
+            }
+            f = function(){
               if (a.ngModel) {
                 return s.color = color;
               }
-            });
+            };
+            if (s.$$phase) {
+              return f();
+            } else {
+              return s.$apply(f);
+            }
           });
           ldcp.on('change-palette', function(palette){
-            return s.$apply(function(){
+            var f;
+            if (!a.ngPalette) {
+              return;
+            }
+            f = function(){
               if (a.ngPalette) {
                 return s.palette = ldcp.getPalette();
               }
-            });
+            };
+            if (s.$$phase) {
+              return f();
+            } else {
+              return s.$apply(f);
+            }
           });
           s.$watch('color', function(color){
             var cc, e;
             try {
               cc = ldcp.getValue();
               if (color != null && cc !== color) {
-                return setTimeout(function(){
-                  return ldcp.setColor(color);
-                }, 0);
+                return ldcp.setColor(color);
               }
             } catch (e$) {
               return e = e$;
             }
           });
           ldcp.on('change-idx', function(idx){
-            return s.$apply(function(){
+            var f;
+            f = function(){
               if (a.ngIdx) {
                 return s.idx = idx;
               }
-            });
+            };
+            if (s.$$phase) {
+              return f();
+            } else {
+              return s.$apply(f);
+            }
           });
           if (a.ngIdx && !(s.idx != null)) {
             s.idx = ldcp.getIdx();
           }
           s.$watch('idx', function(idx){
             if (idx != null) {
-              return setTimeout(function(){
-                return ldcp.setIdx(idx);
-              }, 0);
+              return ldcp.setIdx(idx);
             }
           });
           ldcp.on('change-pin', function(pin){

@@ -75,6 +75,8 @@ do ->
         _(item, idx)
     node.querySelector(".ldcp-cbtn:nth-of-type(1)").addEventListener("click", ~> @add-color! )
     node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
+    @color = do
+      vals: ldColorPicker.palette.getVal(@, @context)
     setTimeout (~>
       @inputCaret = node.querySelector(".ldcp-caret")
         ..addEventListener("click", ~> @next-edit-mode!)
@@ -128,7 +130,7 @@ do ->
       @colorptr = node.querySelector(".ldcp-colorptr")
       @update-dimension!
       @ <<< {width: node.offsetWidth, height: node.offsetHeight}
-      @color = do
+      @color <<< do
         nodes: node.querySelectorAll(".ldcp-palette .ldcp-color")
         palette: node.querySelector(".ldcp-colors .ldcp-palette")
         lastvals: null
@@ -315,6 +317,7 @@ do ->
         @color.vals[@idx] <<< c
         ldColorPicker.palette.update!
       update-palette: (context, affect-idx, direction) -> 
+        if !@color.nodes => return
         [nlen, vlen] = [@color.nodes.length, @color.vals.length]
         if vlen > nlen =>
           for i from nlen til vlen =>
@@ -378,13 +381,14 @@ do ->
             b = parseInt(it.substring(4,6), 16) / 255
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             return ret
-          if /^\s*rgba\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*\)\s*$/.exec(it) =>
+          if /^\s*rgba?\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*(?:,\s*([0-9.]+%?)\s*)?\)\s*$/.exec(it) =>
             [r,g,b] = that[1,2,3]map(->
               return if it[* - 1] == \% => (+it.substring(0,it.length - 1))/100
               else parseInt(it)/255
             )
             ret = {hue,sat,lit} = @rgb-hsl {r,g,b}
             ret.alpha = parseFloat(that.4)
+            if isNaN(ret.alpha) => ret.alpha = 1
             return ret
           {hue:0,sat:0,lit:0,sat-v:0,val:0}
 

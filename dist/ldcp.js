@@ -151,6 +151,9 @@
     node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", function(){
       return this$.removeColor();
     });
+    this.color = {
+      vals: ldColorPicker.palette.getVal(this, this.context)
+    };
     setTimeout(function(){
       var x$, y$, z$, z1$, z2$, z3$, z4$, z5$, z6$, z7$, i, i$, to$, idx, c, value;
       x$ = this$.inputCaret = node.querySelector(".ldcp-caret");
@@ -244,12 +247,12 @@
       this$.updateDimension();
       this$.width = node.offsetWidth;
       this$.height = node.offsetHeight;
-      this$.color = {
+      import$(this$.color, {
         nodes: node.querySelectorAll(".ldcp-palette .ldcp-color"),
         palette: node.querySelector(".ldcp-colors .ldcp-palette"),
         lastvals: null,
         vals: ldColorPicker.palette.getVal(this$, this$.context)
-      };
+      });
       this$.color.nodes = (function(){
         var i$, to$, results$ = [];
         for (i$ = 0, to$ = this.color.nodes.length; i$ < to$; ++i$) {
@@ -690,6 +693,9 @@
       },
       updatePalette: function(context, affectIdx, direction){
         var ref$, nlen, vlen, i$, i, x$, node, idx, oldIdx, ref1$, ref2$, c, value, changed, rgb, this$ = this;
+        if (!this.color.nodes) {
+          return;
+        }
         ref$ = [this.color.nodes.length, this.color.vals.length], nlen = ref$[0], vlen = ref$[1];
         if (vlen > nlen) {
           for (i$ = nlen; i$ < vlen; ++i$) {
@@ -800,7 +806,7 @@
             }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
             return ret;
           }
-          if (that = /^\s*rgba\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*\)\s*$/.exec(it)) {
+          if (that = /^\s*rgba?\(\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*,\s*([0-9.]+%?)\s*(?:,\s*([0-9.]+%?)\s*)?\)\s*$/.exec(it)) {
             ref$ = [that[1], that[2], that[3]].map(function(it){
               return it[it.length - 1] === '%'
                 ? (+it.substring(0, it.length - 1)) / 100
@@ -812,6 +818,9 @@
               b: b
             }), hue = ref$.hue, sat = ref$.sat, lit = ref$.lit, ref$);
             ret.alpha = parseFloat(that[4]);
+            if (isNaN(ret.alpha)) {
+              ret.alpha = 1;
+            }
             return ret;
           }
           return {

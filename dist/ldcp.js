@@ -867,6 +867,12 @@
       },
       toRgba: function(c){
         var C, X, m, ref$, r, g, b, a;
+        if (isNaN(c.hue)) {
+          c.hue = 0;
+        }
+        if (isNaN(c.sat)) {
+          c.sat = 0;
+        }
         C = (1 - Math.abs(2 * c.lit - 1)) * c.sat;
         X = C * (1 - Math.abs((c.hue / 60) % 2 - 1));
         m = c.lit - C / 2;

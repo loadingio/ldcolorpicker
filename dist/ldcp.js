@@ -866,7 +866,7 @@
         }
       },
       toRgba: function(c){
-        var C, X, m, ref$, r, g, b, a;
+        var C, X, m, ref$, r, g, b, r1, g1, b1, a1, a;
         if (isNaN(c.hue)) {
           c.hue = 0;
         }
@@ -894,6 +894,7 @@
             return [C, X, 0];
           }
         }()), r = ref$[0], g = ref$[1], b = ref$[2];
+        ref$ = [r + m, g + m, b + m, c.alpha != null ? c.alpha : 1], r1 = ref$[0], g1 = ref$[1], b1 = ref$[2], a1 = ref$[3];
         return ref$ = [r + m, g + m, b + m, c.alpha != null ? c.alpha : 1], r = ref$[0], g = ref$[1], b = ref$[2], a = ref$[3], ref$;
       },
       hex: function(it){

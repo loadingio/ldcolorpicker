@@ -1,5 +1,5 @@
 do ->
-  cancelAll = (e) -> 
+  cancelAll = (e) ->
     if e.stopPropagation => e.stopPropagation!
     if e.preventDefault => e.preventDefault!
     e.cancelBubble = true
@@ -34,7 +34,7 @@ do ->
       if target =>
         target._ldcpnode = node
         target.getColorPicker = ~> return @
-        target.addEventListener \click, (e) -> 
+        target.addEventListener \click, (e) ->
           setTimeout((~>@_ldcpnode._ldcp.toggle!),0)
           if !@_ldcpnode._ldcp.exclusive or @_ldcpnode.style.display != \none => cancelAll e
     else => custom-class += node.getAttribute("class")
@@ -69,7 +69,7 @@ do ->
       for item,idx in node.querySelectorAll(selector) =>
         _ = (item,idx) ~>
           item.addEventListener(\mousedown, (e) ~> ldColorPicker.mouse.start @, idx )
-          item.addEventListener("click", (e) ~> 
+          item.addEventListener("click", (e) ~>
             @move e, idx, true
           )
         _(item, idx)
@@ -77,93 +77,90 @@ do ->
     node.querySelector(".ldcp-cbtn:nth-of-type(2)").addEventListener("click", ~> @remove-color! )
     @color = do
       vals: ldColorPicker.palette.getVal(@, @context)
-    setTimeout (~>
-      @inputCaret = node.querySelector(".ldcp-caret")
-        ..addEventListener("click", ~> @next-edit-mode!)
-      @editGroup = node.querySelectorAll(".ldcp-edit-group")
-      @chooser = do
-        panel: node.querySelector(".ldcp-chooser")
-        input: node.querySelector(".ldcp-chooser input")
-      @inputhex = node.querySelector(".ldcp-input-hex")
-        ..addEventListener \change, ~> 
-          c = @convert.color(@inputhex.value)
-          @set-hsl c.hue, c.sat, c.lit
-          c = @color.vals[@idx]
-      @inputH = node.querySelector(".ldcp-input-h")
-        ..addEventListener \change, ~> 
-          c = @color.vals[@idx] <<< {hue: parseInt(@inputH.value)}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputS = node.querySelector(".ldcp-input-s")
-        ..addEventListener \change, ~> 
-          c = @color.vals[@idx] <<< {sat: parseFloat(@inputS.value)}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputL = node.querySelector(".ldcp-input-l")
-        ..addEventListener \change, ~> 
-          c = @color.vals[@idx] <<< {lit: parseFloat(@inputL.value)}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputR = node.querySelector(".ldcp-input-r")
-        ..addEventListener \change, ~> 
-          [r,g,b] = @toRgba(@color.vals[@idx]) 
-          r = parseInt(@inputR.value) / 255
-          c = @convert.rgb-hsl {r,g,b}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputG = node.querySelector(".ldcp-input-g")
-        ..addEventListener \change, ~> 
-          [r,g,b] = @toRgba(@color.vals[@idx]) 
-          g = parseInt(@inputG.value) / 255
-          c = @convert.rgb-hsl {r,g,b}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputB = node.querySelector(".ldcp-input-b")
-        ..addEventListener \change, ~> 
-          [r,g,b] = @toRgba(@color.vals[@idx]) 
-          b = parseInt(@inputB.value) / 255
-          c = @convert.rgb-hsl {r,g,b}
-          @set-hsl c.hue, c.sat, c.lit
-      @inputA = node.querySelector(".ldcp-input-a")
-        ..addEventListener \change, ~> 
-          @set-alpha parseFloat(@inputA.value)
-      @colornone = node.querySelector(".ldcp-color-none")
-        ..addEventListener(\click, (~> @toggle-none!))
-      @palpad = node.querySelector(".ldcp-palette")
-      @P2D = {ptr: node.querySelector(".ldcp-ptr-circle"), panel: node.querySelector(".ldcp-2d img")}
-      @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar"), panel: node.querySelectorAll(".ldcp-1d img")}
-      @colorptr = node.querySelector(".ldcp-colorptr")
-      @update-dimension!
-      @ <<< {width: node.offsetWidth, height: node.offsetHeight}
-      @color <<< do
-        nodes: node.querySelectorAll(".ldcp-palette .ldcp-color")
-        palette: node.querySelector(".ldcp-colors .ldcp-palette")
-        lastvals: null
-        vals: ldColorPicker.palette.getVal(@, @context)
-      # arrayize
-      @color.nodes = [@color.nodes[i] for i from 0 til @color.nodes.length]
-      for idx from 0 til @color.nodes.length =>
-        c = @color.nodes[idx]
-        c.idx = idx
-        c.addEventListener \click, (e) ~> @set-idx(e.target.idx)
-      if @initpal => @set-palette @initpal
-      c = @color.vals[@idx]
-      @update-palette!
-      @set-idx @idx # set ptr correctly
-      @set-hsl c.hue, c.sat, c.lit
-      if @callback => @on \change, ~> @callback.apply @target, [it]
-      if @pal-callback => @on \change-palette, ~> @pal-callback.apply @target, [it]
-      if @url => 
-        @chooser.input.value = @url
-        setTimeout((~>@load-palette @chooser.input.value),0)
-      #moved to above to prevent redundant events
-      #if @initpal =>
-      #  @set-palette @initpal
-      #  c = @color.vals[@idx]
-      if custom-pinned => @toggle true
-      document.addEventListener \keydown, (e) ~>
-        code = (e.which or e.keyCode)
-        if code == 27 and @target => @toggle false
-      @handle \inited
-      value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
-      @handle \change, value
-      @handle \change-palette, @get-palette!
-    ), 0
+
+
+    @P2D = {ptr: node.querySelector(".ldcp-ptr-circle"), panel: node.querySelector(".ldcp-2d img")}
+    @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar"), panel: node.querySelectorAll(".ldcp-1d img")}
+    @inputCaret = node.querySelector(".ldcp-caret")
+      ..addEventListener("click", ~> @next-edit-mode!)
+    @editGroup = node.querySelectorAll(".ldcp-edit-group")
+    @chooser = do
+      panel: node.querySelector(".ldcp-chooser")
+      input: node.querySelector(".ldcp-chooser input")
+    @inputhex = node.querySelector(".ldcp-input-hex")
+      ..addEventListener \change, ~>
+        c = @convert.color(@inputhex.value)
+        @set-hsl c.hue, c.sat, c.lit
+        c = @color.vals[@idx]
+    @inputH = node.querySelector(".ldcp-input-h")
+      ..addEventListener \change, ~>
+        c = @color.vals[@idx] <<< {hue: parseInt(@inputH.value)}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputS = node.querySelector(".ldcp-input-s")
+      ..addEventListener \change, ~>
+        c = @color.vals[@idx] <<< {sat: parseFloat(@inputS.value)}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputL = node.querySelector(".ldcp-input-l")
+      ..addEventListener \change, ~>
+        c = @color.vals[@idx] <<< {lit: parseFloat(@inputL.value)}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputR = node.querySelector(".ldcp-input-r")
+      ..addEventListener \change, ~>
+        [r,g,b] = @toRgba(@color.vals[@idx])
+        r = parseInt(@inputR.value) / 255
+        c = @convert.rgb-hsl {r,g,b}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputG = node.querySelector(".ldcp-input-g")
+      ..addEventListener \change, ~>
+        [r,g,b] = @toRgba(@color.vals[@idx])
+        g = parseInt(@inputG.value) / 255
+        c = @convert.rgb-hsl {r,g,b}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputB = node.querySelector(".ldcp-input-b")
+      ..addEventListener \change, ~>
+        [r,g,b] = @toRgba(@color.vals[@idx])
+        b = parseInt(@inputB.value) / 255
+        c = @convert.rgb-hsl {r,g,b}
+        @set-hsl c.hue, c.sat, c.lit
+    @inputA = node.querySelector(".ldcp-input-a")
+      ..addEventListener \change, ~>
+        @set-alpha parseFloat(@inputA.value)
+    @colornone = node.querySelector(".ldcp-color-none")
+      ..addEventListener(\click, (~> @toggle-none!))
+    @palpad = node.querySelector(".ldcp-palette")
+    @P2D = {ptr: node.querySelector(".ldcp-ptr-circle"), panel: node.querySelector(".ldcp-2d img")}
+    @P1D = {ptr: node.querySelectorAll(".ldcp-ptr-bar"), panel: node.querySelectorAll(".ldcp-1d img")}
+    @colorptr = node.querySelector(".ldcp-colorptr")
+    @update-dimension!
+    @ <<< {width: node.offsetWidth, height: node.offsetHeight}
+    @color <<< do
+      nodes: Array.from(node.querySelectorAll(".ldcp-palette .ldcp-color"))
+      palette: node.querySelector(".ldcp-colors .ldcp-palette")
+      lastvals: null
+      vals: ldColorPicker.palette.getVal(@, @context)
+    for idx from 0 til @color.nodes.length =>
+      c = @color.nodes[idx]
+      c.idx = idx
+      c.addEventListener \click, (e) ~> @set-idx(e.target.idx)
+    if @initpal => @set-palette @initpal
+    c = @color.vals[@idx]
+    @update-palette!
+    @set-idx @idx # set ptr correctly
+    @set-hsl c.hue, c.sat, c.lit
+    if @callback => @on \change, ~> @callback.apply @target, [it]
+    if @pal-callback => @on \change-palette, ~> @pal-callback.apply @target, [it]
+    if @url =>
+      @chooser.input.value = @url
+      setTimeout((~>@load-palette @chooser.input.value),0)
+    if custom-pinned => @toggle true
+    document.addEventListener \keydown, (e) ~>
+      code = (e.which or e.keyCode)
+      if code == 27 and @target => @toggle false
+    @handle \inited
+    value = if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
+    @handle \change, value
+    @handle \change-palette, @get-palette!
+
     @
   ) <<< do
     dom: null
@@ -178,7 +175,7 @@ do ->
       members: []
       set: (context, pal)->
         if !@val[context] => return # throw exception?
-        if Array.isArray(pal) => 
+        if Array.isArray(pal) =>
           result = [ldColorPicker.prototype.convert.color(it) for it in pal]
         else =>
           result = [ldColorPicker.prototype.convert.color(it.hex) for it in pal.colors]
@@ -187,9 +184,9 @@ do ->
         @update!
 
       # object with hex version of getVal, just like ldcp.getPalette()
-      get: (context)-> 
+      get: (context)->
         {colors: [{hex:ldColorPicker.prototype.toHexString it} for it in (@val[context] or [])]}
-      getVal: (node,context='default') -> 
+      getVal: (node,context='default') ->
         if node and typeof(node)!=typeof("") => @members.push node
         if typeof(node) == typeof("") => context = node
         if !@val[context] => @val[context] = @random!
@@ -205,7 +202,7 @@ do ->
         list =
           [\selectstart, ((e) -> cancelAll e)]
           [\mousemove, ((e) -> target.move e, type)]
-          [\mouseup, ((e) -> 
+          [\mouseup, ((e) ->
             list.map -> document.removeEventListener it.0, it.1
             setTimeout (->if target.clickToggler => document.addEventListener \click, target.clickToggler), 0
           )]
@@ -225,7 +222,7 @@ do ->
     prototype: do
       load-palette: (url) ->
         xhr = new XMLHttpRequest!
-          ..onload = ~> @set-palette JSON.parse(xhr.responseText) 
+          ..onload = ~> @set-palette JSON.parse(xhr.responseText)
           ..open \GET, url.replace(/palette/, "d/palette"), true
           ..send!
       add-color: -> if @color.vals.length < 12 =>
@@ -234,7 +231,7 @@ do ->
       remove-color: -> if @color.vals.length > 1 =>
         @color.vals.splice @idx, 1
         ldColorPicker.palette.update @context, @idx, -1
-      edit: -> 
+      edit: ->
         hex = [@toHexString(v).replace(/#/,'') for v in @color.vals].join(",")
         window.open "http://loading.io/color/?colors=#hex"
       next-edit-mode: ->
@@ -242,14 +239,13 @@ do ->
         @edit-mode = ((@edit-mode or 0) + 1) % 3
         @inputCaret.innerText = ["RGBA \u25be" "HSLA \u25be" "HEX \u25be"][@edit-mode]
         @editGroup[@edit-mode].style.display = \inline
-        
 
       update-dimension: ->
         [n2,n1] = [@node.querySelector(".ldcp-2d"), @node.querySelector(".ldcp-1d")]
         @P2D <<< {w: n2.offsetWidth, h: n2.offsetHeight}
         @P1D <<< {w: n1.offsetWidth, h: n1.offsetHeight}
-      
-      clickToggle: (e) -> 
+
+      clickToggle: (e) ->
         @clickToggler = ~>
           document.removeEventListener \click, @clickToggler
           @toggle!
@@ -257,6 +253,7 @@ do ->
         if @chooser.panel.style.height == \98% => @chooser.panel.style <<< {height: 0}
         else @chooser.panel.style <<< {height: \98%}
       event-handler: {}
+      event-queue: {}
       handle: (name, value) -> if @event-handler[name] => for cb in that => cb value
       on: (name, cb) -> @event-handler.[][name].push cb
       toggle: (isOn=null) ->
@@ -270,7 +267,7 @@ do ->
             if ret => @idx = ret.0
             else @color.vals.splice 0, 0, @convert.color @target.value
           c = @color.vals[@idx]
-          @set-hsl c.hue, c.sat, c.lit  
+          @set-hsl c.hue, c.sat, c.lit
           @handle \toggle, false
 
         else
@@ -297,7 +294,7 @@ do ->
             if ret => @idx = ret.0
             else @color.vals.splice 0, 0, @convert.color @target.value
           c = @color.vals[@idx]
-          @set-hsl c.hue, c.sat, c.lit  
+          @set-hsl c.hue, c.sat, c.lit
           @handle \toggle, true
         ldColorPicker.palette.update!
 
@@ -316,7 +313,7 @@ do ->
           if is-none? => c.is-none = is-none
         @color.vals[@idx] <<< c
         ldColorPicker.palette.update!
-      update-palette: (context, affect-idx, direction) -> 
+      update-palette: (context, affect-idx, direction) ->
         if !@color.nodes => return
         [nlen, vlen] = [@color.nodes.length, @color.vals.length]
         if vlen > nlen =>
@@ -337,7 +334,7 @@ do ->
         for idx from 0 til vlen => @update-color idx
         if @idx >= vlen => @idx = vlen - 1
         old-idx = @idx
-        if (context?) and context == @context and (affect-idx?) and (direction?) and affect-idx <= @idx => 
+        if (context?) and context == @context and (affect-idx?) and (direction?) and affect-idx <= @idx =>
           @idx += direction
           @idx = @idx >? 0 <? @color.vals.length - 1
           if old-idx != @idx => @handle \change-idx, @idx
@@ -373,7 +370,7 @@ do ->
         else n.style.border = "1px dashed transparent"
       convert: do
         color: ->
-          if /^#?[a-fA-F0-9]{3}$|^#?[a-fA-F0-9]{6}$/.exec(it) => 
+          if /^#?[a-fA-F0-9]{3}$|^#?[a-fA-F0-9]{6}$/.exec(it) =>
             it = it.replace /^#/, ''
             if it.length == 3 => it = [it.charAt(i) + it.charAt(i) for i from 0 to 2].join("")
             r = parseInt(it.substring(0,2), 16) / 255
@@ -398,7 +395,7 @@ do ->
           delta = Cmax - Cmin
           lit = ( Cmax + Cmin ) / 2
           if delta == 0 => [hue,sat] = [0,0]
-          else 
+          else
             hue = switch
               | Cmax == r => 60 * ((( g - b ) / delta ) % 6)
               | Cmax == g => 60 * ((( b - r ) / delta ) + 2)
@@ -424,7 +421,7 @@ do ->
           | 5 => [C,0,X]
           | 6 => [C,X,0]
         [r,g,b,a] = [r + m, g + m, b + m, (if c.alpha? => c.alpha else 1)]
-      hex: -> 
+      hex: ->
         it = Math.round(it * 255) >? 0 <? 255
         it = it.toString 16
         if it.length < 2 => "0#it" else it
@@ -442,7 +439,7 @@ do ->
         for i from 0 til 3 => ret[i] = "#{ret[i] * 100}%"
         return "rgba(#{ret.join(\,)})"
 
-      getHexString: (addhash = true) -> 
+      getHexString: (addhash = true) ->
         ret = @toHexString @color.vals[@idx]
         return if !addhash => ret.replace /#/g, '' else ret
       toHexString: (c) ->
@@ -454,7 +451,7 @@ do ->
         if c.alpha? and c.alpha < 1 => @toRgbaString(c) else @toHexString(c)
 
       is-pinned: -> @pinned
-      set-pin: -> 
+      set-pin: ->
         if @pinned != !!it =>
           @pinned = !!it
           @handle \change-pin, @pinned
@@ -462,11 +459,11 @@ do ->
 
       get-idx: -> @idx
       set-idx: (idx) ->
-        if @idx != idx => 
+        if @idx != idx =>
           c = @color.vals[idx]
           oldc = @color.vals[@idx]
-          if c != oldc => @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
           @handle \change-idx, idx
+          if c != oldc => @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
         @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
@@ -497,10 +494,11 @@ do ->
         c = @color.vals[@idx]
         value-old = @toRgba c .join(\,)
         c <<< {hue, sat, lit}
-        @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})
-        @P1D.panel.1.style.backgroundColor = @toHexString({hue, sat, lit})
+        if @P2D =>
+          @P2D.panel.style.backgroundColor = @toHexString({hue, sat: 1, lit: 0.5})
+          @P1D.panel.1.style.backgroundColor = @toHexString({hue, sat, lit})
         value = @toRgba c .join(\,)
-        if @target => 
+        if @target =>
           @target.value = @getValue!
           @target.setAttribute("data-color", value)
         if value-old != value =>
@@ -512,7 +510,7 @@ do ->
           sat-v = 2 * ( lit-v - lit ) / lit-v
 
           if !@P1D.h or !@P2D.h => @update-dimension!
-          x = ( @P2D.w * (sat-v) ) 
+          x = ( @P2D.w * (sat-v) )
           y1 = ( @P2D.h * (1 - lit-v) ) / 1.00
           y2 = ( @P1D.h * (hue / 360 ) ) / 1.00
 
@@ -591,26 +589,27 @@ do ->
         link: (s,e,a,c) ->
           ldcp = new ldColorPicker e.0, (s.config! or {}), null
           if a.ngLdcp => s.ldcp = ldcp
+          # We should use tech like setTimeout to prevent digest in progress warning.
+          # yet, setTimeout will affect experience when draggin around the colorpicker.
+          phase-check = (f) -> if s.$root.$$phase => f! else s.$apply f
           ldcp.on \change, (color) ->
-            if s.color == color => return
-            f = -> if a.ngModel => s.color = color
-            if s.$$phase => f! else s.$apply f
+            if s.color == color or !a.ngModel => return
+            phase-check -> s.color = color
+
           ldcp.on \change-palette, (palette) ->
-            if !a.ngPalette => return
-            f = -> if a.ngPalette => s.palette = ldcp.get-palette!
-            if s.$$phase => f! else s.$apply f
-          s.$watch 'color', (color) -> 
+            phase-check -> if a.ngPalette => s.palette = ldcp.get-palette!
+
+          ldcp.on \change-idx, (idx)->
+            phase-check -> if a.ngIdx => s.idx = idx
+
+          if a.ngIdx and !(s.idx?) => s.idx = ldcp.get-idx!
+
+          ldcp.on \change-pin, (pin) ->
+            phase-check -> if a.ngPinned => s.pinned = pin
+          s.$watch 'color', (color, oc) ->
             try
               cc = ldcp.getValue!
               if color? and cc != color => ldcp.set-color color
             catch e =>
-
-          ldcp.on \change-idx, (idx)->
-            f = -> if a.ngIdx => s.idx = idx
-            if s.$$phase => f! else s.$apply f
-
-          if a.ngIdx and !(s.idx?) => s.idx = ldcp.get-idx!
           s.$watch 'idx', (idx) -> if idx? => ldcp.set-idx idx
-
-          ldcp.on \change-pin, (pin) -> s.$apply -> if a.ngPinned => s.pinned = pin
-          s.$watch 'pinned', (pin) -> setTimeout((->ldcp.set-pin pin),0)
+          s.$watch 'pinned', (pin) -> ldcp.set-pin pin

@@ -13,7 +13,7 @@
     return false;
   };
   ldColorPicker = import$(function(target, config, node){
-    var srcnode, that, customClass, customContext, customCallback, customPalCallback, customIdx, customPalette, customPinned, customExclusive, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, this$ = this;
+    var srcnode, that, customClass, customContext, customCallback, customPalCallback, customIdx, customPalette, customPinned, customExclusive, it, ref$, HTMLCONFIG, HTML, i$, len$, selector, x$, j$, ref1$, len1$, idx, item, _, y$, z$, z1$, z2$, z3$, z4$, z5$, z6$, z7$, z8$, to$, c, value, this$ = this;
     target == null && (target = null);
     config == null && (config = {});
     node == null && (node = null);
@@ -154,162 +154,156 @@
     this.color = {
       vals: ldColorPicker.palette.getVal(this, this.context)
     };
-    setTimeout(function(){
-      var x$, y$, z$, z1$, z2$, z3$, z4$, z5$, z6$, z7$, i, i$, to$, idx, c, value;
-      x$ = this$.inputCaret = node.querySelector(".ldcp-caret");
-      x$.addEventListener("click", function(){
-        return this$.nextEditMode();
-      });
-      this$.editGroup = node.querySelectorAll(".ldcp-edit-group");
-      this$.chooser = {
-        panel: node.querySelector(".ldcp-chooser"),
-        input: node.querySelector(".ldcp-chooser input")
-      };
-      y$ = this$.inputhex = node.querySelector(".ldcp-input-hex");
-      y$.addEventListener('change', function(){
-        var c;
-        c = this$.convert.color(this$.inputhex.value);
-        this$.setHsl(c.hue, c.sat, c.lit);
-        return c = this$.color.vals[this$.idx];
-      });
-      z$ = this$.inputH = node.querySelector(".ldcp-input-h");
-      z$.addEventListener('change', function(){
-        var c, ref$;
-        c = (ref$ = this$.color.vals[this$.idx], ref$.hue = parseInt(this$.inputH.value), ref$);
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z1$ = this$.inputS = node.querySelector(".ldcp-input-s");
-      z1$.addEventListener('change', function(){
-        var c, ref$;
-        c = (ref$ = this$.color.vals[this$.idx], ref$.sat = parseFloat(this$.inputS.value), ref$);
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z2$ = this$.inputL = node.querySelector(".ldcp-input-l");
-      z2$.addEventListener('change', function(){
-        var c, ref$;
-        c = (ref$ = this$.color.vals[this$.idx], ref$.lit = parseFloat(this$.inputL.value), ref$);
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z3$ = this$.inputR = node.querySelector(".ldcp-input-r");
-      z3$.addEventListener('change', function(){
-        var ref$, r, g, b, c;
-        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
-        r = parseInt(this$.inputR.value) / 255;
-        c = this$.convert.rgbHsl({
-          r: r,
-          g: g,
-          b: b
-        });
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z4$ = this$.inputG = node.querySelector(".ldcp-input-g");
-      z4$.addEventListener('change', function(){
-        var ref$, r, g, b, c;
-        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
-        g = parseInt(this$.inputG.value) / 255;
-        c = this$.convert.rgbHsl({
-          r: r,
-          g: g,
-          b: b
-        });
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z5$ = this$.inputB = node.querySelector(".ldcp-input-b");
-      z5$.addEventListener('change', function(){
-        var ref$, r, g, b, c;
-        ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
-        b = parseInt(this$.inputB.value) / 255;
-        c = this$.convert.rgbHsl({
-          r: r,
-          g: g,
-          b: b
-        });
-        return this$.setHsl(c.hue, c.sat, c.lit);
-      });
-      z6$ = this$.inputA = node.querySelector(".ldcp-input-a");
-      z6$.addEventListener('change', function(){
-        return this$.setAlpha(parseFloat(this$.inputA.value));
-      });
-      z7$ = this$.colornone = node.querySelector(".ldcp-color-none");
-      z7$.addEventListener('click', function(){
-        return this$.toggleNone();
-      });
-      this$.palpad = node.querySelector(".ldcp-palette");
-      this$.P2D = {
-        ptr: node.querySelector(".ldcp-ptr-circle"),
-        panel: node.querySelector(".ldcp-2d img")
-      };
-      this$.P1D = {
-        ptr: node.querySelectorAll(".ldcp-ptr-bar"),
-        panel: node.querySelectorAll(".ldcp-1d img")
-      };
-      this$.colorptr = node.querySelector(".ldcp-colorptr");
-      this$.updateDimension();
-      this$.width = node.offsetWidth;
-      this$.height = node.offsetHeight;
-      import$(this$.color, {
-        nodes: node.querySelectorAll(".ldcp-palette .ldcp-color"),
-        palette: node.querySelector(".ldcp-colors .ldcp-palette"),
-        lastvals: null,
-        vals: ldColorPicker.palette.getVal(this$, this$.context)
-      });
-      this$.color.nodes = (function(){
-        var i$, to$, results$ = [];
-        for (i$ = 0, to$ = this.color.nodes.length; i$ < to$; ++i$) {
-          i = i$;
-          results$.push(this.color.nodes[i]);
-        }
-        return results$;
-      }.call(this$));
-      for (i$ = 0, to$ = this$.color.nodes.length; i$ < to$; ++i$) {
-        idx = i$;
-        c = this$.color.nodes[idx];
-        c.idx = idx;
-        c.addEventListener('click', fn$);
-      }
-      if (this$.initpal) {
-        this$.setPalette(this$.initpal);
-      }
-      c = this$.color.vals[this$.idx];
-      this$.updatePalette();
-      this$.setIdx(this$.idx);
+    this.P2D = {
+      ptr: node.querySelector(".ldcp-ptr-circle"),
+      panel: node.querySelector(".ldcp-2d img")
+    };
+    this.P1D = {
+      ptr: node.querySelectorAll(".ldcp-ptr-bar"),
+      panel: node.querySelectorAll(".ldcp-1d img")
+    };
+    y$ = this.inputCaret = node.querySelector(".ldcp-caret");
+    y$.addEventListener("click", function(){
+      return this$.nextEditMode();
+    });
+    this.editGroup = node.querySelectorAll(".ldcp-edit-group");
+    this.chooser = {
+      panel: node.querySelector(".ldcp-chooser"),
+      input: node.querySelector(".ldcp-chooser input")
+    };
+    z$ = this.inputhex = node.querySelector(".ldcp-input-hex");
+    z$.addEventListener('change', function(){
+      var c;
+      c = this$.convert.color(this$.inputhex.value);
       this$.setHsl(c.hue, c.sat, c.lit);
-      if (this$.callback) {
-        this$.on('change', function(it){
-          return this$.callback.apply(this$.target, [it]);
-        });
-      }
-      if (this$.palCallback) {
-        this$.on('change-palette', function(it){
-          return this$.palCallback.apply(this$.target, [it]);
-        });
-      }
-      if (this$.url) {
-        this$.chooser.input.value = this$.url;
-        setTimeout(function(){
-          return this$.loadPalette(this$.chooser.input.value);
-        }, 0);
-      }
-      if (customPinned) {
-        this$.toggle(true);
-      }
-      document.addEventListener('keydown', function(e){
-        var code;
-        code = e.which || e.keyCode;
-        if (code === 27 && this$.target) {
-          return this$.toggle(false);
-        }
+      return c = this$.color.vals[this$.idx];
+    });
+    z1$ = this.inputH = node.querySelector(".ldcp-input-h");
+    z1$.addEventListener('change', function(){
+      var c, ref$;
+      c = (ref$ = this$.color.vals[this$.idx], ref$.hue = parseInt(this$.inputH.value), ref$);
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z2$ = this.inputS = node.querySelector(".ldcp-input-s");
+    z2$.addEventListener('change', function(){
+      var c, ref$;
+      c = (ref$ = this$.color.vals[this$.idx], ref$.sat = parseFloat(this$.inputS.value), ref$);
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z3$ = this.inputL = node.querySelector(".ldcp-input-l");
+    z3$.addEventListener('change', function(){
+      var c, ref$;
+      c = (ref$ = this$.color.vals[this$.idx], ref$.lit = parseFloat(this$.inputL.value), ref$);
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z4$ = this.inputR = node.querySelector(".ldcp-input-r");
+    z4$.addEventListener('change', function(){
+      var ref$, r, g, b, c;
+      ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+      r = parseInt(this$.inputR.value) / 255;
+      c = this$.convert.rgbHsl({
+        r: r,
+        g: g,
+        b: b
       });
-      this$.handle('inited');
-      value = c.alpha != null && c.alpha < 1
-        ? this$.toRgbaString(c)
-        : this$.toHexString(c);
-      this$.handle('change', value);
-      return this$.handle('change-palette', this$.getPalette());
-      function fn$(e){
-        return this$.setIdx(e.target.idx);
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z5$ = this.inputG = node.querySelector(".ldcp-input-g");
+    z5$.addEventListener('change', function(){
+      var ref$, r, g, b, c;
+      ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+      g = parseInt(this$.inputG.value) / 255;
+      c = this$.convert.rgbHsl({
+        r: r,
+        g: g,
+        b: b
+      });
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z6$ = this.inputB = node.querySelector(".ldcp-input-b");
+    z6$.addEventListener('change', function(){
+      var ref$, r, g, b, c;
+      ref$ = this$.toRgba(this$.color.vals[this$.idx]), r = ref$[0], g = ref$[1], b = ref$[2];
+      b = parseInt(this$.inputB.value) / 255;
+      c = this$.convert.rgbHsl({
+        r: r,
+        g: g,
+        b: b
+      });
+      return this$.setHsl(c.hue, c.sat, c.lit);
+    });
+    z7$ = this.inputA = node.querySelector(".ldcp-input-a");
+    z7$.addEventListener('change', function(){
+      return this$.setAlpha(parseFloat(this$.inputA.value));
+    });
+    z8$ = this.colornone = node.querySelector(".ldcp-color-none");
+    z8$.addEventListener('click', function(){
+      return this$.toggleNone();
+    });
+    this.palpad = node.querySelector(".ldcp-palette");
+    this.P2D = {
+      ptr: node.querySelector(".ldcp-ptr-circle"),
+      panel: node.querySelector(".ldcp-2d img")
+    };
+    this.P1D = {
+      ptr: node.querySelectorAll(".ldcp-ptr-bar"),
+      panel: node.querySelectorAll(".ldcp-1d img")
+    };
+    this.colorptr = node.querySelector(".ldcp-colorptr");
+    this.updateDimension();
+    this.width = node.offsetWidth;
+    this.height = node.offsetHeight;
+    import$(this.color, {
+      nodes: Array.from(node.querySelectorAll(".ldcp-palette .ldcp-color")),
+      palette: node.querySelector(".ldcp-colors .ldcp-palette"),
+      lastvals: null,
+      vals: ldColorPicker.palette.getVal(this, this.context)
+    });
+    for (i$ = 0, to$ = this.color.nodes.length; i$ < to$; ++i$) {
+      idx = i$;
+      c = this.color.nodes[idx];
+      c.idx = idx;
+      c.addEventListener('click', fn3$);
+    }
+    if (this.initpal) {
+      this.setPalette(this.initpal);
+    }
+    c = this.color.vals[this.idx];
+    this.updatePalette();
+    this.setIdx(this.idx);
+    this.setHsl(c.hue, c.sat, c.lit);
+    if (this.callback) {
+      this.on('change', function(it){
+        return this$.callback.apply(this$.target, [it]);
+      });
+    }
+    if (this.palCallback) {
+      this.on('change-palette', function(it){
+        return this$.palCallback.apply(this$.target, [it]);
+      });
+    }
+    if (this.url) {
+      this.chooser.input.value = this.url;
+      setTimeout(function(){
+        return this$.loadPalette(this$.chooser.input.value);
+      }, 0);
+    }
+    if (customPinned) {
+      this.toggle(true);
+    }
+    document.addEventListener('keydown', function(e){
+      var code;
+      code = e.which || e.keyCode;
+      if (code === 27 && this$.target) {
+        return this$.toggle(false);
       }
-    }, 0);
+    });
+    this.handle('inited');
+    value = c.alpha != null && c.alpha < 1
+      ? this.toRgbaString(c)
+      : this.toHexString(c);
+    this.handle('change', value);
+    this.handle('change-palette', this.getPalette());
     return this;
     function fn$(e){
       return ldColorPicker.mouse.start(this$, 2);
@@ -324,6 +318,9 @@
       return item.addEventListener("click", function(e){
         return this$.move(e, idx, true);
       });
+    }
+    function fn3$(e){
+      return this$.setIdx(e.target.idx);
     }
   }, {
     dom: null,
@@ -553,6 +550,7 @@
         }
       },
       eventHandler: {},
+      eventQueue: {},
       handle: function(name, value){
         var that, i$, len$, cb, results$ = [];
         if (that = this.eventHandler[name]) {
@@ -866,7 +864,7 @@
         }
       },
       toRgba: function(c){
-        var C, X, m, ref$, r, g, b, r1, g1, b1, a1, a;
+        var C, X, m, ref$, r, g, b, a;
         if (isNaN(c.hue)) {
           c.hue = 0;
         }
@@ -894,7 +892,6 @@
             return [C, X, 0];
           }
         }()), r = ref$[0], g = ref$[1], b = ref$[2];
-        ref$ = [r + m, g + m, b + m, c.alpha != null ? c.alpha : 1], r1 = ref$[0], g1 = ref$[1], b1 = ref$[2], a1 = ref$[3];
         return ref$ = [r + m, g + m, b + m, c.alpha != null ? c.alpha : 1], r = ref$[0], g = ref$[1], b = ref$[2], a = ref$[3], ref$;
       },
       hex: function(it){
@@ -975,12 +972,12 @@
         if (this.idx !== idx) {
           c = this.color.vals[idx];
           oldc = this.color.vals[this.idx];
+          this.handle('change-idx', idx);
           if (c !== oldc) {
             this.handle('change', c.alpha != null && c.alpha < 1
               ? this.toRgbaString(c)
               : this.toHexString(c));
           }
-          this.handle('change-idx', idx);
         }
         this.idx = idx;
         if (this.target) {
@@ -1030,16 +1027,18 @@
         c.hue = hue;
         c.sat = sat;
         c.lit = lit;
-        this.P2D.panel.style.backgroundColor = this.toHexString({
-          hue: hue,
-          sat: 1,
-          lit: 0.5
-        });
-        this.P1D.panel[1].style.backgroundColor = this.toHexString({
-          hue: hue,
-          sat: sat,
-          lit: lit
-        });
+        if (this.P2D) {
+          this.P2D.panel.style.backgroundColor = this.toHexString({
+            hue: hue,
+            sat: 1,
+            lit: 0.5
+          });
+          this.P1D.panel[1].style.backgroundColor = this.toHexString({
+            hue: hue,
+            sat: sat,
+            lit: lit
+          });
+        }
         value = this.toRgba(c).join(',');
         if (this.target) {
           this.target.value = this.getValue();
@@ -1166,44 +1165,51 @@
           config: '&config'
         },
         link: function(s, e, a, c){
-          var ldcp;
+          var ldcp, phaseCheck;
           ldcp = new ldColorPicker(e[0], s.config() || {}, null);
           if (a.ngLdcp) {
             s.ldcp = ldcp;
           }
-          ldcp.on('change', function(color){
-            var f;
-            if (s.color === color) {
-              return;
-            }
-            f = function(){
-              if (a.ngModel) {
-                return s.color = color;
-              }
-            };
-            if (s.$$phase) {
+          phaseCheck = function(f){
+            if (s.$root.$$phase) {
               return f();
             } else {
               return s.$apply(f);
             }
-          });
-          ldcp.on('change-palette', function(palette){
-            var f;
-            if (!a.ngPalette) {
+          };
+          ldcp.on('change', function(color){
+            if (s.color === color || !a.ngModel) {
               return;
             }
-            f = function(){
+            return phaseCheck(function(){
+              return s.color = color;
+            });
+          });
+          ldcp.on('change-palette', function(palette){
+            return phaseCheck(function(){
               if (a.ngPalette) {
                 return s.palette = ldcp.getPalette();
               }
-            };
-            if (s.$$phase) {
-              return f();
-            } else {
-              return s.$apply(f);
-            }
+            });
           });
-          s.$watch('color', function(color){
+          ldcp.on('change-idx', function(idx){
+            return phaseCheck(function(){
+              if (a.ngIdx) {
+                return s.idx = idx;
+              }
+            });
+          });
+          if (a.ngIdx && !(s.idx != null)) {
+            s.idx = ldcp.getIdx();
+          }
+          ldcp.on('change-pin', function(pin){
+            return phaseCheck(function(){
+              if (a.ngPinned) {
+                return s.pinned = pin;
+              }
+            });
+          });
+          s.$watch('color', function(color, oc){
             var cc, e;
             try {
               cc = ldcp.getValue();
@@ -1214,38 +1220,13 @@
               return e = e$;
             }
           });
-          ldcp.on('change-idx', function(idx){
-            var f;
-            f = function(){
-              if (a.ngIdx) {
-                return s.idx = idx;
-              }
-            };
-            if (s.$$phase) {
-              return f();
-            } else {
-              return s.$apply(f);
-            }
-          });
-          if (a.ngIdx && !(s.idx != null)) {
-            s.idx = ldcp.getIdx();
-          }
           s.$watch('idx', function(idx){
             if (idx != null) {
               return ldcp.setIdx(idx);
             }
           });
-          ldcp.on('change-pin', function(pin){
-            return s.$apply(function(){
-              if (a.ngPinned) {
-                return s.pinned = pin;
-              }
-            });
-          });
           return s.$watch('pinned', function(pin){
-            return setTimeout(function(){
-              return ldcp.setPin(pin);
-            }, 0);
+            return ldcp.setPin(pin);
           });
         }
       };

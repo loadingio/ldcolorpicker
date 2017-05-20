@@ -975,6 +975,7 @@
         if (this.idx !== idx) {
           c = this.color.vals[idx];
           oldc = this.color.vals[this.idx];
+          this.idx = idx;
           this.handle('change-idx', idx);
           if (c !== oldc) {
             this.handle('change', c.alpha != null && c.alpha < 1
@@ -982,7 +983,6 @@
               : this.toHexString(c));
           }
         }
-        this.idx = idx;
         if (this.target) {
           this.target.setAttribute("data-palette-idx", idx);
         }

@@ -463,9 +463,9 @@ do ->
         if @idx != idx =>
           c = @color.vals[idx]
           oldc = @color.vals[@idx]
+          @idx = idx
           @handle \change-idx, idx
           if c != oldc => @handle \change, (if (c.alpha?) and c.alpha < 1 => @toRgbaString(c) else @toHexString(c))
-        @idx = idx
         if @target => @target.setAttribute("data-palette-idx",idx)
         c = @color.vals[idx]
         @set-hsl c.hue, c.sat, c.lit

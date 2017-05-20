@@ -20,6 +20,9 @@
     srcnode = (that = target) ? that : node;
     customClass = config['class'] || (srcnode && srcnode.getAttribute('data-cpclass')) || "";
     customContext = config.context || (srcnode && srcnode.getAttribute('data-context')) || 'default';
+    if (customContext === 'random') {
+      customContext = "random-" + Math.random().toString(16);
+    }
     customCallback = config.oncolorchange || (srcnode && srcnode.getAttribute('data-oncolorchange')) || null;
     customPalCallback = config.onpalettechange || (srcnode && srcnode.getAttribute('data-onpalettechange')) || null;
     customIdx = config.index || (srcnode && parseInt(srcnode.getAttribute('data-palette-idx'))) || 0;

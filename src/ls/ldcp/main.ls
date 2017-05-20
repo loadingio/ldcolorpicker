@@ -10,6 +10,7 @@ do ->
     srcnode = (if target => that else node)
     custom-class = config.class or (srcnode and srcnode.getAttribute(\data-cpclass)) or ""
     custom-context = config.context or (srcnode and srcnode.getAttribute(\data-context)) or \default
+    if custom-context == \random => custom-context = "random-#{Math.random!toString 16}"
     custom-callback = config.oncolorchange or (srcnode and srcnode.getAttribute(\data-oncolorchange)) or null
     custom-pal-callback = config.onpalettechange or (srcnode and srcnode.getAttribute(\data-onpalettechange)) or null
     custom-idx = config.index or (srcnode and parseInt(srcnode.getAttribute(\data-palette-idx))) or 0

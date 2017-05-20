@@ -238,6 +238,13 @@ html(lang="en")
           .row
             .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette1")
             .col-sm-6: form.form: .form-group: input.form-control(type="text",data-toggle="colorpicker",data-cpclass="border round shadow",data-context="palette2")
+          p Sometimes it's useful to have a randomly named context; in this case, use 'random' as the context name: 
+          pre.well.
+            &#60;input type="text" data-toggle="colorpicker" data-context="#[b random]"&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-context="#[b random]"&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-context="#[b random]"&#62;
+            &#60;input type="text" data-toggle="colorpicker" data-context="#[b random]"&#62;
+          p Above input boxs will all have different context.
 
           h3#index-of-color Index of Color
           p By default, every color picker use the first color in a palette. we can use zero-based #[code data-palette-idx] to change default index of color:

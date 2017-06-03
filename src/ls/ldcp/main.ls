@@ -608,6 +608,8 @@ do ->
           ldcp.on \change-pin, (pin) ->
             phase-check -> if a.ngPinned => s.pinned = pin
           s.$watch 'color', (color, oc) ->
+            if !(/^#[0-9a-f]{6}$/.exec("#color".trim!) or
+            /^rgba?\([.0-9]+(,[.0-9]+){2,3}\)$/.exec("#color".trim!)) => return
             try
               cc = ldcp.getValue!
               if color? and cc != color => ldcp.set-color color

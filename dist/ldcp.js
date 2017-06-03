@@ -1214,6 +1214,9 @@
           });
           s.$watch('color', function(color, oc){
             var cc, e;
+            if (!(/^#[0-9a-f]{6}$/.exec((color + "").trim()) || /^rgba?\([.0-9]+(,[.0-9]+){2,3}\)$/.exec((color + "").trim()))) {
+              return;
+            }
             try {
               cc = ldcp.getValue();
               if (color != null && cc !== color) {

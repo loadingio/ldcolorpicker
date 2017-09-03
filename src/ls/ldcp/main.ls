@@ -274,7 +274,8 @@ do ->
         else
           @node.style.display = \block
           if @target =>
-            [sx,sy] = if window.scrollX? => [window.scrollX, window.scrollY]
+            [sx,sy] = if window.getComputedStyle(@node).position == \fixed => [0,0]
+            else if window.scrollX? => [window.scrollX, window.scrollY]
             else if window.pageXOffset? => [window.pageXOffset, window.pageYOffset]
             else [document.body.scrollLeft, document.body.scrollTop]
             bcr = @target.getBoundingClientRect!

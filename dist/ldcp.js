@@ -595,11 +595,13 @@
         } else {
           this.node.style.display = 'block';
           if (this.target) {
-            ref$ = window.scrollX != null
-              ? [window.scrollX, window.scrollY]
-              : window.pageXOffset != null
-                ? [window.pageXOffset, window.pageYOffset]
-                : [document.body.scrollLeft, document.body.scrollTop], sx = ref$[0], sy = ref$[1];
+            ref$ = window.getComputedStyle(this.node).position === 'fixed'
+              ? [0, 0]
+              : window.scrollX != null
+                ? [window.scrollX, window.scrollY]
+                : window.pageXOffset != null
+                  ? [window.pageXOffset, window.pageYOffset]
+                  : [document.body.scrollLeft, document.body.scrollTop], sx = ref$[0], sy = ref$[1];
             bcr = this.target.getBoundingClientRect();
             classList = this['class'].split(' ');
             left = (bcr.left + sx) + "px";

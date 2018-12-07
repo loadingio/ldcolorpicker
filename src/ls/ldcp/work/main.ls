@@ -305,7 +305,7 @@
       @fire \toggle, true
 
 
-    on: (n, cb) -> @evt-handlee.[][name].push cb
+    on: (n, cb) -> @evt-handler.[][name].push cb
     fire: (n, ...v) -> for cb in (@evt-handler[name] or []) => cb.apply @, v
 
   if module? => module.exports = CLS

@@ -241,18 +241,24 @@
       #input?
       #if changed => @handle \change, value
       #if changed or direction => @handle \change-palette, @get-palette!
-
-
         
     # replace root palette object with this one.
     bind-palette: (pal) -> @palette = pal
-    set-palette: ->
-    get-palette: ->
+    set-palette: (pal) ->
+      oc = @palette.colors[@idx]
+      @palette.colors = pal.colors
+      if pal.name => @palette.name = that
+      CLS.PalPool.set @context, pal
+      cc = @get-color!
+      if ldColor.rgbaStr(oc) != ldColor.rgbaStr(cc) => @fire \change, cc, oc
+
+    get-palette: -> @palette
     set-color: (cc) ->
       oc = @palette.colors[@idx]
       @palette.colors[@idx] = ldColor.hsl cc
       @set-pos cc
       if ldColor.hex(cc) != ldColor.hex(oc) or cc.a != oc.a => @fire \change, cc, oc
+      if @toggler => @toggler.value = if cc.a < 1 => ldColor.rgbaStr(cc) else ldColor.hex(cc)
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
     get-color-at: (idx,type=\rgb) -> ldColor[type](@palette.colors[idx])
@@ -260,7 +266,8 @@
       oc = @get-color-at @idx
       @palette.colors[@idx].a = a
       cc = @get-color-at @idx
-      @fire \change, cc, oc
+      if oc.a != a => @fire \change, cc, oc
+      if @toggler => @toggler.value = if cc.a < 1 => ldColor.rgbaStr(cc) else ldColor.hex(cc)
       @sync-color-at @idx
     get-alpha: -> @get-color-at(@idx, \rgb).a
     set-pin: (p) ->
@@ -289,12 +296,15 @@
           sx = window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft or 0
           sy = window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop or 0
         box = @toggler.getBoundingClientRect!
-        [left, top] = ["#{box.left + sx}px", "#{box.top + sy - 20}px"]
-        if @root.classList.contains \top => top = "#{box.top - @root.offsetHeight - 10 + sy - 20}px"
-        else if @root.classList.contains \left => left = "#{box.left - @root.offsetWidth - 10 + sx}px"
-        else if @root.classList.contains \right => left = "#{box.left + @toggler.offsetWidth + 10 + sx}px"
-        else top = "#{box.top + @toggler.offsetHeight + 10 + sy}px"
-        @root.style <<< {left, top}
+        rbox = @root.getBoundingClientRect!
+        [left, top] = [box.left + sx, box.top + sy - 20]
+        if @root.classList.contains \top => top = box.top - @root.offsetHeight - 10 + sy - 20
+        else if @root.classList.contains \left => left = box.left - @root.offsetWidth - 10 + sx
+        else if @root.classList.contains \right => left = box.left + @toggler.offsetWidth + 10 + sx
+        else top = box.top + @toggler.offsetHeight + 10 + sy
+        if left + rbox.width >= window.innerWidth => left = window.innerWidth - rbox.width
+        # TODO more window boundary check
+        @root.style <<< {left: "#{left}px", top: "#{top}px"}
       document.addEventListener \click, (~>
         document.removeEventListener \click, @doc-toggler
         @doc-toggler = ~>

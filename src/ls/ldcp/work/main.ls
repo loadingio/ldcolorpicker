@@ -203,7 +203,7 @@
       if @idx != oi => @fire \change-idx, ci, oi
       cc = @get-color-at ci
       oc = @get-color-at oi
-      if cc != oc => @fire \change, cc, oc
+      if ldColor.hex(cc) != ldColor.hex(oc) or cc.a != oc.a => @fire \change, cc, oc
       hsl = ldColor.hsl(cc)
       @set-pos hsl
     get-idx: -> @idx
@@ -248,14 +248,19 @@
     bind-palette: (pal) -> @palette = pal
     set-palette: ->
     get-palette: ->
-    set-color: (c) ->
-      @palette.colors[@idx] = ldColor.hsl c
-      @set-pos c
+    set-color: (cc) ->
+      oc = @palette.colors[@idx]
+      @palette.colors[@idx] = ldColor.hsl cc
+      @set-pos cc
+      if ldColor.hex(cc) != ldColor.hex(oc) or cc.a != oc.a => @fire \change, cc, oc
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
     get-color-at: (idx,type=\rgb) -> ldColor[type](@palette.colors[idx])
     set-alpha: (a) ->
+      oc = @get-color-at @idx
       @palette.colors[@idx].a = a
+      cc = @get-color-at @idx
+      @fire \change, cc, oc
       @sync-color-at @idx
     get-alpha: -> @get-color-at(@idx, \rgb).a
     set-pin: (p) ->
@@ -288,7 +293,7 @@
         if @root.classList.contains \top => top = "#{box.top - @root.offsetHeight - 10 + sy - 20}px"
         else if @root.classList.contains \left => left = "#{box.left - @root.offsetWidth - 10 + sx}px"
         else if @root.classList.contains \right => left = "#{box.left + @toggler.offsetWidth + 10 + sx}px"
-        else top = "#{box.top + @toggler.offsetHeight + 10 + sy - 20}px"
+        else top = "#{box.top + @toggler.offsetHeight + 10 + sy}px"
         @root.style <<< {left, top}
       document.addEventListener \click, (~>
         document.removeEventListener \click, @doc-toggler
@@ -305,8 +310,8 @@
       @fire \toggle, true
 
 
-    on: (n, cb) -> @evt-handler.[][name].push cb
-    fire: (n, ...v) -> for cb in (@evt-handler[name] or []) => cb.apply @, v
+    on: (n, cb) -> @evt-handler.[][n].push cb
+    fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
 
   if module? => module.exports = CLS
   else window.ldColorPicker = CLS

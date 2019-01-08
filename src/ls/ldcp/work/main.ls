@@ -5,14 +5,18 @@
 (->
   cancel = (e) -> e.stopPropagation!; e.preventDefault!
   mouse = do
+    over: false # is mousedown from ldcp? if true, document.click should not trigger toggle.
     start: (ldcp, type) ->
       list =
         * \selectstart, (e) -> cancel e
         * \mousemove, (e) -> mouse.move ldcp, e, type
         * \mouseup, (e) ->
+            # after click event so document.click won't toggle ldcp off
+            setTimeout (-> mouse.over = false), 100
             list.map -> document.removeEventListener it.0, it.1
             #setTimeout (-> if ldcp.d => document.addEventListener \click, target.clickToggler), 0
       list.map -> document.addEventListener it.0, it.1
+      mouse.over = true
       #if target.clickToggler => document.removeEventListener \click, target.clickToggler
     move: (ldcp, e, type, is-click = false) ->
       if !(e.buttons or is-click) => return
@@ -249,9 +253,9 @@
     bind-palette: (pal) -> @palette = pal
     set-palette: (pal) ->
       oc = @palette.colors[@idx]
-      @palette.colors = pal.colors
+      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldColor.rgb it
       if pal.name => @palette.name = that
-      CLS.PalPool.set @context, pal
+      CLS.PalPool.set @context, @palette
       cc = @get-color!
       if !ldColor.same(cc, oc) => @fire \change, cc, oc
 
@@ -311,6 +315,7 @@
       document.addEventListener \click, (~>
         document.removeEventListener \click, @doc-toggler
         @doc-toggler = ~>
+          if mouse.over => return mouse.over = false
           document.removeEventListener \click, @doc-toggler
           @toggle!
       )!

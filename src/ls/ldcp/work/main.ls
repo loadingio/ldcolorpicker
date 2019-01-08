@@ -106,6 +106,7 @@
       ..addEventListener \click, (e) ~>
         setTimeout (~> @toggle!), 0
         if !cfg.exclusive or @root.style.display != \none => cancel e
+      ..value = ldColor.web(@get-color!)
 
     for n in <[mask ptr]> => for v from 0 to 2 => ((n,v) ~> 
       elem["#n#v"]
@@ -167,7 +168,7 @@
         x = ( @dim.d2.w * (sv) )
         y1 = ( @dim.d2.h * (1 - lv) ) / 1.00
         y2 = ( @dim.d1.h * (h / 360 ) ) / 1.00
-        @elem.panel2.style.backgroundColor = ldColor.hex({h, s: 1, l: 0.5})
+        @elem.panel2.style.backgroundColor = ldColor.web({h, s: 1, l: 0.5})
         @set-pos 2, x, y1, false
         @set-pos 0, x, y2, false
         @sync-color-at @idx
@@ -197,14 +198,16 @@
     set-idx: (ci) ->
       oi = @idx
       @idx = ci
-      if @toggler => that.setAttribute \data-idx, ci
       n = @elem.pal.childNodes[ci + 1]
       @elem.idx.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
       if @idx != oi => @fire \change-idx, ci, oi
       cc = @get-color-at ci
       oc = @get-color-at oi
-      if ldColor.hex(cc) != ldColor.hex(oc) or cc.a != oc.a => @fire \change, cc, oc
+      if !ldColor.same(cc,oc) => @fire \change, cc, oc
       hsl = ldColor.hsl(cc)
+      if @toggler =>
+        that.setAttribute \data-idx, ci
+        that.value = ldColor.web cc
       @set-pos hsl
     get-idx: -> @idx
     # update UI with possibly color change
@@ -214,7 +217,7 @@
       n = n.childNodes.0
       c = ldColor.rgb(@palette.colors[idx])
       if !c => return
-      n.style.backgroundColor = if isNaN(c.a) => \transparent else ldColor.rgbaStr(c)
+      n.style.backgroundColor = ldColor.web(c)
       n.classList[if isNaN(c.a) => "add" else "remove"] \none
 
     # update UI with possibly palette changes
@@ -250,15 +253,15 @@
       if pal.name => @palette.name = that
       CLS.PalPool.set @context, pal
       cc = @get-color!
-      if ldColor.rgbaStr(oc) != ldColor.rgbaStr(cc) => @fire \change, cc, oc
+      if !ldColor.same(cc, oc) => @fire \change, cc, oc
 
     get-palette: -> @palette
     set-color: (cc) ->
       oc = @palette.colors[@idx]
       @palette.colors[@idx] = ldColor.hsl cc
       @set-pos cc
-      if ldColor.hex(cc) != ldColor.hex(oc) or cc.a != oc.a => @fire \change, cc, oc
-      if @toggler => @toggler.value = if cc.a < 1 => ldColor.rgbaStr(cc) else ldColor.hex(cc)
+      if !ldColor.same(cc,oc) => @fire \change, cc, oc
+      if @toggler => @toggler.value = ldColor.web(cc)
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
     get-color-at: (idx,type=\rgb) -> ldColor[type](@palette.colors[idx])
@@ -267,7 +270,7 @@
       @palette.colors[@idx].a = a
       cc = @get-color-at @idx
       if oc.a != a => @fire \change, cc, oc
-      if @toggler => @toggler.value = if cc.a < 1 => ldColor.rgbaStr(cc) else ldColor.hex(cc)
+      if @toggler => @toggler.value = ldColor.web(cc)
       @sync-color-at @idx
     get-alpha: -> @get-color-at(@idx, \rgb).a
     set-pin: (p) ->

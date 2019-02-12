@@ -97,8 +97,8 @@
     # DOM Elements Config and Dynamics
     @elem.btn-add.addEventListener \click, (e) ~> @add-color!
     @elem.btn-del.addEventListener \click, (e) ~> @del-color!
-    @elem.color-none.addEventListener \click, (e) ~> @set-alpha NaN 
-    @elem.pal.addEventListener \click, (e) ~> 
+    @elem.color-none.addEventListener \click, (e) ~> @set-alpha NaN
+    @elem.pal.addEventListener \click, (e) ~>
       node = if e.target.classList.contains \ldcp-color => e.target else e.target.parentNode
       idx = Array.from(@elem.pal.querySelectorAll \.ldcp-color).indexOf(node)
       if idx >= 0 => @set-idx idx
@@ -110,9 +110,13 @@
       ..addEventListener \click, (e) ~>
         setTimeout (~> @toggle!), 0
         if !cfg.exclusive or @root.style.display != \none => cancel e
+      ..addEventListener \keyup (e) ~>
+        ret = ldColor.rgb(@toggler.value)
+        if !isNaN(ret.r) => @setColor ret
       ..value = ldColor.web(@get-color!)
+      ..setAttribute \autocomplete, \off if @toggler.nodeName == \INPUT
 
-    for n in <[mask ptr]> => for v from 0 to 2 => ((n,v) ~> 
+    for n in <[mask ptr]> => for v from 0 to 2 => ((n,v) ~>
       elem["#n#v"]
         ..addEventListener \mousedown, (e) ~> mouse.start @, v
         ..addEventListener \click, (e) ~> mouse.move @, e, v, true
@@ -197,6 +201,8 @@
       h = if type == 0 => ly * 360 else c.h
       l = lv * ( 2 - sv ) / 2
       s = if l != 0 and l != 1 => lv * sv / ( 1 - Math.abs( 2 * l - 1 ) ) else c.s
+      if isNaN(s) => s = 0
+      if isNaN(l) => l = 0
       @set-color {h, s, l, a: c.a}
 
     set-idx: (ci) ->
@@ -248,7 +254,7 @@
       #input?
       #if changed => @handle \change, value
       #if changed or direction => @handle \change-palette, @get-palette!
-        
+
     # replace root palette object with this one.
     bind-palette: (pal) -> @palette = pal
     set-palette: (pal) ->
@@ -299,7 +305,7 @@
       @root.style.display = \block
       if @toggler =>
         if window.getComputedStyle(@root).position == \fixed => [sx,sy] = [0,0]
-        else 
+        else
           sx = window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft or 0
           sy = window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop or 0
         box = @toggler.getBoundingClientRect!

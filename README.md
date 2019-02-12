@@ -1,6 +1,6 @@
 ![ldColorPicker Banner](/img/banner.png)
 
-Palette-Aware Color Picker. [Demo + docs here](http://loadingio.github.io/ldcolorpicker/).
+Palette-Aware Color Picker. [Demo + docs here](http://loadingio.github.io/ldColorPicker/).
 
 Features:
  * Load palette on the fly
@@ -12,7 +12,7 @@ Features:
 Usage
 --------
 
-Download and include [dist/ldcp.min.js](https://raw.githubusercontent.com/loadingio/ldcolorpicker/master/dist/ldcp.min.js) and [dist/ldcp.css](https://raw.githubusercontent.com/loadingio/ldcolorpicker/master/dist/ldcp.css) file of ldColorPicker:
+Download and include [dist/ldcp.min.js](https://raw.githubusercontent.com/loadingio/ldColorPicker/master/dist/ldcp.min.js) and [dist/ldcp.css](https://raw.githubusercontent.com/loadingio/ldColorPicker/master/dist/ldcp.css) file of ldColorPicker:
 
     <link rel="stylesheet" type="text/css" href="ldcp.css"/>
     <script type="text/javascript" src="ldcp.min.js"></script>
@@ -33,7 +33,7 @@ and initialize with following script:
 Documentation
 ---------------
 
-check [this url](http://loadingio.github.io/ldcolorpicker/) for documentation and demos.
+check [this url](http://loadingio.github.io/ldColorPicker/) for documentation and demos.
 
 
 

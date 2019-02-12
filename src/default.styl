@@ -1,0 +1,118 @@
+@import 'base'
+
+.ldcp-panel
+  padding-bottom: 2 * gap + 19px
+.ldcp-g1
+  height: 100%
+  padding-right: 2 * gap
+.ldcp-g11
+  width: 80%
+.ldcp-g12, .ldcp-g13
+  width: 10%
+.ldcp-g2
+  height: 19px
+.ldcp-g21
+  width: 100%
+.ldcp-g3
+  display: none
+  height: 17px
+  line-height: 17px
+  margin-top: 12px
+.ldcp-g31
+  width: 100%
+
+.ldColorPicker.text-input
+  .ldcp-panel
+    padding-bottom: 4 * gap + 19px + 15px
+  .ldcp-g3
+    display: block
+
+.ldColorPicker.no-alpha
+  .ldcp-2d
+    width: 90%
+  .ldcp-g1
+    padding-right: gap
+  .ldcp-alpha
+    display: none
+
+.ldColorPicker.no-palette
+  .ldcp-panel
+    padding-bottom: 1 * gap
+  .ldcp-g2
+    display: none
+
+.ldColorPicker.no-palette.text-input
+  .ldcp-panel
+    padding-bottom: 2 * gap + 19px
+
+.ldColorPicker.palette-only, .ldColorPicker.mini-palette
+  height: 22px
+  .ldcp-panel
+    padding-bottom: gap + 22px
+  .ldcp-g2
+    margin-top: gap
+  .ldcp-g3
+    display: none
+  .ldcp-colors
+    height: 22px
+  .ldcp-2d, .ldcp-1d
+    display: none
+  .ldcp-cbtn
+    display: none
+.ldColorPicker.round-palette
+  .ldcp-color, .ldcp-color-none
+    border-radius: 50%
+    width: 22px
+    flex: 0 0 22px
+    & > div
+      border-radius: 50%
+  .ldcp-sep
+    flex: 1 1 auto
+  &.middle
+    .ldcp-palette
+      justify-content: center
+    .ldcp-sep
+      display: none
+
+
+/* no padding palette */
+.ldColorPicker.compact-palette, .ldColorPicker.mini-palette
+  .ldcp-colors
+    .ldcp-color
+      margin: 0
+      border-radius: 0
+    .ldcp-color:last-of-type
+      margin-right: gap
+      border-radius: 0 3px 3px 0
+    .ldcp-color:first-of-type
+      border-radius: 3px 0 0 3px
+
+/* no button */
+.ldColorPicker.no-button
+  .ldcp-cbtn
+    display: none
+  .ldcp-color-none
+    margin-right: 0
+
+.ldColorPicker.no-empty-color, .ldColorPicker.palette-only, .ldColorPicker.mini-palette
+  .ldcp-color-none
+    display: none
+  .ldcp-palette
+    margin-right: 0
+  .ldcp-colors .ldcp-palette .ldcp-color:last-of-type
+    margin-right: 0
+
+.ldColorPicker.mini-palette
+  width: 160px
+  .ldcp-panel
+    background: none
+  &.shadow
+    .ldcp-panel
+      box-shadow: none
+    .ldcp-palette
+      box-shadow: 0 2px 2px rgba(0,0,0,0.3)
+      border-radius: 3px
+
+.ldColorPicker.palette-only, .ldColorPicker.mini-palette
+  &.no-ptr .ldcp-idx
+    display: none

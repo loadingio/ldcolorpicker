@@ -78,11 +78,6 @@
   display: inline-block;
   cursor: move;
   border-radius: 2px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .ldcp-2d .ldcp-mask {
@@ -103,11 +98,6 @@
   position: relative;
   display: inline-block;
   cursor: row-resize;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .ldcp-1d .ldcp-mask {
@@ -123,7 +113,11 @@
   border: 1px solid #999;
   border-radius: 1px;
 }
-.ldcp-1d img {
+.ldcp-1d .ldcp-alpha-img {
+  background-size: cover;
+}
+.ldcp-1d img,
+.ldcp-1d .ldcp-alpha-img {
   position: absolute;
   z-index: 1;
   top: 0;
@@ -139,12 +133,10 @@
 }
 .ldcp-colors.ldcp-g21 {
   position: relative;
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 }
-.ldcp-colors.ldcp-g21 .ldcp-colorptr {
+.ldcp-colors.ldcp-g21 .ldcp-idx {
   content: " ";
   display: block;
   position: absolute;
@@ -157,15 +149,15 @@
   border-color: transparent transparent #000 transparent;
 }
 .ldcp-colors.ldcp-g21 .ldcp-palette {
-  -webkit-flex: 9 1;
-  flex: 9 1;
-  display: -webkit-flex;
+  flex: 9 1 auto;
   display: flex;
-  -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
   height: 100%;
   margin-right: 5px;
   position: relative;
+}
+.ldcp-colors.ldcp-g21 .ldcp-color {
+  border: 0px dashed transparent;
 }
 .ldcp-colors.ldcp-g21 .ldcp-color,
 .ldcp-colors.ldcp-g21 .ldcp-color-none {
@@ -173,8 +165,7 @@
   background: #eee;
   display: inline-block;
   overflow: hidden;
-  -webkit-flex: 1 1;
-  flex: 1 1;
+  flex: 1 1 auto;
   text-align: center;
   line-height: 100%;
   vertical-align: middle;
@@ -187,6 +178,9 @@
   width: 100%;
   height: 100%;
   box-shadow: inset 0 0 1px 1px rgba(0,0,0,0.2);
+}
+.ldcp-colors.ldcp-g21 .ldcp-color.none {
+  border: 1px dashed #ccc;
 }
 .ldcp-colors.ldcp-g21 .ldcp-color-none {
   border: 1px dashed #ccc;
@@ -215,14 +209,12 @@
   display: block;
   cursor: pointer;
   width: 17px;
-  -webkit-flex: 0 0 17px;
   flex: 0 0 17px;
   border-left-width: 0;
 }
 .ldcp-colors span:first-of-type {
   border-radius: 2px 0 0 2px;
   width: 19px;
-  -webkit-flex: 0 0 19px;
   flex: 0 0 19px;
   margin-left: 5px;
   border-left-width: 1px;
@@ -249,10 +241,10 @@
   border: 1px solid #ccc;
   border-radius: 0 3px 3px 0;
 }
-.ldcp-g31 input.ldcp-alpha {
+.ldcp-g31 input.ldcp-in-a {
   margin-right: 0;
 }
-.ldcp-g31 input.ldcp-input-hex {
+.ldcp-g31 input.ldcp-in-hex {
   width: 54px;
 }
 .ldcp-g31 span {
@@ -268,11 +260,6 @@
   border: 1px solid #ccc;
   text-align: center;
   font-weight: 200;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .ldcp-g31 .ldcp-caret {
@@ -280,11 +267,6 @@
   width: 52px;
   float: right;
   cursor: pointer;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 .ldcp-edit-group {
@@ -356,19 +338,6 @@
 .ldcp-chooser {
   display: none;
 }
-/*.ldColorPicker input
-  color: #777
-  width: 32px
-  height: 18px
-  font-size: 12px
-  vertical-align: top
-  margin: 1px 0 0 2px
-  border-radius: 1px
-  border: 1px solid #ccc
-  font-family: calibr, roboto
-  padding: 2px
-  text-align: center
-*/
 .ldcp-panel {
   padding-bottom: 29px;
 }
@@ -456,7 +425,6 @@
 .ldColorPicker.round-palette .ldcp-color-none {
   border-radius: 50%;
   width: 22px;
-  -webkit-flex: 0 0 22px;
   flex: 0 0 22px;
 }
 .ldColorPicker.round-palette .ldcp-color > div,
@@ -464,8 +432,7 @@
   border-radius: 50%;
 }
 .ldColorPicker.round-palette .ldcp-sep {
-  -webkit-flex: 1 1;
-  flex: 1 1;
+  flex: 1 1 auto;
 }
 .ldColorPicker.round-palette.middle .ldcp-palette {
   justify-content: center;
@@ -521,8 +488,8 @@
   box-shadow: 0 2px 2px rgba(0,0,0,0.3);
   border-radius: 3px;
 }
-.ldColorPicker.palette-only.no-ptr .ldcp-colorptr,
-.ldColorPicker.mini-palette.no-ptr .ldcp-colorptr {
+.ldColorPicker.palette-only.no-ptr .ldcp-idx,
+.ldColorPicker.mini-palette.no-ptr .ldcp-idx {
   display: none;
 }
 .ldColorPicker.flat .ldcp-panel {

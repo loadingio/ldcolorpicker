@@ -2,26 +2,20 @@
   "author": "Kirby Wu",
   "name": "ldColorPicker",
   "description": "ldColorPicker - Palette-Aware Color Picker",
-  "version": "0.1.1",
-  "homepage": "https://github.com/zbryikt/ldcolorpicker",
+  "version": "1.0.0",
+  "homepage": "https://github.com/loadingio/ldColorPicker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zbryikt/ldcolorpicker"
+    "url": "https://github.com/loadingio/ldColorPicker"
   },
   "engines": {
-    "node": ">=0.8.18",
+    "node": ">=0.12.6",
     "npm": ">=1.2.2"
-  },
-  "scripts": {
-    "start": "node_modules/.bin/lsc server.ls",
-    "restart": "node_modules\\.bin\\lsc server.ls"
   },
   "dependencies": {
     "LiveScript": ">=1.2.0",
-    "jade": ">=0.27.6",
-    "chokidar": "=0.8.0",
-    "stylus": "=0.50.0",
-    "uglify-js": "=2.4.16",
-    "babel": "=5.8.29"
+    "stylus": "^0.54.5",
+    "uglify-js": "=3.2.0",
+    "uglifycss": "0.0.29"
   }
 }

@@ -1,4 +1,4 @@
-![ldColorPicker Banner](/img/banner.png)
+![ldColorPicker Banner](https://loadingio.github.io/ldColorPicker/img/banner.png)
 
 Palette-Aware Color Picker. [Demo + docs here](http://loadingio.github.io/ldColorPicker/).
 

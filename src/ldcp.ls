@@ -247,8 +247,7 @@
       if (context?) and context == @context and (affect-idx?) and (direction?) and affect-idx <= @idx =>
         @idx += direction
         @idx = @idx >? 0 <? @color.vals.length - 1
-        if old-idx != @idx => @handle \change-idx, @idx
-
+        if old-idx != @idx => @fire \change-idx, @idx
       @set-idx @idx
 
       #input?

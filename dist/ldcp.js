@@ -461,7 +461,7 @@ var images, html, slice$ = [].slice;
         this.idx += direction;
         this.idx = (ref$ = (ref2$ = this.idx) > 0 ? ref2$ : 0) < (ref1$ = this.color.vals.length - 1) ? ref$ : ref1$;
         if (oldIdx !== this.idx) {
-          this.handle('change-idx', this.idx);
+          this.fire('change-idx', this.idx);
         }
       }
       return this.setIdx(this.idx);
@@ -491,14 +491,10 @@ var images, html, slice$ = [].slice;
       var oc;
       oc = this.palette.colors[this.idx];
       this.palette.colors[this.idx] = ldColor.hsl(cc);
-      this.setPos(cc);
-      if (!ldColor.same(cc, oc)) {
-        this.fire('change', cc, oc);
-      }
+      console.log(">", cc, ldColor.hsl(cc));
       if (this.toggler) {
-        this.toggler.value = ldColor.web(cc);
+        return this.toggler.value = ldColor.web(cc);
       }
-      return CLS.PalPool.populate(this.context);
     },
     getColor: function(type){
       type == null && (type = 'rgb');

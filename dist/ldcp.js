@@ -415,7 +415,7 @@ var images, html, slice$ = [].slice;
       hsl = ldColor.hsl(cc);
       if (that = this.toggler) {
         that.setAttribute('data-idx', ci);
-        that.value = ldColor.web(cc);
+        that.value = ldColor.web(cc, (that.value || '').length === 4);
       }
       return this.setPos(hsl);
     },
@@ -496,7 +496,7 @@ var images, html, slice$ = [].slice;
         this.fire('change', cc, oc);
       }
       if (this.toggler) {
-        this.toggler.value = ldColor.web(cc);
+        this.toggler.value = ldColor.web(cc, (this.toggler.value || '').length === 4);
       }
       return CLS.PalPool.populate(this.context);
     },
@@ -517,7 +517,7 @@ var images, html, slice$ = [].slice;
         this.fire('change', cc, oc);
       }
       if (this.toggler) {
-        this.toggler.value = ldColor.web(cc);
+        this.toggler.value = ldColor.web(cc, (this.toggler.value || '').length === 4);
       }
       return this.syncColorAt(this.idx);
     },

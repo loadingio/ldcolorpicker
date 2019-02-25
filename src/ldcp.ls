@@ -217,7 +217,7 @@
       hsl = ldColor.hsl(cc)
       if @toggler =>
         that.setAttribute \data-idx, ci
-        that.value = ldColor.web cc
+        that.value = ldColor.web cc, ((that.value or '').length  == 4)
       @set-pos hsl
     get-idx: -> @idx
     # update UI with possibly color change
@@ -270,7 +270,7 @@
       @palette.colors[@idx] = ldColor.hsl cc
       @set-pos cc
       if !ldColor.same(cc,oc) => @fire \change, cc, oc
-      if @toggler => @toggler.value = ldColor.web(cc)
+      if @toggler => @toggler.value = ldColor.web(cc, ((@toggler.value or '').length  == 4))
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
     get-color-at: (idx,type=\rgb) -> ldColor[type](@palette.colors[idx])
@@ -279,7 +279,7 @@
       @palette.colors[@idx].a = a
       cc = @get-color-at @idx
       if oc.a != a => @fire \change, cc, oc
-      if @toggler => @toggler.value = ldColor.web(cc)
+      if @toggler => @toggler.value = ldColor.web(cc, ((@toggler.value or '').length  == 4))
       @sync-color-at @idx
     get-alpha: -> @get-color-at(@idx, \rgb).a
     set-pin: (p) ->

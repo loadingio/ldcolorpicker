@@ -49,9 +49,9 @@
     pal = cfg.palette
     pal = if typeof(pal) == \stirng =>
       pal = pal.trim!
-      if pal.0 == \[ => colors: JSON.parse(pal).map -> ldColor.rgb it
-      else colors: pal.split(\,).map -> ldColor.rgb it.trim!
-    else if Array.isArray pal => colors: pal.map -> ldColr.rgb it
+      if pal.0 == \[ => colors: JSON.parse(pal).map -> ldColor.hsl it
+      else colors: pal.split(\,).map -> ldColor.hsl it.trim!
+    else if Array.isArray pal => colors: pal.map -> ldColr.hsl it
     else pal
     CLS.PalPool.bind cfg.context, @, pal # now we have @palette shared from PalPool
 
@@ -111,7 +111,7 @@
         setTimeout (~> @toggle!), 0
         if !cfg.exclusive or @root.style.display != \none => cancel e
       ..addEventListener \keyup (e) ~>
-        ret = ldColor.rgb(@toggler.value)
+        ret = ldColor.hsl(@toggler.value)
         if !isNaN(ret.r) => @setColor ret
       ..value = ldColor.web(@get-color!)
       ..setAttribute \autocomplete, \off if @toggler.nodeName == \INPUT
@@ -200,7 +200,7 @@
       sv = if type == 2 => lx else 2 * ( lv - c.l ) / lv
       h = if type == 0 => ly * 360 else c.h
       l = lv * ( 2 - sv ) / 2
-      s = if l != 0 and l != 1 => lv * sv / ( 1 - Math.abs( 2 * l - 1 ) ) else c.s
+      s = if l != 0 and l != 1 => lv * sv / ( 1 - Math.abs( 2 * l - 1 ) ) else x / w
       if isNaN(s) => s = 0
       if isNaN(l) => l = 0
       @set-color {h, s, l, a: c.a}
@@ -211,8 +211,8 @@
       n = @elem.pal.childNodes[ci + 1]
       @elem.idx.style.left = "#{n.offsetLeft + n.offsetWidth / 2}px"
       if @idx != oi => @fire \change-idx, ci, oi
-      cc = @get-color-at ci
-      oc = @get-color-at oi
+      cc = @get-color-at ci, \hsl
+      oc = @get-color-at oi, \hsl
       if !ldColor.same(cc,oc) => @fire \change, cc, oc
       hsl = ldColor.hsl(cc)
       if @toggler =>
@@ -225,7 +225,7 @@
       n = (n or Array.from(@elem.pal.querySelectorAll \.ldcp-color)[idx])
       if !n => return
       n = n.childNodes.0
-      c = ldColor.rgb(@palette.colors[idx])
+      c = ldColor.hsl(@palette.colors[idx])
       if !c => return
       n.style.backgroundColor = ldColor.web(c)
       n.classList[if isNaN(c.a) => "add" else "remove"] \none
@@ -258,7 +258,7 @@
     bind-palette: (pal) -> @palette = pal
     set-palette: (pal) ->
       oc = @palette.colors[@idx]
-      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldColor.rgb it
+      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldColor.hsl it
       if pal.name => @palette.name = that
       CLS.PalPool.set @context, @palette
       cc = @get-color!

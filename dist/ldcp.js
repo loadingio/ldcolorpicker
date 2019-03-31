@@ -91,17 +91,17 @@ var images, html, slice$ = [].slice;
       ? (pal = pal.trim(), pal[0] === '['
         ? {
           colors: JSON.parse(pal).map(function(it){
-            return ldColor.rgb(it);
+            return ldColor.hsl(it);
           })
         }
         : {
           colors: pal.split(',').map(function(it){
-            return ldColor.rgb(it.trim());
+            return ldColor.hsl(it.trim());
           })
         })
       : Array.isArray(pal) ? {
         colors: pal.map(function(it){
-          return ldColr.rgb(it);
+          return ldColr.hsl(it);
         })
       } : pal;
     CLS.PalPool.bind(cfg.context, this, pal);
@@ -198,7 +198,7 @@ var images, html, slice$ = [].slice;
       });
       y$.addEventListener('keyup', function(e){
         var ret;
-        ret = ldColor.rgb(this$.toggler.value);
+        ret = ldColor.hsl(this$.toggler.value);
         if (!isNaN(ret.r)) {
           return this$.setColor(ret);
         }
@@ -384,7 +384,7 @@ var images, html, slice$ = [].slice;
       l = lv * (2 - sv) / 2;
       s = l !== 0 && l !== 1
         ? lv * sv / (1 - Math.abs(2 * l - 1))
-        : c.s;
+        : x / w;
       if (isNaN(s)) {
         s = 0;
       }
@@ -407,8 +407,8 @@ var images, html, slice$ = [].slice;
       if (this.idx !== oi) {
         this.fire('change-idx', ci, oi);
       }
-      cc = this.getColorAt(ci);
-      oc = this.getColorAt(oi);
+      cc = this.getColorAt(ci, 'hsl');
+      oc = this.getColorAt(oi, 'hsl');
       if (!ldColor.same(cc, oc)) {
         this.fire('change', cc, oc);
       }
@@ -429,7 +429,7 @@ var images, html, slice$ = [].slice;
         return;
       }
       n = n.childNodes[0];
-      c = ldColor.rgb(this.palette.colors[idx]);
+      c = ldColor.hsl(this.palette.colors[idx]);
       if (!c) {
         return;
       }
@@ -473,7 +473,7 @@ var images, html, slice$ = [].slice;
       var oc, that, cc;
       oc = this.palette.colors[this.idx];
       this.palette.colors = JSON.parse(JSON.stringify(pal.colors.map(function(it){
-        return ldColor.rgb(it);
+        return ldColor.hsl(it);
       })));
       if (that = pal.name) {
         this.palette.name = that;

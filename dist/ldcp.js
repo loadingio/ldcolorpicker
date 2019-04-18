@@ -199,7 +199,7 @@ var images, html, slice$ = [].slice;
       y$.addEventListener('keyup', function(e){
         var ret;
         ret = ldColor.hsl(this$.toggler.value);
-        if (!isNaN(ret.r)) {
+        if (!isNaN(ret.h)) {
           return this$.setColor(ret);
         }
       });
@@ -546,26 +546,27 @@ var images, html, slice$ = [].slice;
       }
       return this.syncPalette();
     },
-    toggle: function(isOn){
+    toggle: function(isOn, toggler){
       var display, ref$, sx, sy, box, rbox, left, top, this$ = this;
       if (this.pinned) {
         isOn = true;
       }
       display = this.root.style.display;
-      if (((isOn != null && !isOn) || display !== 'none') && !this.inline) {
+      if (((isOn != null && !isOn) || (!(isOn != null) && display !== 'none')) && !this.inline) {
         this.root.style.display = 'none';
         document.removeEventListener('click', this.docToggler);
         return this.fire('toggle', false);
       }
       this.root.style.display = 'block';
-      if (this.toggler) {
+      toggler = this.toggler || toggler;
+      if (toggler) {
         if (window.getComputedStyle(this.root).position === 'fixed') {
           ref$ = [0, 0], sx = ref$[0], sy = ref$[1];
         } else {
           sx = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0;
           sy = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
         }
-        box = this.toggler.getBoundingClientRect();
+        box = toggler.getBoundingClientRect();
         rbox = this.root.getBoundingClientRect();
         ref$ = [box.left + sx, box.top + sy - 20], left = ref$[0], top = ref$[1];
         if (this.root.classList.contains('top')) {
@@ -573,9 +574,9 @@ var images, html, slice$ = [].slice;
         } else if (this.root.classList.contains('left')) {
           left = box.left - this.root.offsetWidth - 10 + sx;
         } else if (this.root.classList.contains('right')) {
-          left = box.left + this.toggler.offsetWidth + 10 + sx;
+          left = box.left + toggler.offsetWidth + 10 + sx;
         } else {
-          top = box.top + this.toggler.offsetHeight + 10 + sy;
+          top = box.top + box.height + 10 + sy;
         }
         if (left + rbox.width >= window.innerWidth) {
           left = window.innerWidth - rbox.width;

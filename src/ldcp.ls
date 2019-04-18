@@ -112,7 +112,7 @@
         if !cfg.exclusive or @root.style.display != \none => cancel e
       ..addEventListener \keyup (e) ~>
         ret = ldColor.hsl(@toggler.value)
-        if !isNaN(ret.r) => @setColor ret
+        if !isNaN(ret.h) => @setColor ret
       ..value = ldColor.web(@get-color!)
       ..setAttribute \autocomplete, \off if @toggler.nodeName == \INPUT
 
@@ -294,26 +294,27 @@
       if @palette.colors.length > 1 => @palette.colors.splice @idx, 1
       @sync-palette!
 
-    toggle: (is-on) ->
+    toggle: (is-on, toggler) ->
       if @pinned => is-on = true
       display = @root.style.display
-      if ((is-on? and !is-on) or display != \none) and !@inline =>
+      if ((is-on? and !is-on) or (!(is-on?) and display != \none)) and !@inline =>
         @root.style.display = \none
         document.removeEventListener \click, @doc-toggler
         return @fire \toggle, false
       @root.style.display = \block
-      if @toggler =>
+      toggler = @toggler or toggler
+      if toggler =>
         if window.getComputedStyle(@root).position == \fixed => [sx,sy] = [0,0]
         else
           sx = window.pageXOffset or document.documentElement.scrollLeft or document.body.scrollLeft or 0
           sy = window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop or 0
-        box = @toggler.getBoundingClientRect!
+        box = toggler.getBoundingClientRect!
         rbox = @root.getBoundingClientRect!
         [left, top] = [box.left + sx, box.top + sy - 20]
         if @root.classList.contains \top => top = box.top - @root.offsetHeight - 10 + sy - 20
         else if @root.classList.contains \left => left = box.left - @root.offsetWidth - 10 + sx
-        else if @root.classList.contains \right => left = box.left + @toggler.offsetWidth + 10 + sx
-        else top = box.top + @toggler.offsetHeight + 10 + sy
+        else if @root.classList.contains \right => left = box.left + toggler.offsetWidth + 10 + sx
+        else top = box.top + box.height + 10 + sy
         if left + rbox.width >= window.innerWidth => left = window.innerWidth - rbox.width
         # TODO more window boundary check
         @root.style <<< {left: "#{left}px", top: "#{top}px"}

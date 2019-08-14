@@ -611,6 +611,10 @@ var images, html, slice$ = [].slice;
         results$.push(cb.apply(this, v));
       }
       return results$;
+    },
+    destroy: function(){
+      this.root.parentNode.removeChild(this.root);
+      return this.evtHandler = {};
     }
   });
   if (typeof module != 'undefined' && module !== null) {

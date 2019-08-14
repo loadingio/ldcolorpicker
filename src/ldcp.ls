@@ -336,6 +336,9 @@
 
     on: (n, cb) -> @evt-handler.[][n].push cb
     fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
+    destroy: ->
+      @root.parentNode.removeChild @root
+      @evt-handler = {}
 
   if module? => module.exports = CLS
   else window.ldColorPicker = CLS

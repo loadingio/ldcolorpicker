@@ -1,5 +1,7 @@
-require! <[chokidar http fs path jade stylus babel]>
+require! <[chokidar http fs path jade stylus babel-core]>
 require! 'uglify-js': uglify, LiveScript: lsc
+
+babel = babel-core
 
 RegExp.escape = -> it.replace /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"
 

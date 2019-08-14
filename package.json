@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "LiveScript": ">=1.2.0",
+    "babel": "^6.23.0",
     "stylus": "^0.54.5",
     "uglify-js": "=3.2.0",
     "uglifycss": "0.0.29"

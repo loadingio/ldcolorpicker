@@ -27,6 +27,9 @@
 .ldColorPicker .ldcp-panel {
   border: 1px solid #ccc;
 }
+.ldColorPicker.fixed {
+  position: fixed !important;
+}
 .ldColorPicker.no-border .ldcp-panel,
 .ldColorPicker.mini-palette .ldcp-panel {
   border: 1px transparent;

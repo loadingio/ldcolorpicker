@@ -1,8 +1,11 @@
 {
-  "author": "Kirby Wu",
-  "name": "ldColorPicker",
+  "author": "zbryikt",
+  "name": "ldcolorpicker",
   "description": "ldColorPicker - Palette-Aware Color Picker",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "files": [
+    "dist/**/*"
+  ],
   "homepage": "https://github.com/loadingio/ldColorPicker",
   "repository": {
     "type": "git",

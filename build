@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 mkdir -p dist
 echo "build src/ldcp.ls -> dist/ldcp.js ..."
-./node_modules/.bin/lsc -cbp src/ldcp.ls > dist/ldcp.js
+npx lsc -cbp --no-header src/ldcp.ls > dist/ldcp.js
 echo "build src/ldcp.styl -> dist/ldcp.css ..."
-./node_modules/.bin/stylus -p src/ldcp.styl > dist/ldcp.css
+npx stylus -p src/ldcp.styl > dist/ldcp.css
 echo "minifying ldcp.js ..."
-./node_modules/.bin/uglifyjs dist/ldcp.js > dist/ldcp.min.js
+npx uglifyjs dist/ldcp.js > dist/ldcp.min.js
 echo "minifying ldcp.css ..."
-./node_modules/.bin/uglifycss dist/ldcp.css > dist/ldcp.min.css
+npx uglifycss dist/ldcp.css > dist/ldcp.min.css
 echo "done."
 

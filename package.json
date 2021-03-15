@@ -2,7 +2,7 @@
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
   "description": "ldColorPicker - Palette-Aware Color Picker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "files": [
     "dist/**/*"
   ],
@@ -12,12 +12,12 @@
     "url": "https://github.com/loadingio/ldColorPicker"
   },
   "engines": {
-    "node": ">=0.12.6",
-    "npm": ">=1.2.2"
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
   },
   "dependencies": {
-    "LiveScript": ">=1.2.0",
     "babel": "^6.23.0",
+    "livescript": "^1.6.0",
     "stylus": "^0.54.5",
     "uglify-js": "=3.2.0",
     "uglifycss": "0.0.29"

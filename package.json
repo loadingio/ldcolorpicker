@@ -1,25 +1,49 @@
 {
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
-  "description": "ldColorPicker - Palette-Aware Color Picker",
-  "version": "1.1.1",
+  "description": "ldcolorpicker - Palette-Aware Color Picker",
+  "version": "2.0.0",
   "files": [
     "dist/**/*"
   ],
-  "homepage": "https://github.com/loadingio/ldColorPicker",
+  "homepage": "https://github.com/loadingio/ldcolorpicker",
   "repository": {
     "type": "git",
-    "url": "https://github.com/loadingio/ldColorPicker"
+    "url": "https://github.com/loadingio/ldcolorpicker"
   },
   "engines": {
     "node": ">=10.14.1",
     "npm": ">=6.4.1"
   },
-  "dependencies": {
-    "babel": "^6.23.0",
+  "scripts": {
+    "start": "npx server -r web -o true",
+    "deploy": "npx deploy web/static",
+    "postinstall": "npx fedep"
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.ldui",
+      "bootstrap.native",
+      "ldcolor",
+      "@loadingio/ldquery"
+    ]
+  },
+  "devDependencies": {
+    "@loadingio/ldquery": "^2.0.0",
+    "bootstrap": "^4.5.2",
+    "bootstrap.ldui": "github:loadingio/bootstrap.ldui",
+    "bootstrap.native": "^3.0.15",
+    "deploy": "github:zbryikt/deploy",
+    "fedep": "^0.0.12",
     "livescript": "^1.6.0",
     "stylus": "^0.54.5",
+    "template": "github:zbryikt/template#v2.3.13",
     "uglify-js": "=3.2.0",
     "uglifycss": "0.0.29"
+  },
+  "dependencies": {
+    "ldcolor": "^0.0.3"
   }
 }

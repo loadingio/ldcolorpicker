@@ -1,6 +1,6 @@
 # palette format:
 # { name: "palette-name", colors: [C, C, ...] }
-# color format "C": follow ldColor ( { r,g,b,a,h,s,l,c,@l,@a,@b } )
+# color format "C": follow ldcolor ( { r,g,b,a,h,s,l,c,@l,@a,@b } )
 
 (->
   cancel = (e) -> e.stopPropagation!; e.preventDefault!
@@ -38,22 +38,23 @@
       exclusive: false
       inline: null
     } <<< cfg
-    if node => for k,v of cfg => if node.getAttribute("data-#k") => cfg[k] = that
+    if node => for k,v of cfg => if (v = node.getAttribute("data-#{k.toLowerCase!}")) =>
+      if k in <[onColorChange onPaletteChange]> => cfg[k] = new Function("color",v)
+      else cfg[k] = v
     if cfg.context == \random => cfg.context = "random-#{Math.random!toString 16}"
     cfg.idx = if isNaN(+cfg.idx) => 0 else + +cfg.idx
-    cfg.className = (cfg.className + " ldColorPicker " + (if cfg.inline => [] else \bubble)).split(' ').filter(->it)
-    <[color palette]>.map(->"on#{it}change").map (name) ->
-      if typeof(cfg[name]) == \string => cfg[name] = new Function [name], cfg[name]
+    cfg.className = (cfg.className + " ldcolorpicker " + (if cfg.inline => [] else \bubble)).split(' ').filter(->it)
+    #<[color palette]>.map(->"on#{it}change").map (name) ->
+    #  if typeof(cfg[name]) == \string => cfg[name] = new Function [name], cfg[name]
 
     # Palette Initialization
     pal = cfg.palette
-    pal = if typeof(pal) == \stirng =>
+    pal = if typeof(pal) == \string =>
       pal = pal.trim!
-      if pal.0 == \[ => colors: JSON.parse(pal).map -> ldColor.hsl it
-      else colors: pal.split(\,).map -> ldColor.hsl it.trim!
+      if pal.0 == \[ => colors: JSON.parse(pal).map -> ldcolor.hsl it
+      else colors: pal.split(/[, ]/).map -> ldcolor.hsl it.trim!
     else if Array.isArray pal => colors: pal.map -> ldColr.hsl it
     else pal
-    CLS.PalPool.bind cfg.context, @, pal # now we have @palette shared from PalPool
 
     # Object Initialization
     @ <<< {evt-handler: {}, dim: {d1: {}, d2: {}}} <<< cfg{idx, pinned, context, exclusive, inline}
@@ -103,6 +104,7 @@
       idx = Array.from(@elem.pal.querySelectorAll \.ldcp-color).indexOf(node)
       if idx >= 0 => @set-idx idx
 
+    CLS.PalPool.bind cfg.context, @, pal # now we have @palette shared from PalPool
     @sync-palette!
 
     if @toggler => @toggler
@@ -111,9 +113,9 @@
         setTimeout (~> @toggle!), 0
         if !cfg.exclusive or @root.style.display != \none => cancel e
       ..addEventListener \keyup (e) ~>
-        ret = ldColor.hsl(@toggler.value)
+        ret = ldcolor.hsl(@toggler.value)
         if !isNaN(ret.h) => @setColor ret
-      ..value = ldColor.web(@get-color!)
+      ..value = ldcolor.web(@get-color!)
       ..setAttribute \autocomplete, \off if @toggler.nodeName == \INPUT
 
     for n in <[mask ptr]> => for v from 0 to 2 => ((n,v) ~>
@@ -162,21 +164,20 @@
     CLS.PalPool = pool
   )!
 
-
   CLS.prototype = Object.create(Object.prototype) <<< do
     update-dimension: -> <[d1 d2]>.map ~>
       @dim[it] <<< {w: @elem[it]offsetWidth, h: @elem[it]offsetHeight}
     set-pos: (type, x, y, is-event = false) ->
       if !@dim.d1.w => @update-dimension!
       if typeof(type) != \number =>
-        {h,s,l} = ldColor.hsl(type)
+        {h,s,l} = ldcolor.hsl(type)
         lv = ( 2 * l + s * ( 1 - Math.abs( 2 * l - 1 ) ) ) / 2
         sv = 2 * ( lv - l ) / lv
         if isNaN(sv) => sv = s
         x = ( @dim.d2.w * (sv) )
         y1 = ( @dim.d2.h * (1 - lv) ) / 1.00
         y2 = ( @dim.d1.h * (h / 360 ) ) / 1.00
-        @elem.panel2.style.backgroundColor = ldColor.web({h, s: 1, l: 0.5})
+        @elem.panel2.style.backgroundColor = ldcolor.web({h, s: 1, l: 0.5})
         @set-pos 2, x, y1, false
         @set-pos 0, x, y2, false
         @sync-color-at @idx
@@ -213,11 +214,11 @@
       if @idx != oi => @fire \change-idx, ci, oi
       cc = @get-color-at ci, \hsl
       oc = @get-color-at oi, \hsl
-      if !ldColor.same(cc,oc) => @fire \change, cc, oc
-      hsl = ldColor.hsl(cc)
+      if !ldcolor.same(cc,oc) => @fire \change, cc, oc
+      hsl = ldcolor.hsl(cc)
       if @toggler =>
         that.setAttribute \data-idx, ci
-        that.value = ldColor.web cc, ((that.value or '').length  == 4)
+        that.value = ldcolor.web cc, ((that.value or '').length  == 4)
       @set-pos hsl
     get-idx: -> @idx
     # update UI with possibly color change
@@ -225,9 +226,9 @@
       n = (n or Array.from(@elem.pal.querySelectorAll \.ldcp-color)[idx])
       if !n => return
       n = n.childNodes.0
-      c = ldColor.hsl(@palette.colors[idx])
+      c = ldcolor.hsl(@palette.colors[idx])
       if !c => return
-      n.style.backgroundColor = ldColor.web(c)
+      n.style.backgroundColor = ldcolor.web(c)
       n.classList[if isNaN(c.a) => "add" else "remove"] \none
 
     # update UI with possibly palette changes
@@ -258,28 +259,28 @@
     bind-palette: (pal) -> @palette = pal
     set-palette: (pal) ->
       oc = @palette.colors[@idx]
-      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldColor.hsl it
+      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldcolor.hsl it
       if pal.name => @palette.name = that
       CLS.PalPool.set @context, @palette
       cc = @get-color!
-      if !ldColor.same(cc, oc) => @fire \change, cc, oc
+      if !ldcolor.same(cc, oc) => @fire \change, cc, oc
 
     get-palette: -> @palette
     set-color: (cc) ->
       oc = @palette.colors[@idx]
-      @palette.colors[@idx] = ldColor.hsl cc
+      @palette.colors[@idx] = ldcolor.hsl cc
       @set-pos cc
-      if !ldColor.same(cc,oc) => @fire \change, cc, oc
-      if @toggler => @toggler.value = ldColor.web(cc, ((@toggler.value or '').length  == 4))
+      if !ldcolor.same(cc,oc) => @fire \change, cc, oc
+      if @toggler => @toggler.value = ldcolor.web(cc, ((@toggler.value or '').length  == 4))
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
-    get-color-at: (idx,type=\rgb) -> ldColor[type](@palette.colors[idx])
+    get-color-at: (idx,type=\rgb) -> ldcolor[type](@palette.colors[idx])
     set-alpha: (a) ->
       oc = @get-color-at @idx
       @palette.colors[@idx].a = a
       cc = @get-color-at @idx
       if oc.a != a => @fire \change, cc, oc
-      if @toggler => @toggler.value = ldColor.web(cc, ((@toggler.value or '').length  == 4))
+      if @toggler => @toggler.value = ldcolor.web(cc, ((@toggler.value or '').length  == 4))
       @sync-color-at @idx
     get-alpha: -> @get-color-at(@idx, \rgb).a
     set-pin: (p) ->
@@ -288,7 +289,7 @@
       if @pinned => @toggle true
     is-pinned: -> @pinned
     add-color: ->
-      @palette.colors.splice @idx, 0, ldColor.rand!
+      @palette.colors.splice @idx, 0, ldcolor.rand!
       @sync-palette!
     del-color: ->
       if @palette.colors.length > 1 => @palette.colors.splice @idx, 1
@@ -341,7 +342,7 @@
       @evt-handler = {}
 
   if module? => module.exports = CLS
-  else window.ldColorPicker = CLS
+  else window.ldcolorpicker = CLS
 )!
 
 /*

@@ -44,7 +44,7 @@ var images, html;
     }
   };
   CLS = function(node, cfg){
-    var k, v, that, pal, ref$, x$, elem, y$, i$, len$, n, j$, this$ = this;
+    var k, v, pal, ref$, x$, elem, y$, i$, len$, n, j$, this$ = this;
     node == null && (node = null);
     cfg == null && (cfg = {});
     if (typeof node === 'string') {
@@ -64,8 +64,12 @@ var images, html;
     if (node) {
       for (k in cfg) {
         v = cfg[k];
-        if (that = node.getAttribute("data-" + k)) {
-          cfg[k] = that;
+        if (v = node.getAttribute("data-" + k.toLowerCase())) {
+          if (k === 'onColorChange' || k === 'onPaletteChange') {
+            cfg[k] = new Function("color", v);
+          } else {
+            cfg[k] = v;
+          }
         }
       }
     }
@@ -75,27 +79,20 @@ var images, html;
     cfg.idx = isNaN(+cfg.idx)
       ? 0
       : + +cfg.idx;
-    cfg.className = (cfg.className + " ldColorPicker " + (cfg.inline ? [] : 'bubble')).split(' ').filter(function(it){
+    cfg.className = (cfg.className + " ldcolorpicker " + (cfg.inline ? [] : 'bubble')).split(' ').filter(function(it){
       return it;
     });
-    ['color', 'palette'].map(function(it){
-      return "on" + it + "change";
-    }).map(function(name){
-      if (typeof cfg[name] === 'string') {
-        return cfg[name] = new Function([name], cfg[name]);
-      }
-    });
     pal = cfg.palette;
-    pal = typeof pal === 'stirng'
+    pal = typeof pal === 'string'
       ? (pal = pal.trim(), pal[0] === '['
         ? {
           colors: JSON.parse(pal).map(function(it){
-            return ldColor.hsl(it);
+            return ldcolor.hsl(it);
           })
         }
         : {
-          colors: pal.split(',').map(function(it){
-            return ldColor.hsl(it.trim());
+          colors: pal.split(/[, ]/).map(function(it){
+            return ldcolor.hsl(it.trim());
           })
         })
       : Array.isArray(pal) ? {
@@ -103,7 +100,6 @@ var images, html;
           return ldColr.hsl(it);
         })
       } : pal;
-    CLS.PalPool.bind(cfg.context, this, pal);
     ref$ = (this.evtHandler = {}, this.dim = {
       d1: {},
       d2: {}
@@ -181,6 +177,7 @@ var images, html;
         return this$.setIdx(idx);
       }
     });
+    CLS.PalPool.bind(cfg.context, this, pal);
     this.syncPalette();
     if (this.toggler) {
       y$ = this.toggler;
@@ -197,12 +194,12 @@ var images, html;
       });
       y$.addEventListener('keyup', function(e){
         var ret;
-        ret = ldColor.hsl(this$.toggler.value);
+        ret = ldcolor.hsl(this$.toggler.value);
         if (!isNaN(ret.h)) {
           return this$.setColor(ret);
         }
       });
-      y$.value = ldColor.web(this.getColor());
+      y$.value = ldcolor.web(this.getColor());
       if (this.toggler.nodeName === 'INPUT') {
         y$.setAttribute('autocomplete', 'off');
       }
@@ -330,7 +327,7 @@ var images, html;
         this.updateDimension();
       }
       if (typeof type !== 'number') {
-        ref$ = ldColor.hsl(type), h = ref$.h, s = ref$.s, l = ref$.l;
+        ref$ = ldcolor.hsl(type), h = ref$.h, s = ref$.s, l = ref$.l;
         lv = (2 * l + s * (1 - Math.abs(2 * l - 1))) / 2;
         sv = 2 * (lv - l) / lv;
         if (isNaN(sv)) {
@@ -339,7 +336,7 @@ var images, html;
         x = this.dim.d2.w * sv;
         y1 = (this.dim.d2.h * (1 - lv)) / 1.00;
         y2 = (this.dim.d1.h * (h / 360)) / 1.00;
-        this.elem.panel2.style.backgroundColor = ldColor.web({
+        this.elem.panel2.style.backgroundColor = ldcolor.web({
           h: h,
           s: 1,
           l: 0.5
@@ -408,13 +405,13 @@ var images, html;
       }
       cc = this.getColorAt(ci, 'hsl');
       oc = this.getColorAt(oi, 'hsl');
-      if (!ldColor.same(cc, oc)) {
+      if (!ldcolor.same(cc, oc)) {
         this.fire('change', cc, oc);
       }
-      hsl = ldColor.hsl(cc);
+      hsl = ldcolor.hsl(cc);
       if (that = this.toggler) {
         that.setAttribute('data-idx', ci);
-        that.value = ldColor.web(cc, (that.value || '').length === 4);
+        that.value = ldcolor.web(cc, (that.value || '').length === 4);
       }
       return this.setPos(hsl);
     },
@@ -428,11 +425,11 @@ var images, html;
         return;
       }
       n = n.childNodes[0];
-      c = ldColor.hsl(this.palette.colors[idx]);
+      c = ldcolor.hsl(this.palette.colors[idx]);
       if (!c) {
         return;
       }
-      n.style.backgroundColor = ldColor.web(c);
+      n.style.backgroundColor = ldcolor.web(c);
       return n.classList[isNaN(c.a) ? "add" : "remove"]('none');
     },
     syncPalette: function(){
@@ -472,14 +469,14 @@ var images, html;
       var oc, that, cc;
       oc = this.palette.colors[this.idx];
       this.palette.colors = JSON.parse(JSON.stringify(pal.colors.map(function(it){
-        return ldColor.hsl(it);
+        return ldcolor.hsl(it);
       })));
       if (that = pal.name) {
         this.palette.name = that;
       }
       CLS.PalPool.set(this.context, this.palette);
       cc = this.getColor();
-      if (!ldColor.same(cc, oc)) {
+      if (!ldcolor.same(cc, oc)) {
         return this.fire('change', cc, oc);
       }
     },
@@ -489,13 +486,13 @@ var images, html;
     setColor: function(cc){
       var oc;
       oc = this.palette.colors[this.idx];
-      this.palette.colors[this.idx] = ldColor.hsl(cc);
+      this.palette.colors[this.idx] = ldcolor.hsl(cc);
       this.setPos(cc);
-      if (!ldColor.same(cc, oc)) {
+      if (!ldcolor.same(cc, oc)) {
         this.fire('change', cc, oc);
       }
       if (this.toggler) {
-        this.toggler.value = ldColor.web(cc, (this.toggler.value || '').length === 4);
+        this.toggler.value = ldcolor.web(cc, (this.toggler.value || '').length === 4);
       }
       return CLS.PalPool.populate(this.context);
     },
@@ -505,7 +502,7 @@ var images, html;
     },
     getColorAt: function(idx, type){
       type == null && (type = 'rgb');
-      return ldColor[type](this.palette.colors[idx]);
+      return ldcolor[type](this.palette.colors[idx]);
     },
     setAlpha: function(a){
       var oc, cc;
@@ -516,7 +513,7 @@ var images, html;
         this.fire('change', cc, oc);
       }
       if (this.toggler) {
-        this.toggler.value = ldColor.web(cc, (this.toggler.value || '').length === 4);
+        this.toggler.value = ldcolor.web(cc, (this.toggler.value || '').length === 4);
       }
       return this.syncColorAt(this.idx);
     },
@@ -536,7 +533,7 @@ var images, html;
       return this.pinned;
     },
     addColor: function(){
-      this.palette.colors.splice(this.idx, 0, ldColor.rand());
+      this.palette.colors.splice(this.idx, 0, ldcolor.rand());
       return this.syncPalette();
     },
     delColor: function(){
@@ -623,7 +620,7 @@ var images, html;
   if (typeof module != 'undefined' && module !== null) {
     return module.exports = CLS;
   } else {
-    return window.ldColorPicker = CLS;
+    return window.ldcolorpicker = CLS;
   }
 })();
 /*

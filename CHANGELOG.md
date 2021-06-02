@@ -1,5 +1,10 @@
 # Change Log
 
+## v2.0.1
+
+ - remove postinstall to prevent from breaking dependency installation
+
+
 ## v2.0.0
 
  - upgrade ldcolor which deprecate the use of `ldColor` variable.

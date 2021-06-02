@@ -274,7 +274,11 @@
       if @toggler => @toggler.value = ldcolor.web(cc, ((@toggler.value or '').length  == 4))
       CLS.PalPool.populate @context
     get-color: (type=\rgb) -> @get-color-at @idx, type
-    get-color-at: (idx,type=\rgb) -> ldcolor[type](@palette.colors[idx])
+    get-color-at: (idx,type=\rgb) ->
+      ret = ldcolor[type](@palette.colors[idx])
+      # always clone object to prevent modification of inner object directly.
+      if typeof(ret) == \object => ret = {} <<< ret
+      return ret
     set-alpha: (a) ->
       oc = @get-color-at @idx
       @palette.colors[@idx].a = a

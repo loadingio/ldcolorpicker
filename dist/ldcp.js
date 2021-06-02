@@ -501,8 +501,13 @@ var images, html;
       return this.getColorAt(this.idx, type);
     },
     getColorAt: function(idx, type){
+      var ret;
       type == null && (type = 'rgb');
-      return ldcolor[type](this.palette.colors[idx]);
+      ret = ldcolor[type](this.palette.colors[idx]);
+      if (typeof ret === 'object') {
+        ret = import$({}, ret);
+      }
+      return ret;
     },
     setAlpha: function(a){
       var oc, cc;

@@ -1,5 +1,9 @@
 # Change Log
 
+## v2.0.2
+
+ - fix bug: if getColor returns a color object, a copy of the object should be returned instead.
+
 ## v2.0.1
 
  - remove postinstall to prevent from breaking dependency installation

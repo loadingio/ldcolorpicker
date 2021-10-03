@@ -1,12 +1,12 @@
 doctype html
 html(lang="en")
-  include @/bootstrap.ldui/dist/index.pug
+  include @/@loadingio/bootstrap.ext/dist/index.pug
   head(prefix="og: http://ogp.me/ns#")
     meta(charset="utf-8")
     meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0')
     title ldcolorpicker - Palette-Aware Color Picker
     +css("/assets/lib/bootstrap/main/css/bootstrap.min.css")
-    +css("/assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.css")
+    +css("/assets/lib/@loadingio/bootstrap.ext/main/index.min.css")
     +css("/assets/lib/ldcolorpicker/dev/ldcp.css")
     +css("/css/index.css")
 
@@ -650,7 +650,7 @@ html(lang="en")
                 iframe.pull-left(src="https://ghbtns.com/github-btn.html?user=zbryikt&repo=ldcolorpicker&type=star&size=large",frameborder="0",scrolling="0",width="160px",height="30px")
 
       #footer.py-3
-        small ldcolorpicker v.2.0.0 &copy; #[a(href="http://loading.io",target="_blank") loading.io] released under MIT License
+        small ldcolorpicker v.2.0.3 &copy; #[a(href="http://loading.io",target="_blank") loading.io] released under MIT License
         small.pull-right
           a(href="http://zbryikt.github.io/ldcolorpicker",target="_blank") Github
           span ．

@@ -2,7 +2,7 @@
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
   "description": "ldcolorpicker - Palette-Aware Color Picker",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "files": [
     "dist/**/*"
   ],
@@ -42,7 +42,7 @@
     "uglify-js": "=3.2.0",
     "uglifycss": "0.0.29"
   },
-  "dependencies": {
-    "ldcolor": "^0.0.3"
+  "peerDependencies": {
+    "ldcolor": "^0.0.4"
   }
 }

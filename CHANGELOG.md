@@ -4,6 +4,7 @@
 
  - fix bug: typo during palette initialization 
  - make building faster
+ - depenedency to ldcolor should be peerDependency. upgrade ldcolor
 
 
 ## v2.0.2

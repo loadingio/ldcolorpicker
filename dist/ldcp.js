@@ -97,7 +97,7 @@ var images, html;
         })
       : Array.isArray(pal) ? {
         colors: pal.map(function(it){
-          return ldColr.hsl(it);
+          return ldcolor.hsl(it);
         })
       } : pal;
     ref$ = (this.evtHandler = {}, this.dim = {

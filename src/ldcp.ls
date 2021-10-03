@@ -53,7 +53,7 @@
       pal = pal.trim!
       if pal.0 == \[ => colors: JSON.parse(pal).map -> ldcolor.hsl it
       else colors: pal.split(/[, ]/).map -> ldcolor.hsl it.trim!
-    else if Array.isArray pal => colors: pal.map -> ldColr.hsl it
+    else if Array.isArray pal => colors: pal.map -> ldcolor.hsl it
     else pal
 
     # Object Initialization

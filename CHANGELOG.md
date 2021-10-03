@@ -1,5 +1,10 @@
 # Change Log
 
+## v2.0.3
+
+ - fix bug: typo during palette initialization 
+
+
 ## v2.0.2
 
  - fix bug: if getColor returns a color object, a copy of the object should be returned instead.

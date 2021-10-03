@@ -2,13 +2,13 @@
 rm -rf dist
 mkdir -p dist
 echo "build src/ldcp.ls -> dist/ldcp.js ..."
-npx lsc -cbp --no-header src/ldcp.ls > dist/ldcp.js
+./node_modules/.bin/lsc -cbp --no-header src/ldcp.ls > dist/ldcp.js
 echo "build src/ldcp.styl -> dist/ldcp.css ..."
-npx stylus -p src/ldcp.styl > dist/ldcp.css
+./node_modules/.bin/stylus -p src/ldcp.styl > dist/ldcp.css
 echo "minifying ldcp.js ..."
-npx uglifyjs dist/ldcp.js > dist/ldcp.min.js
+./node_modules/.bin/uglifyjs dist/ldcp.js > dist/ldcp.min.js
 echo "minifying ldcp.css ..."
-npx uglifycss dist/ldcp.css > dist/ldcp.min.css
+./node_modules/.bin/uglifycss dist/ldcp.css > dist/ldcp.min.css
 echo "copy dist to web ... "
 rm -rf web/static/assets/lib/ldcolorpicker/dev/
 mkdir -p web/static/assets/lib/ldcolorpicker/

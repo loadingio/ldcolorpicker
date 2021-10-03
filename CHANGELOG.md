@@ -3,6 +3,7 @@
 ## v2.0.3
 
  - fix bug: typo during palette initialization 
+ - make building faster
 
 
 ## v2.0.2

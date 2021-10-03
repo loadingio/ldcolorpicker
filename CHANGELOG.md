@@ -1,5 +1,11 @@
 # Change Log
 
+## v2.0.4
+
+ - improve popup boundary check
+ - add `vertical`, `horizontal` class for automatically popup direction detection.
+
+
 ## v2.0.3
 
  - fix bug: typo during palette initialization 

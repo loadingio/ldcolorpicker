@@ -315,14 +315,68 @@
           sy = window.pageYOffset or document.documentElement.scrollTop or document.body.scrollTop or 0
         box = toggler.getBoundingClientRect!
         rbox = @root.getBoundingClientRect!
-        [left, top] = [box.left + sx, box.top + sy - 20]
-        if @root.classList.contains \top => top = box.top - @root.offsetHeight - 10 + sy - 20
-        else if @root.classList.contains \left => left = box.left - @root.offsetWidth - 10 + sx
-        else if @root.classList.contains \right => left = box.left + toggler.offsetWidth + 10 + sx
-        else top = box.top + box.height + 10 + sy
-        if left + rbox.width >= window.innerWidth => left = window.innerWidth - rbox.width
-        # TODO more window boundary check
-        @root.style <<< {left: "#{left}px", top: "#{top}px"}
+        [type, left, top, right, bottom] = [
+          \bottom,
+          box.left + sx, box.top + sy,
+          box.left + box.width + sx, box.top + box.height + sy
+        ]
+        pos =
+          top: box.top - @root.offsetHeight - 10 + sy
+          left: box.left - @root.offsetWidth - 10 + sx
+          right: box.left + toggler.offsetWidth + 10 + sx
+          bottom: box.top + box.height + 10 + sy
+
+        cls = {on: [], off: []}
+        style = {}
+        auto = if @root.classList.contains \vertical => \vertical
+        else if @root.classList.contains \horizontal => \horizontal
+        else null
+        if auto == \vertical =>
+          if pos.bottom + rbox.height - sy > window.innerHeight =>
+            style.top = "#{pos.top}px"
+            cls.on.push \top
+            type = \top
+          else
+            style.top = "#{pos.bottom}px"
+            cls.off.push \top
+            type = \bottom
+        else if auto == \horizontal =>
+          if pos.right + rbox.width - sx > window.innerWidth =>
+            style.left = "#{pos.left}px"
+            cls.on.push \left
+            cls.off.push \right
+            type = \left
+          else
+            style.left = "#{pos.right}px"
+            cls.on.push \right
+            cls.off.push \left
+            type = \right
+        else
+          if @root.classList.contains \top => style.top = "#{pos.top}px"
+          else if @root.classList.contains \left => style.left = "#{pos.left}px"
+          else if @root.classList.contains \right => style.left = "#{pos.right}px"
+          else style.top = "#{pos.bottom}px"
+
+        if type in <[bottom top]> =>
+          if left + rbox.width - sx >= window.innerWidth =>
+            style.left = "#{right - rbox.width}px"
+            cls.on.push 'right-align'
+          else
+            style.left = "#{left}px"
+            cls.off.push 'right-align'
+        if type in <[right left]> =>
+          if top + rbox.height - sy >= window.innerHeight =>
+            style.top = "#{bottom - rbox.height}px"
+            cls.on.push 'bottom-align'
+          else
+            style.top = "#{top}px"
+            cls.off.push 'bottom-align'
+
+        @root.style <<< style
+        cls.on.map ~> @root.classList.toggle it, true
+        cls.off.map ~> @root.classList.toggle it, false
+        # TODO simplify boundary check logic, if possible
+
       document.addEventListener \click, (~>
         document.removeEventListener \click, @doc-toggler
         @doc-toggler = ~>

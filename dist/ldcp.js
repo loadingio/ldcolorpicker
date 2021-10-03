@@ -548,7 +548,7 @@ var images, html;
       return this.syncPalette();
     },
     toggle: function(isOn, toggler){
-      var display, ref$, sx, sy, box, rbox, left, top, this$ = this;
+      var display, ref$, sx, sy, box, rbox, type, left, top, right, bottom, pos, cls, style, auto, this$ = this;
       if (this.pinned) {
         isOn = true;
       }
@@ -569,22 +569,79 @@ var images, html;
         }
         box = toggler.getBoundingClientRect();
         rbox = this.root.getBoundingClientRect();
-        ref$ = [box.left + sx, box.top + sy - 20], left = ref$[0], top = ref$[1];
-        if (this.root.classList.contains('top')) {
-          top = box.top - this.root.offsetHeight - 10 + sy - 20;
-        } else if (this.root.classList.contains('left')) {
-          left = box.left - this.root.offsetWidth - 10 + sx;
-        } else if (this.root.classList.contains('right')) {
-          left = box.left + toggler.offsetWidth + 10 + sx;
+        ref$ = ['bottom', box.left + sx, box.top + sy, box.left + box.width + sx, box.top + box.height + sy], type = ref$[0], left = ref$[1], top = ref$[2], right = ref$[3], bottom = ref$[4];
+        pos = {
+          top: box.top - this.root.offsetHeight - 10 + sy,
+          left: box.left - this.root.offsetWidth - 10 + sx,
+          right: box.left + toggler.offsetWidth + 10 + sx,
+          bottom: box.top + box.height + 10 + sy
+        };
+        cls = {
+          on: [],
+          off: []
+        };
+        style = {};
+        auto = this.root.classList.contains('vertical')
+          ? 'vertical'
+          : this.root.classList.contains('horizontal') ? 'horizontal' : null;
+        if (auto === 'vertical') {
+          if (pos.bottom + rbox.height - sy > window.innerHeight) {
+            style.top = pos.top + "px";
+            cls.on.push('top');
+            type = 'top';
+          } else {
+            style.top = pos.bottom + "px";
+            cls.off.push('top');
+            type = 'bottom';
+          }
+        } else if (auto === 'horizontal') {
+          if (pos.right + rbox.width - sx > window.innerWidth) {
+            style.left = pos.left + "px";
+            cls.on.push('left');
+            cls.off.push('right');
+            type = 'left';
+          } else {
+            style.left = pos.right + "px";
+            cls.on.push('right');
+            cls.off.push('left');
+            type = 'right';
+          }
         } else {
-          top = box.top + box.height + 10 + sy;
+          if (this.root.classList.contains('top')) {
+            style.top = pos.top + "px";
+          } else if (this.root.classList.contains('left')) {
+            style.left = pos.left + "px";
+          } else if (this.root.classList.contains('right')) {
+            style.left = pos.right + "px";
+          } else {
+            style.top = pos.bottom + "px";
+          }
         }
-        if (left + rbox.width >= window.innerWidth) {
-          left = window.innerWidth - rbox.width;
+        if (type === 'bottom' || type === 'top') {
+          if (left + rbox.width - sx >= window.innerWidth) {
+            style.left = (right - rbox.width) + "px";
+            cls.on.push('right-align');
+          } else {
+            style.left = left + "px";
+            cls.off.push('right-align');
+          }
         }
-        ref$ = this.root.style;
-        ref$.left = left + "px";
-        ref$.top = top + "px";
+        if (type === 'right' || type === 'left') {
+          if (top + rbox.height - sy >= window.innerHeight) {
+            style.top = (bottom - rbox.height) + "px";
+            cls.on.push('bottom-align');
+          } else {
+            style.top = top + "px";
+            cls.off.push('bottom-align');
+          }
+        }
+        import$(this.root.style, style);
+        cls.on.map(function(it){
+          return this$.root.classList.toggle(it, true);
+        });
+        cls.off.map(function(it){
+          return this$.root.classList.toggle(it, false);
+        });
       }
       document.addEventListener('click', function(){
         document.removeEventListener('click', this$.docToggler);

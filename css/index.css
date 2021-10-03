@@ -4,6 +4,15 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.well {
+  border-radius: 0.25em;
+  background: #f9fafb;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  font-family: consolas, courier new, fixedsys, monospace;
+  padding: 1em 1em;
 }
 body {
   position: relative;
@@ -32,7 +41,7 @@ h3 {
 #landing {
   width: 100%;
   height: 310px;
-  background: #eee url("../../img/grid.png");
+  background: #eee url("../assets/img/grid.png");
   box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
 }
 #landing .inner {
@@ -41,7 +50,7 @@ h3 {
   margin: auto;
 }
 #landing .title {
-  font-size: 3.6em;
+  font-size: 3.1em;
   font-weight: bold;
   display: inline-block;
   margin: 16px 10px 0 0;
@@ -68,12 +77,8 @@ h3 {
   }
 }
 #landing .subtitle {
-  font-size: 1.6em;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  font-size: 1.4em;
+  font-weight: 400;
   user-select: none;
 }
 #landing .subtitle span {
@@ -101,22 +106,22 @@ h3 {
   font-weight: bold;
   border-left: 4px solid #777;
 }
-.ldColorPicker.landing {
+.ldcolorpicker.landing {
   width: 190px;
   margin-left: -70px;
 }
-.ldColorPicker.landing .ldcp-palette {
+.ldcolorpicker.landing .ldcp-palette {
   justify-content: center;
 }
-.ldColorPicker.landing .ldcp-sep {
+.ldcolorpicker.landing .ldcp-sep {
   display: none;
 }
-.ldColorPicker.landing .ldcp-panel:after {
+.ldcolorpicker.landing .ldcp-panel:after {
   left: 85px;
 }
 @media (max-width: 900px) {
-  #landing-palettes .ldColorPicker:nth-of-type(1),
-  #landing-palettes .ldColorPicker:nth-of-type(5) {
+  #landing-palettes .ldcolorpicker:nth-of-type(1),
+  #landing-palettes .ldcolorpicker:nth-of-type(5) {
     display: none;
   }
 }
@@ -124,14 +129,14 @@ h3 {
   #landing-palettes {
     display: none;
   }
-  .ldColorPicker.landing {
+  .ldcolorpicker.landing {
     display: none !important;
   }
   #root {
     margin-top: 50px;
   }
 }
-#examples .ldColorPicker {
+#examples .ldcolorpicker {
   display: block;
   max-width: 100%;
   margin: auto;

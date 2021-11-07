@@ -44,6 +44,11 @@ Todo
  * mobile support
 
 
+Naming Issue
+---------------
+
+Due to naming conflict with `ld-color-picker`, this package is named "@loadingio/ldcolorpicker" instead of "ldcolorpicker".
+
 
 License
 ---------

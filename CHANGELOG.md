@@ -1,5 +1,10 @@
 # Change Log
 
+## v2.0.5
+
+ - only insert ldcp DOM when toggling on to improve performance.
+
+
 ## v2.0.4
 
  - improve popup boundary check

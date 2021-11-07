@@ -63,7 +63,7 @@
     if cfg.inline => @ <<< toggler: null, root: node
     else
       @ <<< toggler: node, root: document.createElement \div
-      document.body.appendChild(@root)
+      #document.body.appendChild(@root)
     # Prepare Root Element
     @root
       ..style <<< position: \absolute, display: \none if !cfg.inline
@@ -94,6 +94,11 @@
       pal: ".ldcp-palette"
     <[h s l r g b a hex]>.map -> elem["in-#it"] = ".ldcp-in-#it"
     for k,v of elem => elem[k] = @root.querySelector v
+    @elem.comment = document.createComment " ldcolorpicker placeholder "
+    if @root.parentNode => @root.parentNode.insertBefore @elem.comment, @root
+    else document.body.appendChild @elem.comment
+    if !@inline => @root.parentNode.removeChild @root
+
 
     # DOM Elements Config and Dynamics
     @elem.btn-add.addEventListener \click, (e) ~> @add-color!
@@ -304,9 +309,11 @@
       display = @root.style.display
       if ((is-on? and !is-on) or (!(is-on?) and display != \none)) and !@inline =>
         @root.style.display = \none
+        if !@inline => @root.parentNode.removeChild @root
         document.removeEventListener \click, @doc-toggler
         return @fire \toggle, false
       @root.style.display = \block
+      if !@inline => @elem.comment.parentNode.insertBefore @root, @elem.comment
       toggler = @toggler or toggler
       if toggler =>
         if window.getComputedStyle(@root).position == \fixed => [sx,sy] = [0,0]

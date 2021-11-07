@@ -115,7 +115,6 @@ var images, html;
     } else {
       this.toggler = node;
       this.root = document.createElement('div');
-      document.body.appendChild(this.root);
     }
     x$ = this.root;
     if (!cfg.inline) {
@@ -157,6 +156,15 @@ var images, html;
     for (k in elem) {
       v = elem[k];
       elem[k] = this.root.querySelector(v);
+    }
+    this.elem.comment = document.createComment(" ldcolorpicker placeholder ");
+    if (this.root.parentNode) {
+      this.root.parentNode.insertBefore(this.elem.comment, this.root);
+    } else {
+      document.body.appendChild(this.elem.comment);
+    }
+    if (!this.inline) {
+      this.root.parentNode.removeChild(this.root);
     }
     this.elem.btnAdd.addEventListener('click', function(e){
       return this$.addColor();
@@ -555,10 +563,16 @@ var images, html;
       display = this.root.style.display;
       if (((isOn != null && !isOn) || (!(isOn != null) && display !== 'none')) && !this.inline) {
         this.root.style.display = 'none';
+        if (!this.inline) {
+          this.root.parentNode.removeChild(this.root);
+        }
         document.removeEventListener('click', this.docToggler);
         return this.fire('toggle', false);
       }
       this.root.style.display = 'block';
+      if (!this.inline) {
+        this.elem.comment.parentNode.insertBefore(this.root, this.elem.comment);
+      }
       toggler = this.toggler || toggler;
       if (toggler) {
         if (window.getComputedStyle(this.root).position === 'fixed') {

@@ -2,7 +2,7 @@
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
   "description": "ldcolorpicker - Palette-Aware Color Picker",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "files": [
     "dist/**/*"
   ],

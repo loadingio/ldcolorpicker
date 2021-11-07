@@ -97,7 +97,7 @@
     @elem.comment = document.createComment " ldcolorpicker placeholder "
     if @root.parentNode => @root.parentNode.insertBefore @elem.comment, @root
     else document.body.appendChild @elem.comment
-    if !@inline => @root.parentNode.removeChild @root
+    if !@inline and @root.parentNode => @root.parentNode.removeChild @root
 
 
     # DOM Elements Config and Dynamics

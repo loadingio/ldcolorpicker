@@ -163,7 +163,7 @@ var images, html;
     } else {
       document.body.appendChild(this.elem.comment);
     }
-    if (!this.inline) {
+    if (!this.inline && this.root.parentNode) {
       this.root.parentNode.removeChild(this.root);
     }
     this.elem.btnAdd.addEventListener('click', function(e){

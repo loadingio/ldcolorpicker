@@ -30,12 +30,12 @@
     ]
   },
   "devDependencies": {
-    "@loadingio/ldquery": "^2.0.0",
+    "@loadingio/ldquery": "^2.2.1",
     "bootstrap": "^4.5.2",
     "@loadingio/bootstrap.ext": "^0.0.1",
     "bootstrap.native": "^3.0.15",
     "deploy": "github:zbryikt/deploy",
-    "fedep": "^0.0.16",
+    "fedep": "^0.0.17",
     "livescript": "^1.6.0",
     "stylus": "^0.55.0",
     "@zbryikt/template": "^2.3.22",

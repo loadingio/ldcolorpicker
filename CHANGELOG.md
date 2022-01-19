@@ -1,5 +1,15 @@
 # Change Log
 
+## v3.0.0
+
+ - upgrade modules
+ - release with compact directory structure
+ - rename `ldcp.js` to `index.js`, `ldcp.min.js` to `index.min.js`
+ - rename `ldcp.css` to `index.css`, `ldcp.min.css` to `index.min.css`
+ - update `style`, `main` and `browser` field in `package.json`.
+ - further minimize generated js file with mangling and compression
+
+
 ## v2.0.5
 
  - only insert ldcp DOM when toggling on to improve performance.

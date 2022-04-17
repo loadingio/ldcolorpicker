@@ -198,7 +198,7 @@
       @elem["in-hex"].value = "#000" #@getHexString! TBD
       if type == 2 => ptr.style.left = "#{x}px"
       if !is-event => return
-      if type == 1 => return @set-alpha 1 - (((y * 1.04 - h * 0.02) / h) >? 0 <? 1)
+      if type == 1 => return @set-alpha +(1 - (((y * 1.04 - h * 0.02) / h) >? 0 <? 1)).toFixed(3)
       [lx, ly] = [x * 1.04 - w * 0.02, y * 1.04 - h * 0.02]
       [lx, ly] = [((lx / w) >? 0 <? 1), ((ly / h) >? 0 <? 1)]
       c = @get-color-at @idx, \hsl

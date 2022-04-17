@@ -1,5 +1,10 @@
 # Change Log
 
+## v3.0.1
+
+ - keeps only 3 decimal places in opacity when picking opacity with picker
+
+
 ## v3.0.0
 
  - upgrade modules

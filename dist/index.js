@@ -371,7 +371,7 @@ var images, html;
         return;
       }
       if (type === 1) {
-        return this.setAlpha(1 - ((ref$ = (ref1$ = (y * 1.04 - h * 0.02) / h) > 0 ? ref1$ : 0) < 1 ? ref$ : 1));
+        return this.setAlpha(+(1 - ((ref$ = (ref1$ = (y * 1.04 - h * 0.02) / h) > 0 ? ref1$ : 0) < 1 ? ref$ : 1)).toFixed(3));
       }
       ref$ = [x * 1.04 - w * 0.02, y * 1.04 - h * 0.02], lx = ref$[0], ly = ref$[1];
       ref$ = [(ref$ = (ref1$ = lx / w) > 0 ? ref1$ : 0) < 1 ? ref$ : 1, (ref$ = (ref1$ = ly / h) > 0 ? ref1$ : 0) < 1 ? ref$ : 1], lx = ref$[0], ly = ref$[1];

@@ -3,6 +3,7 @@
 ## v3.0.2 (upcoming)
 
  - fix dependency vulnerabilities
+ - upgrade dependencies
 
 
 ## v3.0.1

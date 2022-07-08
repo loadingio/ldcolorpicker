@@ -404,6 +404,9 @@ var images, html;
     },
     setIdx: function(ci){
       var oi, n, cc, oc, hsl, that;
+      if (ci + 1 >= this.elem.pal.childNodes.length) {
+        ci = this.elem.pal.childNodes.length - 2;
+      }
       oi = this.idx;
       this.idx = ci;
       n = this.elem.pal.childNodes[ci + 1];

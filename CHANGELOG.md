@@ -1,7 +1,8 @@
 # Change Log
 
-## v3.0.2 (upcoming)
+## v3.0.2
 
+ - fix bug: setIdx doesn't work correctly with out of bound idx
  - fix dependency vulnerabilities
  - upgrade dependencies
 

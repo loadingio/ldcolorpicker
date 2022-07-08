@@ -212,6 +212,7 @@
       @set-color {h, s, l, a: c.a}
 
     set-idx: (ci) ->
+      if ci + 1 >= @elem.pal.childNodes.length => ci = @elem.pal.childNodes.length - 2
       oi = @idx
       @idx = ci
       n = @elem.pal.childNodes[ci + 1]

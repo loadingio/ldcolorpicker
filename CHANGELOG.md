@@ -1,5 +1,10 @@
 # Change Log
 
+## v3.0.3 (upcoming)
+
+ - fix bug: picker popup should not trigger input field update, since we didn't pick any value yet. 
+
+
 ## v3.0.2
 
  - fix bug: setIdx doesn't work correctly with out of bound idx

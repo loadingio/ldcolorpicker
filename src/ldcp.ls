@@ -211,7 +211,7 @@
       if isNaN(l) => l = 0
       @set-color {h, s, l, a: c.a}
 
-    set-idx: (ci) ->
+    set-idx: (ci, o = {}) ->
       if ci + 1 >= @elem.pal.childNodes.length => ci = @elem.pal.childNodes.length - 2
       oi = @idx
       @idx = ci
@@ -222,9 +222,9 @@
       oc = @get-color-at oi, \hsl
       if !ldcolor.same(cc,oc) => @fire \change, cc, oc
       hsl = ldcolor.hsl(cc)
-      if @toggler =>
-        that.setAttribute \data-idx, ci
-        that.value = ldcolor.web cc, ((that.value or '').length  == 4)
+      if @toggler and !o.skip-input =>
+        @toggler.setAttribute \data-idx, ci
+        @toggler.value = ldcolor.web cc, ((@toggler.value or '').length  == 4)
       @set-pos hsl
     get-idx: -> @idx
     # update UI with possibly color change
@@ -397,7 +397,7 @@
       #  ret = @color.vals.map((it,idx) ~> [idx, @toValue(it)]).filter(~> it.1 == @target.value.to-lower-case!).0
       #  if ret => @idx = ret.0
       #  else @color.vals.splice 0, 0, @convert.color @target.value
-      @set-idx @idx
+      @set-idx @idx, {skip-input: true}
       @fire \toggle, true
 
 

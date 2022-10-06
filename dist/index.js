@@ -402,8 +402,9 @@ var images, html;
         a: c.a
       });
     },
-    setIdx: function(ci){
-      var oi, n, cc, oc, hsl, that;
+    setIdx: function(ci, o){
+      var oi, n, cc, oc, hsl;
+      o == null && (o = {});
       if (ci + 1 >= this.elem.pal.childNodes.length) {
         ci = this.elem.pal.childNodes.length - 2;
       }
@@ -420,9 +421,9 @@ var images, html;
         this.fire('change', cc, oc);
       }
       hsl = ldcolor.hsl(cc);
-      if (that = this.toggler) {
-        that.setAttribute('data-idx', ci);
-        that.value = ldcolor.web(cc, (that.value || '').length === 4);
+      if (this.toggler && !o.skipInput) {
+        this.toggler.setAttribute('data-idx', ci);
+        this.toggler.value = ldcolor.web(cc, (this.toggler.value || '').length === 4);
       }
       return this.setPos(hsl);
     },
@@ -671,7 +672,9 @@ var images, html;
         };
       }());
       this.updateDimension();
-      this.setIdx(this.idx);
+      this.setIdx(this.idx, {
+        skipInput: true
+      });
       return this.fire('toggle', true);
     },
     on: function(n, cb){

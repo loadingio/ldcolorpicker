@@ -1,8 +1,9 @@
 # Change Log
 
-## v3.0.3 (upcoming)
+## v3.0.3
 
  - fix bug: picker popup should not trigger input field update, since we didn't pick any value yet. 
+ - fix bug: setPalette should trigger change events of all pickers if necessary.
 
 
 ## v3.0.2

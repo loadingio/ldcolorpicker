@@ -2,7 +2,7 @@
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
   "description": "ldcolorpicker - Palette-Aware Color Picker",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "style": "dist/index.min.css",
   "browser": "dist/index.min.js",
   "main": "dist/index.min.js",

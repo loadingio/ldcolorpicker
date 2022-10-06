@@ -149,11 +149,16 @@
     pool = do
       # private
       update: (ldcp, ctx) -> ldcp.bind-palette @prepare(ctx).palette
-      populate: (ctx) -> @prepare(ctx).users.map -> it.sync-palette!
+      populate: (ctx) -> @prepare(ctx).users.map -> it.sync-palette ctx
       prepare: (ctx) -> if @hash[ctx] => that else @hash[ctx] = {users: [], palette: @random!}
 
       # public
-      set: (ctx, pal) -> @prepare(ctx).palette <<< pal{name, colors}; @populate ctx
+      set: (ctx, pal) ->
+        ctx = @prepare(ctx)
+        # oldpal keep here for pickers to compare
+        # and check if their active color is changed and should fire change event.
+        ctx.oldpal = JSON.parse(JSON.stringify(ctx.palette{name, colors}))
+        ctx.palette <<< JSON.parse(JSON.stringify pal{name, colors}); @populate ctx
       get: (ctx) -> return if @hash[ctx] => that.palette else null
       bind: (ctx, ldcp, pal) ->
         @prepare(ctx).users.push(ldcp)
@@ -238,7 +243,8 @@
       n.classList[if isNaN(c.a) => "add" else "remove"] \none
 
     # update UI with possibly palette changes
-    sync-palette: ->
+    # if ctx is provided, there may be palette changes and should check for value changes.
+    sync-palette: (ctx) ->
       pnode = @elem.pal
       nodes = pnode.querySelectorAll \.ldcp-color
       for i from 0 til Math.max(nodes.length, @palette.colors.length) =>
@@ -251,26 +257,21 @@
         if i < @palette.colors.length => @sync-color-at i, node
       if @idx >= @palette.colors.length => @idx = @palette.colors.length - 1
 
+      oc = if ctx => (ctx.{}oldpal.colors or [])[@idx] else @get-color!
       if (context?) and context == @context and (affect-idx?) and (direction?) and affect-idx <= @idx =>
         @idx += direction
         @idx = @idx >? 0 <? @color.vals.length - 1
         if old-idx != @idx => @fire \change-idx, @idx
       @set-idx @idx
 
+      if !ldcolor.same(cc = @get-color!, oc) => @fire \change, cc, oc
       #input?
       #if changed => @handle \change, value
       #if changed or direction => @handle \change-palette, @get-palette!
 
     # replace root palette object with this one.
     bind-palette: (pal) -> @palette = pal
-    set-palette: (pal) ->
-      oc = @palette.colors[@idx]
-      @palette.colors = JSON.parse JSON.stringify pal.colors.map -> ldcolor.hsl it
-      if pal.name => @palette.name = that
-      CLS.PalPool.set @context, @palette
-      cc = @get-color!
-      if !ldcolor.same(cc, oc) => @fire \change, cc, oc
-
+    set-palette: (pal) -> CLS.PalPool.set @context, pal
     get-palette: -> @palette
     set-color: (cc) ->
       oc = @palette.colors[@idx]

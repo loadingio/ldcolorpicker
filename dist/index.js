@@ -260,7 +260,7 @@ var images, html;
       },
       populate: function(ctx){
         return this.prepare(ctx).users.map(function(it){
-          return it.syncPalette();
+          return it.syncPalette(ctx);
         });
       },
       prepare: function(ctx){
@@ -276,9 +276,15 @@ var images, html;
       },
       set: function(ctx, pal){
         var ref$;
-        ref$ = this.prepare(ctx).palette;
-        ref$.name = pal.name;
-        ref$.colors = pal.colors;
+        ctx = this.prepare(ctx);
+        ctx.oldpal = JSON.parse(JSON.stringify({
+          name: (ref$ = ctx.palette).name,
+          colors: ref$.colors
+        }));
+        import$(ctx.palette, JSON.parse(JSON.stringify({
+          name: pal.name,
+          colors: pal.colors
+        })));
         return this.populate(ctx);
       },
       get: function(ctx){
@@ -444,8 +450,8 @@ var images, html;
       n.style.backgroundColor = ldcolor.web(c);
       return n.classList[isNaN(c.a) ? "add" : "remove"]('none');
     },
-    syncPalette: function(){
-      var pnode, nodes, i$, to$, i, node, ref$, ref1$, ref2$;
+    syncPalette: function(ctx){
+      var pnode, nodes, i$, to$, i, node, oc, ref$, ref1$, ref2$, cc;
       pnode = this.elem.pal;
       nodes = pnode.querySelectorAll('.ldcp-color');
       for (i$ = 0, to$ = Math.max(nodes.length, this.palette.colors.length); i$ < to$; ++i$) {
@@ -465,6 +471,9 @@ var images, html;
       if (this.idx >= this.palette.colors.length) {
         this.idx = this.palette.colors.length - 1;
       }
+      oc = ctx
+        ? ((ctx.oldpal || (ctx.oldpal = {})).colors || [])[this.idx]
+        : this.getColor();
       if ((typeof context != 'undefined' && context !== null) && context === this.context && (typeof affectIdx != 'undefined' && affectIdx !== null) && (typeof direction != 'undefined' && direction !== null) && affectIdx <= this.idx) {
         this.idx += direction;
         this.idx = (ref$ = (ref2$ = this.idx) > 0 ? ref2$ : 0) < (ref1$ = this.color.vals.length - 1) ? ref$ : ref1$;
@@ -472,25 +481,16 @@ var images, html;
           this.fire('change-idx', this.idx);
         }
       }
-      return this.setIdx(this.idx);
+      this.setIdx(this.idx);
+      if (!ldcolor.same(cc = this.getColor(), oc)) {
+        return this.fire('change', cc, oc);
+      }
     },
     bindPalette: function(pal){
       return this.palette = pal;
     },
     setPalette: function(pal){
-      var oc, that, cc;
-      oc = this.palette.colors[this.idx];
-      this.palette.colors = JSON.parse(JSON.stringify(pal.colors.map(function(it){
-        return ldcolor.hsl(it);
-      })));
-      if (that = pal.name) {
-        this.palette.name = that;
-      }
-      CLS.PalPool.set(this.context, this.palette);
-      cc = this.getColor();
-      if (!ldcolor.same(cc, oc)) {
-        return this.fire('change', cc, oc);
-      }
+      return CLS.PalPool.set(this.context, pal);
     },
     getPalette: function(){
       return this.palette;

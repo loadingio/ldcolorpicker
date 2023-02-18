@@ -229,11 +229,6 @@ var images, html;
         return cfg.onPaletteChange.apply(this$.toggler, [it]);
       });
     }
-    document.addEventListener('keydown', function(e){
-      if ((e.which || e.keyCode) === 27 && this$.toggler && !this$.pinned) {
-        return this$.toggle(false);
-      }
-    });
     this.setIdx(this.idx);
     if (cfg.pinned) {
       this.toggle(true);
@@ -571,6 +566,7 @@ var images, html;
           this.root.parentNode.removeChild(this.root);
         }
         document.removeEventListener('click', this.docToggler);
+        document.removeEventListener('keydown', this.keyToggler);
         return this.fire('toggle', false);
       }
       this.root.style.display = 'block';
@@ -661,16 +657,26 @@ var images, html;
           return this$.root.classList.toggle(it, false);
         });
       }
-      document.addEventListener('click', function(){
-        document.removeEventListener('click', this$.docToggler);
-        return this$.docToggler = function(){
-          if (mouse.over) {
-            return mouse.over = false;
-          }
+      if (!this.inline) {
+        document.addEventListener('keydown', function(){
+          document.removeEventListener('keydown', this$.keyToggler);
+          return this$.keyToggler = function(e){
+            if ((e.which || e.keyCode) === 27 && this$.toggler && !this$.pinned) {
+              return this$.toggle(false);
+            }
+          };
+        }());
+        document.addEventListener('click', function(){
           document.removeEventListener('click', this$.docToggler);
-          return this$.toggle();
-        };
-      }());
+          return this$.docToggler = function(){
+            if (mouse.over) {
+              return mouse.over = false;
+            }
+            document.removeEventListener('click', this$.docToggler);
+            return this$.toggle();
+          };
+        }());
+      }
       this.updateDimension();
       this.setIdx(this.idx, {
         skipInput: true

@@ -131,8 +131,6 @@
 
     if cfg.onColorChange => @on \change, ~> cfg.onColorChange.apply @toggler, [it]
     if cfg.onPaletteChange => @on \change-palette, ~> cfg.onPaletteChange.apply @toggler, [it]
-    document.addEventListener \keydown, (e) ~>
-      if (e.which or e.keyCode) == 27 and @toggler and !@pinned => @toggle false
 
     # Final Initialization
     @set-idx @idx
@@ -313,6 +311,7 @@
         @root.style.display = \none
         if !@inline => @root.parentNode.removeChild @root
         document.removeEventListener \click, @doc-toggler
+        document.removeEventListener \keydown, @key-toggler
         return @fire \toggle, false
       @root.style.display = \block
       if !@inline => @elem.comment.parentNode.insertBefore @root, @elem.comment
@@ -386,13 +385,20 @@
         cls.off.map ~> @root.classList.toggle it, false
         # TODO simplify boundary check logic, if possible
 
-      document.addEventListener \click, (~>
-        document.removeEventListener \click, @doc-toggler
-        @doc-toggler = ~>
-          if mouse.over => return mouse.over = false
+      if !@inline =>
+        document.addEventListener \keydown, (~>
+          document.removeEventListener \keydown, @key-toggler
+          @key-toggler = (e) ~>
+            if (e.which or e.keyCode) == 27 and @toggler and !@pinned => @toggle false
+        )!
+        document.addEventListener \click, (~>
           document.removeEventListener \click, @doc-toggler
-          @toggle!
-      )!
+          @doc-toggler = ~>
+            if mouse.over => return mouse.over = false
+            document.removeEventListener \click, @doc-toggler
+            @toggle!
+        )!
+
       @update-dimension!
       #if @target =>
       #  ret = @color.vals.map((it,idx) ~> [idx, @toValue(it)]).filter(~> it.1 == @target.value.to-lower-case!).0

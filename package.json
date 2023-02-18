@@ -2,7 +2,7 @@
   "author": "zbryikt",
   "name": "@loadingio/ldcolorpicker",
   "description": "ldcolorpicker - Palette-Aware Color Picker",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "style": "dist/index.min.css",
   "browser": "dist/index.min.js",
   "main": "dist/index.min.js",
@@ -33,19 +33,19 @@
     ]
   },
   "devDependencies": {
-    "@loadingio/ldquery": "^3.0.3",
+    "@loadingio/ldquery": "^3.0.4",
     "bootstrap": "^4.5.2",
-    "@loadingio/bootstrap.ext": "^0.0.7",
+    "@loadingio/bootstrap.ext": "^0.0.9",
     "bootstrap.native": "^3.0.15",
-    "@zbryikt/deploy": "^0.0.1",
-    "fedep": "^1.1.7",
+    "@zbryikt/deploy": "^0.0.4",
+    "fedep": "^1.1.11",
     "livescript": "^1.6.0",
     "stylus": "^0.55.0",
-    "@zbryikt/template": "^2.3.37",
+    "@zbryikt/template": "^2.3.45",
     "uglify-js": "^3.13.1",
     "uglifycss": "^0.0.29"
   },
   "peerDependencies": {
-    "ldcolor": "^1.0.0"
+    "ldcolor": "^1.1.0"
   }
 }

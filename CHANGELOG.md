@@ -1,5 +1,12 @@
 # Change Log
 
+## v3.0.4
+
+ - fix bug: pressing escape causes exception if picker is not shown.
+ - only watch for click and keydown event if not in inline mode
+ - upgrade dependencies for vulnerabilities fixing
+
+
 ## v3.0.3
 
  - fix bug: picker popup should not trigger input field update, since we didn't pick any value yet. 

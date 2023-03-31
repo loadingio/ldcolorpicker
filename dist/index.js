@@ -337,6 +337,9 @@ var images, html;
       }
       if (typeof type !== 'number') {
         ref$ = ldcolor.hsl(type), h = ref$.h, s = ref$.s, l = ref$.l;
+        if (!h) {
+          h = 0;
+        }
         lv = (2 * l + s * (1 - Math.abs(2 * l - 1))) / 2;
         sv = 2 * (lv - l) / lv;
         if (isNaN(sv)) {
@@ -386,6 +389,9 @@ var images, html;
       h = type === 0
         ? ly * 360
         : c.h;
+      if (!h) {
+        h = 0;
+      }
       l = lv * (2 - sv) / 2;
       s = l !== 0 && l !== 1
         ? lv * sv / (1 - Math.abs(2 * l - 1))

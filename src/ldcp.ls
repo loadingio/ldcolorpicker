@@ -179,6 +179,7 @@
       if !@dim.d1.w => @update-dimension!
       if typeof(type) != \number =>
         {h,s,l} = ldcolor.hsl(type)
+        if !h => h = 0
         lv = ( 2 * l + s * ( 1 - Math.abs( 2 * l - 1 ) ) ) / 2
         sv = 2 * ( lv - l ) / lv
         if isNaN(sv) => sv = s
@@ -208,6 +209,7 @@
       lv = if type == 2 => 1 - ly else ( 2 * c.l + c.s * ( 1 - Math.abs( 2 * c.l - 1 ) ) ) / 2
       sv = if type == 2 => lx else 2 * ( lv - c.l ) / lv
       h = if type == 0 => ly * 360 else c.h
+      if !h => h = 0
       l = lv * ( 2 - sv ) / 2
       s = if l != 0 and l != 1 => lv * sv / ( 1 - Math.abs( 2 * l - 1 ) ) else x / w
       if isNaN(s) => s = 0

@@ -1,5 +1,10 @@
 # Change Log
 
+## v3.0.5
+
+ - force set hue to 0 if hue is null so picker color will still be responsive to user input.
+
+
 ## v3.0.4
 
  - fix bug: pressing escape causes exception if picker is not shown.

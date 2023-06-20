@@ -629,12 +629,16 @@ var images, html;
         } else {
           if (this.root.classList.contains('top')) {
             style.top = pos.top + "px";
+            type = 'top';
           } else if (this.root.classList.contains('left')) {
             style.left = pos.left + "px";
+            type = 'left';
           } else if (this.root.classList.contains('right')) {
             style.left = pos.right + "px";
+            type = 'right';
           } else {
             style.top = pos.bottom + "px";
+            type = 'bottom';
           }
         }
         if (type === 'bottom' || type === 'top') {

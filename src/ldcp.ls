@@ -362,10 +362,12 @@
             cls.off.push \left
             type = \right
         else
-          if @root.classList.contains \top => style.top = "#{pos.top}px"
-          else if @root.classList.contains \left => style.left = "#{pos.left}px"
-          else if @root.classList.contains \right => style.left = "#{pos.right}px"
-          else style.top = "#{pos.bottom}px"
+          # without setting type here, picker may be placed in unexpected position
+          # because positional style not updated below.
+          if @root.classList.contains \top => style.top = "#{pos.top}px"; type = \top
+          else if @root.classList.contains \left => style.left = "#{pos.left}px"; type = \left
+          else if @root.classList.contains \right => style.left = "#{pos.right}px"; type = \right
+          else style.top = "#{pos.bottom}px"; type = \bottom
 
         if type in <[bottom top]> =>
           if left + rbox.width - sx >= window.innerWidth =>
